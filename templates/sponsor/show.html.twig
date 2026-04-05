@@ -28,10 +28,6 @@
                 <div class="col-md-6">
                     <table class="table table-bordered">
                         <tr>
-                            <th class="table-light" width="35%">ID</th>
-                            <td>{{ sponsor.id }}</td>
-                        </tr>
-                        <tr>
                             <th class="table-light">Nom</th>
                             <td>{{ sponsor.nom }}</td>
                         </tr>
@@ -45,7 +41,15 @@
                         </tr>
                         <tr>
                             <th class="table-light">Logo</th>
-                            <td>{{ sponsor.logo ?? '-' }}</td>
+                            <td>
+                                {% if sponsor.logo %}
+                                    <img src="/uploads/logos/{{ sponsor.logo }}"
+                                         alt="Logo {{ sponsor.nom }}"
+                                         style="width: 100px; height: 100px; object-fit: contain; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; padding: 4px;">
+                                {% else %}
+                                    <span class="text-muted">Aucun logo</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <th class="table-light">Date Création</th>
