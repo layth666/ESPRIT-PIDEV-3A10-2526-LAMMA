@@ -1,0 +1,73 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Manage Posts{% endblock %}
+{% block posts_active %}active{% endblock %}
+{% block page_title %}Manage Posts{% endblock %}
+{% block breadcrumb %}Posts Management{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        All Posts
+        <a href="{{ path('app_post_new') }}" class="btn btn-primary btn-sm float-end">+ New Post</a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Comments</th>
+                        <th>Created Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Comments</th>
+                        <th>Created Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <td>{{ post.id }}</td>
+                        <td><strong>{{ post.title|slice(0, 50) }}</strong></td>
+                        <td>{{ post.content|slice(0, 100) }}...</td>
+                        <td>{{ post.comments|length }}</td>
+                        <td>{{ post.createdAt|date('Y-m-d') }}</td>
+                        <td>
+                            <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                            <form method="post" action="{{ path('admin_post_delete', {'id': post.id}) }}" onsubmit="return confirm('Delete this post? All comments will be deleted too!')" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_post_' ~ post.id) }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', event => {
+        const datatablesSimple = document.getElementById('datatablesSimple');
+        if (datatablesSimple) {
+            new simpleDatatables.DataTable(datatablesSimple);
+        }
+    });
+</script>
+{% endblock %}
