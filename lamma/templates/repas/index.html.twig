@@ -1,0 +1,70 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% import '_macros.html.twig' as macros %}
+
+{% block title %}Repas - LAMMA{% endblock %}
+{% block admin_title %}Planning Alimentaire{% endblock %}
+
+{% block admin_content %}
+<section class="crud-section">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+            <h2 style="font-family:'Anton',sans-serif;color:var(--scout-navy); margin: 0;">Définition des Plats</h2>
+            <div style="font-size: 0.85rem; color: var(--text-dim); font-weight: 700;">Gestion du catalogue culinaire et des types de régimes</div>
+        </div>
+        <div class="col-md-6 text-right">
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_repas_new') }}" class="btn-scout-confirm" style="padding: 10px 25px;"><i class="fa fa-plus"></i> NOUVEAU REPAS</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Repas Cards Grid -->
+    <div class="row" id="repas-grid">
+        {% for item in items %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="ingredient-card" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; border: 2px solid transparent;">
+                <div style="height: 140px; background: {% if item.imageUrl %}url('{{ item.imageUrl }}') center/cover{% else %}linear-gradient(135deg, #1a1a2e 0%, #16213e 100%){% endif %}; display: flex; align-items: center; justify-content: center; position: relative;">
+                    {% if not item.imageUrl %}
+                    <span style="font-size: 3rem;">
+                        {% if item.categorie == 'ENTREE' %}🥗{% elseif item.categorie == 'PLAT_PRINCIPAL' %}🍲{% elseif item.categorie == 'DESSERT' %}🍰{% elseif item.categorie == 'BOISSON' %}🥤{% else %}🍽️{% endif %}
+                    </span>
+                    {% endif %}
+                    <span style="position: absolute; top: 8px; right: 8px; background: {% if item.disponible %}#28a745{% else %}#dc3545{% endif %}; color: #fff; font-size: 0.6rem; padding: 3px 8px; border-radius: 20px; font-weight: 700;">
+                        {% if item.disponible %}DISPO{% else %}RUPTURE{% endif %}
+                    </span>
+                    <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); color: #ff005a; font-size: 0.7rem; padding: 3px 8px; border-radius: 20px; font-weight: 700;">
+                        {{ item.tempsPreparation }} min
+                    </span>
+                </div>
+                <div style="padding: 15px;">
+                    <div style="font-weight: 800; font-size: 0.95rem; color: #1a1a2e; margin-bottom: 5px;">{{ item.nom }}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.7rem; color: #888; text-transform: uppercase; font-weight: 700;">{{ item.categorie|slice(0, 10) }} ({{ item.typePlat|slice(0, 8) }})</span>
+                        <span style="font-weight: 900; color: #ff005a; font-size: 0.9rem;">{{ item.prix }} €</span>
+                    </div>
+                </div>
+                <div style="padding: 0 15px 12px; display:flex; gap:5px;">
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_repas_edit', {id: item.id}) }}" class="genric-btn info-border circle small" style="font-size: 10px; flex:1; text-align:center;">Edit</a>
+                    {% endif %}
+                    <a href="{{ path('app_repas_show', {id: item.id}) }}" class="genric-btn info-border circle small" style="font-size: 10px; flex:1; text-align:center;">Voir</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center" style="padding: 60px; color: #888;">
+            <div style="font-size: 3rem; margin-bottom: 15px;">🍽️</div>
+            <p>Aucun repas trouvé. Commencez par en créer un !</p>
+        </div>
+        {% endfor %}
+    </div>
+
+<style>
+    .ingredient-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        border-color: #ff005a !important;
+    }
+</style>
+</section>
+{% endblock %}

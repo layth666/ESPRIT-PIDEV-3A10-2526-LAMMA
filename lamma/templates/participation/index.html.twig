@@ -1,0 +1,33 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% import '_macros.html.twig' as macros %}
+
+{% block title %}Participations - LAMMA{% endblock %}
+{% block admin_title %}Gestion des Inscriptions{% endblock %}
+
+{% block admin_content %}
+<section class="crud-section">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+            <h2 style="font-family:'Anton',sans-serif;color:var(--scout-navy); margin: 0;">Inscriptions aux Missions</h2>
+            <div style="font-size: 0.85rem; color: var(--text-dim); font-weight: 700;">Suivi des participants et des statuts de déploiement</div>
+        </div>
+        <div class="col-md-6 text-right">
+            {% if not is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_participation_new') }}" class="btn-scout-confirm" style="padding: 10px 25px;"><i class="fa fa-user-plus"></i> NOUVELLE INSCRIPTION</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="scout-card" style="padding: 0;">
+        {% set columns = {
+            'evenementId': 'Événement',
+            'type': 'Type',
+            'statut': 'Statut',
+            'totalParticipants': 'Membres',
+            'montantCalcule': 'Budget',
+            'mealOption': 'Repas'
+        } %}
+        {{ macros.crud_table(items, columns, 'app_participation_show', 'app_participation_show', 'participation') }}
+    </div>
+</section>
+{% endblock %}

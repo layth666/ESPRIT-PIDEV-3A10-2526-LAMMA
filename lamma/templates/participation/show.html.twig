@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Inscription - LAMMA{% endblock %}
+{% block page_title %}Participation {% endblock %}
+
+{% block body %}
+<section class="crud-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card card-detail">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fa fa-id-badge"></i> Dossier de Participation</span>
+                        <span class="badge badge-status badge-{{ item.statut }}">{{ item.statut }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3 text-pink" style="color:#fb246a;">Informations Générales</h5>
+                                <p><strong>Utilisateur ID :</strong> {{ item.userId }}</p>
+                                <p><strong>Événement ID :</strong> {{ item.evenementId }}</p>
+                                <p><strong>Date Inscription :</strong> {{ item.dateInscription|date('d/m/Y H:i') }}</p>
+                                <p><strong>Type :</strong> {{ item.type }}</p>
+                                <p><strong>Contexte :</strong> {{ item.contexteSocial ?? '-' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mb-3 text-pink" style="color:#fb246a;">Logistique et Repas</h5>
+                                <p><strong>Hébergement :</strong> {{ item.hebergementNuits }} nuits</p>
+                                <p><strong>Adultes :</strong> {{ item.nbAdultes }} | <strong>Enfants :</strong> {{ item.nbEnfants }}</p>
+                                <p><strong>Chiens :</strong> {{ item.nbChiens }}</p>
+                                <p><strong>Option Repas :</strong> {{ item.mealOption }}</p>
+                                <p><strong>Montant :</strong> {{ item.montantCalcule }} {{ item.devise }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <h6>Besoins Spéciaux :</h6>
+                                <p>{{ item.besoinsSpeciaux ?? 'Aucun.' }}</p>
+                                <h6 class="mt-3">Commentaire :</h6>
+                                <p>{{ item.commentaire ?? 'Pas de commentaire.' }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                {% if item.statut != 'CONFIRME' %}
+                                    <a href="{{ path('app_participation_confirmer', {id: item.id}) }}" class="btn btn-success" style="border-radius:25px;padding:10px 30px;">Valider</a>
+                                {% endif %}
+                                {% if item.statut != 'ANNULE' %}
+                                    <a href="{{ path('app_participation_annuler', {id: item.id}) }}" class="btn btn-danger" style="border-radius:25px;padding:10px 30px;">Annuler</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ path('app_participation_edit', {id: item.id}) }}" class="btn btn-warning" style="border-radius:25px;padding:10px 30px;">Modifier</a>
+                            {% endif %}
+                            <a href="{{ path('app_participation_index') }}" class="btn btn-secondary" style="border-radius:25px;padding:10px 30px;">Retour</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

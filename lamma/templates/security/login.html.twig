@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - LAMMA{% endblock %}
+{% block page_title %}Espace Membre{% endblock %}
+
+{% block body %}
+<div class="container" style="padding: 60px 0;">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="scout-card" style="padding: 40px;">
+                <div class="text-center mb-4">
+                    <h3 style="color: #ff005a; font-family: 'Anton', sans-serif; text-transform: uppercase;">Portail Sécurisé</h3>
+                    <p style="color: #aab1b7;">Veuillez vous authentifier pour accéder à votre espace.</p>
+                </div>
+
+                <form method="post">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="mb-3">
+                            Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}" style="color: #ff005a;">Déconnexion</a>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group mb-4">
+                        <label for="inputEmail" style="color: #fff; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">Email</label>
+                        <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" autocomplete="email" required autofocus style="background: transparent; border: 1px solid #444; color: #fff;">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="inputPassword" style="color: #fff; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">Mot de passe</label>
+                        <input type="password" name="_password" id="inputPassword" class="form-control" autocomplete="current-password" required style="background: transparent; border: 1px solid #444; color: #fff;">
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <div class="form-group mb-4">
+                        <label style="color: #aab1b7; font-size: 0.85rem; display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" name="_remember_me"> Se souvenir de moi
+                        </label>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <button class="btn btn-publier w-100" type="submit" style="font-size: 1.1rem; padding: 15px;">
+                            Connexion <i class="fa fa-sign-in ml-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
