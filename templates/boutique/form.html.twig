@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Priorité sur style.css du thème : champs lisibles sur fond sombre */
+        .lamma-equipement-form {
+            --lamma-input-bg: #1e293b;
+            --lamma-input-fg: #f8fafc;
+            --lamma-input-border: rgba(255,255,255,0.2);
+            --lamma-label: #cbd5e1;
+            --lamma-muted: #94a3b8;
+        }
+        .lamma-form-area {
+            background: #0f172a;
+            min-height: 75vh;
+            color: #e5e7eb;
+            padding: 2rem 0 4rem;
+        }
+        .lamma-equipement-form .form-label {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.35rem;
+            font-weight: 600;
+            color: var(--lamma-label) !important;
+        }
+        .lamma-equipement-form .mb-3 {
+            margin-bottom: 1.15rem !important;
+        }
+        .lamma-equipement-form .form-control,
+        .lamma-equipement-form .form-select,
+        .lamma-equipement-form textarea.form-control {
+            width: 100% !important;
+            max-width: 100%;
+            display: block;
+            background-color: var(--lamma-input-bg) !important;
+            color: var(--lamma-input-fg) !important;
+            border: 1px solid var(--lamma-input-border) !important;
+            border-radius: 8px;
+            padding: 0.55rem 0.85rem;
+            box-shadow: none !important;
+        }
+        .lamma-equipement-form .form-control:focus,
+        .lamma-equipement-form .form-select:focus,
+        .lamma-equipement-form textarea.form-control:focus {
+            background-color: #0f172a !important;
+            color: #fff !important;
+            border-color: #F97316 !important;
+            box-shadow: 0 0 0 0.15rem rgba(249, 115, 22, 0.25) !important;
+        }
+        .lamma-equipement-form .form-control::placeholder,
+        .lamma-equipement-form textarea::placeholder {
+            color: #64748b !important;
+            opacity: 1;
+        }
+        .lamma-equipement-form select.form-select option {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+        .lamma-equipement-form .invalid-feedback,
+        .lamma-equipement-form ul li {
+            color: #fecaca !important;
+            font-size: 0.875rem;
+        }
+        .lamma-equipement-form .form-text {
+            color: var(--lamma-muted) !important;
+        }
+        .lamma-form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .lamma-form-actions .boxed-btn3,
+        .lamma-form-actions a.boxed-btn3 {
+            color: #fff !important;
+            text-decoration: none;
+            line-height: 1.3;
+        }
+        .lamma-form-actions .btn-cancel {
+            background: #475569 !important;
+            border-color: #475569 !important;
+        }
+        .lamma-form-actions .btn-cancel:hover {
+            background: #64748b !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="lamma-form-area">
+<div class="container" style="max-width:640px;">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_boutique') }}">Boutique</a></li>
+            <li class="breadcrumb-item active">{{ title }}</li>
+        </ol>
+    </nav>
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <a href="{{ path('app_boutique') }}" class="boxed-btn3 btn-cancel" style="font-size:.9rem;padding:.45rem 1.1rem;">← Retour à la boutique</a>
+    </div>
+    <h1 class="h3 mb-4 text-white">{{ title }}</h1>
+
+    <div class="lamma-equipement-form">
+    {{ form_start(form, { attr: { novalidate: 'novalidate', id: 'equipement-form', class: 'lamma-equipement-form-inner' } }) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.nom) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.categorie) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.prix) }}
+        {{ form_row(form.ville) }}
+        {{ form_row(form.statut) }}
+        {{ form_row(form.livrable) }}
+        {{ form_row(form.mail) }}
+
+        <div class="lamma-form-actions">
+            <button type="submit" class="boxed-btn3">Enregistrer</button>
+            <a href="{{ path('app_boutique') }}" class="boxed-btn3 btn-cancel">Annuler</a>
+        </div>
+    {{ form_end(form) }}
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

@@ -1,0 +1,29 @@
+<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <div class="sb-sidenav-menu">
+        <div class="sb-sidenav-menu-heading">Gestion</div>
+        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_admin' %}active{% endif %}" href="{{ path('app_admin') }}">
+            <div class="sb-nav-link-icon"><i class="fa fa-tachometer"></i></div>
+            Tableau de bord
+        </a>
+        <a class="nav-link" href="{{ path('app_boutique') }}">
+            <div class="sb-nav-link-icon"><i class="fa fa-store"></i></div>
+            Boutique
+        </a>
+        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_boutique_new' %}active{% endif %}" href="{{ path('app_boutique_new') }}">
+            <div class="sb-nav-link-icon"><i class="fa fa-plus-circle"></i></div>
+            Ajouter équipement
+        </a>
+        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_admin_add_user' %}active{% endif %}" href="{{ path('app_admin_add_user') }}">
+            <div class="sb-nav-link-icon"><i class="fa fa-user-plus"></i></div>
+            Ajouter utilisateur
+        </a>
+        <a class="nav-link" href="{{ path('app_home') }}">
+            <div class="sb-nav-link-icon"><i class="fa fa-home"></i></div>
+            Retour au site
+        </a>
+    </div>
+    <div class="sb-sidenav-footer">
+        <div class="small">Connecté en tant que</div>
+        ADMINISTRATEUR
+    </div>
+</nav>

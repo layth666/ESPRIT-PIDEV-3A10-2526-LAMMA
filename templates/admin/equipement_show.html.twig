@@ -1,0 +1,96 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Détail équipement — LAMMA{% endblock %}
+
+{% block admin_content %}
+    <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="mb-2">Équipement « {{ equipement.nom }} »</h2>
+            <p class="text-white-50 mb-0">Détails et actions de livraison pour cet équipement.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="#" onclick="history.back(); return false;" class="btn btn-outline-light btn-sm">← Retour</a>
+            <a href="{{ path('app_boutique_show', {id: equipement.id}) }}" class="btn btn-outline-light btn-sm">Fiche publique</a>
+            <a href="{{ path('app_admin_equipement_edit', {id: equipement.id}) }}" class="btn btn-lamma btn-sm">Modifier</a>
+            <form method="post" action="{{ path('app_admin_equipement_delete', {id: equipement.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cet équipement ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_equipement_' ~ equipement.id) }}">
+                <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="admin-card p-4 h-100">
+                <h4 class="mb-3">Informations principales</h4>
+                <p class="text-white-50">{{ equipement.description ?: 'Aucune description fournie.' }}</p>
+
+                <div class="row gy-3 mt-4">
+                    <div class="col-md-6">
+                        <div class="text-white-50 small mb-1">Prix</div>
+                        <div class="fw-semibold">{{ equipement.prix|number_format(2, ',', ' ') }} TND</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 small mb-1">Type</div>
+                        <div>{{ equipement.type }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 small mb-1">Catégorie</div>
+                        <div>{{ equipement.categorie ?: '—' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 small mb-1">Ville</div>
+                        <div>{{ equipement.ville ?: '—' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 small mb-1">Statut</div>
+                        <div>{{ equipement.statut }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 small mb-1">Livrable</div>
+                        <div>{{ equipement.livrable ? 'Oui' : 'Non' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 small mb-1">Date ajout</div>
+                        <div>{{ equipement.dateAjout ? equipement.dateAjout|date('d/m/Y H:i') : '—' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-white-50 small mb-1">Propriétaire</div>
+                        <div>{{ equipement.owner ? equipement.owner.userid : 'Aucun' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="admin-card p-4 mb-4">
+                <h5 class="mb-3">Actions rapides</h5>
+                <div class="d-grid gap-2">
+                    <a href="{{ path('app_boutique_edit', {id: equipement.id}) }}" class="btn btn-lamma">Modifier l'équipement</a>
+                    <a href="{{ path('app_boutique_show', {id: equipement.id}) }}" class="btn btn-outline-light">Voir la fiche publique</a>
+                    {% if equipement.delivery %}
+                        <a href="{{ path('app_boutique_delivery', {id: equipement.id}) }}" class="btn btn-outline-light">Gérer la livraison</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="admin-card p-4">
+                <h5 class="mb-3">Livraison</h5>
+                {% if equipement.delivery %}
+                    {% set addressParts = [] %}
+                    {% if equipement.delivery.rue %}{% set addressParts = addressParts|merge([equipement.delivery.rue]) %}{% endif %}
+                    {% if equipement.delivery.ville %}{% set addressParts = addressParts|merge([equipement.delivery.ville]) %}{% endif %}
+                    {% if equipement.delivery.codePostal %}{% set addressParts = addressParts|merge([equipement.delivery.codePostal]) %}{% endif %}
+                    {% if equipement.delivery.pays %}{% set addressParts = addressParts|merge([equipement.delivery.pays]) %}{% endif %}
+                    <div class="mb-2"><strong>Statut :</strong> {{ equipement.delivery.statut|replace({'en_attente': 'En attente', 'confirmee': 'Confirmée', 'preparation': 'En préparation', 'expediee': 'Expédiée', 'en_cours': 'En cours', 'livree': 'Livrée', 'annulee': 'Annulée'}) }}</div>
+                    <div class="mb-2"><strong>Acheteur :</strong> {{ equipement.delivery.acheteur ? equipement.delivery.acheteur.userid : 'Aucun' }}</div>
+                    <div class="mb-2"><strong>Adresse :</strong> {{ addressParts ? addressParts|join(', ') : 'Non renseignée' }}</div>
+                    <div class="mb-2"><strong>Date estimée :</strong> {{ equipement.delivery.estimation ? equipement.delivery.estimation|date('d/m/Y') : '—' }}</div>
+                    <div class="mb-2"><strong>Date livraison :</strong> {{ equipement.delivery.dateLivraison ? equipement.delivery.dateLivraison|date('d/m/Y') : '—' }}</div>
+                {% else %}
+                    <p class="text-white-50 mb-0">Aucune livraison associée à cet équipement.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

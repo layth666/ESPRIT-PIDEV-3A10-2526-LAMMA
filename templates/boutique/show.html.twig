@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ equipement.nom }} — LAMMA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .lamma-detail { background: #0f172a; min-height: 70vh; color: #e5e7eb; padding: 2rem 0 3rem; }
+        .lamma-detail .breadcrumb-item a { color: #F97316; }
+        .lamma-detail .breadcrumb-item.active { color: #94a3b8; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="lamma-detail">
+<div class="container" style="max-width:720px;">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_boutique') }}">Boutique</a></li>
+            <li class="breadcrumb-item active">{{ equipement.nom }}</li>
+        </ol>
+    </nav>
+    <h1 class="h3 text-white">{{ equipement.nom }}</h1>
+    <p class="text-muted">{{ equipement.categorie ?? '—' }} · {{ equipement.type ?? '—' }} · <span class="text-warning">{{ equipement.statut }}</span> · {{ equipement.prix|number_format(2, ',', ' ') }} TND</p>
+    {% if equipement.delivery and equipement.delivery.statut == 'livree' %}
+        <div class="alert alert-info">Cet équipement est livré et n'est plus disponible à la commande.</div>
+    {% elseif not equipement.livrable %}
+        <div class="alert alert-warning">Cet équipement n'est pas livrable.</div>
+    {% elseif can_order %}
+        <form method="post" action="{{ path('app_boutique_order', {id: equipement.id}) }}" class="d-inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('order_equipement_' ~ equipement.id) }}">
+            <button type="submit" class="btn btn-primary">Commander</button>
+        </form>
+    {% elseif can_view_delivery %}
+        <a href="{{ path('app_boutique_delivery', {id: equipement.id}) }}" class="btn btn-outline-light">Voir la livraison</a>
+    {% elseif current_user %}
+        <div class="alert alert-info">La livraison est en cours ou une commande a déjà été passée.</div>
+    {% else %}
+        <div class="alert alert-info">Connectez-vous pour commander.</div>
+    {% endif %}
+    <p><strong class="text-white-50">Ville :</strong> {{ equipement.ville ?? '—' }}</p>
+    {% if equipement.mail %}<p><strong class="text-white-50">E-mail :</strong> {{ equipement.mail }}</p>{% endif %}
+    <p><strong class="text-white-50">Vues (utilisateurs distincts) :</strong> {{ views_count }}</p>
+    {% if equipement.caracteristiques %}
+        <p><strong class="text-white-50">Caractéristiques :</strong> {{ equipement.caracteristiques }}</p>
+    {% endif %}
+    <div class="mt-3 border-top border-secondary pt-3">
+        <p class="mb-0">{{ equipement.description|default('—')|nl2br }}</p>
+    </div>
+    {% if equipement.attributs|length > 0 %}
+        <h2 class="h5 mt-4 text-white">Attributs</h2>
+        <ul class="list-unstyled">
+            {% for a in equipement.attributs %}
+                {% if a.nomAttribut|lower != 'mail' %}
+                    <li class="mb-1"><strong class="text-white-50">{{ a.nomAttribut }} :</strong> {{ a.valeur }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if equipement.delivery %}
+        <h2 class="h5 mt-4 text-white">Livraison</h2>
+        <ul class="list-unstyled">
+            <li class="mb-1"><strong class="text-white-50">Statut :</strong> {{ equipement.delivery.statut|replace({'en_attente': 'En attente', 'confirmee': 'Confirmée', 'preparation': 'En préparation', 'expediee': 'Expédiée', 'en_cours': 'En cours', 'livree': 'Livrée', 'annulee': 'Annulée'}) }}</li>
+            {% if equipement.delivery.estimation %}<li class="mb-1"><strong class="text-white-50">Estimation :</strong> {{ equipement.delivery.estimation|date('d/m/Y H:i') }}</li>{% endif %}
+            {% if equipement.delivery.dateLivraison %}<li class="mb-1"><strong class="text-white-50">Date de livraison :</strong> {{ equipement.delivery.dateLivraison|date('d/m/Y H:i') }}</li>{% endif %}
+            {% if equipement.delivery.rue %}<li class="mb-1"><strong class="text-white-50">Rue :</strong> {{ equipement.delivery.rue }}</li>{% endif %}
+            {% if equipement.delivery.ville %}<li class="mb-1"><strong class="text-white-50">Ville :</strong> {{ equipement.delivery.ville }}</li>{% endif %}
+            {% if equipement.delivery.codePostal %}<li class="mb-1"><strong class="text-white-50">Code postal :</strong> {{ equipement.delivery.codePostal }}</li>{% endif %}
+            {% if equipement.delivery.pays %}<li class="mb-1"><strong class="text-white-50">Pays :</strong> {{ equipement.delivery.pays }}</li>{% endif %}
+        </ul>
+    {% endif %}
+    <div class="mt-4 d-flex flex-wrap gap-2">
+        {% if can_manage %}
+            <a href="{{ path('app_boutique_edit', {id: equipement.id}) }}" class="boxed-btn3">Modifier</a>
+            {% if equipement.delivery %}
+                <a href="{{ path('app_boutique_delivery', {id: equipement.id}) }}" class="boxed-btn3" style="background:#0ea5e9;">Gérer la livraison</a>
+            {% endif %}
+            <form method="post" action="{{ path('app_boutique_delete', {id: equipement.id}) }}" style="display:inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_equipement_' ~ equipement.id) }}">
+                <button type="submit" class="boxed-btn3" style="background:#ef4444;border:none;">Supprimer</button>
+            </form>
+        {% endif %}
+        {% if can_order %}
+            <form method="post" action="{{ path('app_boutique_order', {id: equipement.id}) }}" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('order_equipement_' ~ equipement.id) }}">
+                <button type="submit" class="boxed-btn3 btn-lamma">Commander</button>
+            </form>
+        {% endif %}
+        <a href="{{ path('app_boutique') }}" class="boxed-btn3" style="background:#64748b;">Retour à la boutique</a>
+    </div>
+</div>
+</div>
+{% endblock %}

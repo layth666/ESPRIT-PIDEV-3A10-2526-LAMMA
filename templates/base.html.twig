@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html class="no-js" lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/themify-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/gijgo.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/nice-select.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/flaticon.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/slicknav.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+        <style>
+            .btn-lamma {
+                background: #F97316;
+                border-color: #F97316;
+                color: #111827;
+            }
+            .btn-lamma:hover {
+                background: #fb923c;
+                border-color: #fb923c;
+                color: #111827;
+            }
+            .breadcrumb .breadcrumb-item a {
+                color: #F97316;
+            }
+            .breadcrumb-item.active {
+                color: #94a3b8;
+            }
+        </style>
+    {% endblock %}
+</head>
+<body>
+{% block header %}
+<header class="bg-dark text-white p-3">
+    <div class="container">
+        <nav class="d-flex justify-content-between align-items-center">
+            <a href="{{ path('app_home') }}" class="text-white text-decoration-none h4 mb-0">LAMMA</a>
+            <div>
+                <a href="{{ path('app_boutique') }}" class="text-white me-3">Boutique</a>
+                {% set current_user_name = app.request.getSession().get('current_user_name') %}
+                {% set current_user_is_admin = app.request.getSession().get('current_user_is_admin') %}
+                {% if current_user_name %}
+                    {% if current_user_is_admin %}
+                        <a href="{{ path('app_admin') }}" class="text-white me-3">Administration</a>
+                    {% endif %}
+                    <span class="text-white me-3">Utilisateur actif : {{ current_user_name }}</span>
+                    {% if current_user_is_admin %}
+                        <span class="badge bg-warning text-dark me-3">Admin</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </nav>
+    </div>
+</header>
+{% endblock %}
+{% block body %}{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('assets/js/vendor/modernizr-3.5.0.min.js') }}"></script>
+    <script src="{{ asset('assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('assets/js/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('assets/js/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('assets/js/ajax-form.js') }}"></script>
+    <script src="{{ asset('assets/js/waypoints.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.counterup.min.js') }}"></script>
+    <script src="{{ asset('assets/js/imagesloaded.pkgd.min.js') }}"></script>
+    <script src="{{ asset('assets/js/scrollIt.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.scrollUp.min.js') }}"></script>
+    <script src="{{ asset('assets/js/wow.min.js') }}"></script>
+    <script src="{{ asset('assets/js/gijgo.min.js') }}"></script>
+    <script src="{{ asset('assets/js/nice-select.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.slicknav.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('assets/js/tilt.jquery.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins.js') }}"></script>
+    <script src="{{ asset('assets/js/contact.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.ajaxchimp.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.form.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/js/mail-script.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block title %}{{ title }} — LAMMA{% endblock %}
+
+{% block admin_content %}
+    <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="mb-2">{{ title }}</h2>
+            <p class="text-white-50 mb-0">Modifier les informations de l’équipement depuis l’administration.</p>
+        </div>
+        <div>
+            <a href="#" onclick="history.back(); return false;" class="btn btn-outline-light btn-sm">← Retour</a>
+        </div>
+    </div>
+
+    <div class="admin-card p-4">
+        {{ form_start(form, { attr: { novalidate: 'novalidate', 'data-validate': 'true' } }) }}
+            {{ form_errors(form) }}
+            <div class="row g-3">
+                <div class="col-12">{{ form_row(form.nom) }}</div>
+                <div class="col-12">{{ form_row(form.description) }}</div>
+                <div class="col-md-6">{{ form_row(form.categorie) }}</div>
+                <div class="col-md-6">{{ form_row(form.type) }}</div>
+                <div class="col-md-6">{{ form_row(form.prix) }}</div>
+                <div class="col-md-6">{{ form_row(form.ville) }}</div>
+                <div class="col-md-6">{{ form_row(form.statut) }}</div>
+                <div class="col-md-6">{{ form_row(form.livrable) }}</div>
+                <div class="col-12">{{ form_row(form.mail) }}</div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button type="submit" class="btn btn-lamma">Enregistrer</button>
+                <button type="button" onclick="history.back();" class="btn btn-outline-light">Annuler</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[data-validate]');
+        if (!form) return;
+
+        form.addEventListener('submit', function(e) {
+            const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            // Validation spécifique pour le prix
+            const prixField = form.querySelector('input[name$="[prix]"]');
+            if (prixField && prixField.value) {
+                const prix = parseFloat(prixField.value);
+                if (isNaN(prix) || prix <= 0) {
+                    prixField.classList.add('is-invalid');
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Veuillez corriger les erreurs dans le formulaire.');
+            }
+        });
+
+        // Retirer la classe d'erreur lors de la saisie
+        form.addEventListener('input', function(e) {
+            if (e.target.classList.contains('is-invalid')) {
+                e.target.classList.remove('is-invalid');
+            }
+        });
+    });
+    </script>
+{% endblock %}

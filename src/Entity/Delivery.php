@@ -1,0 +1,160 @@
+<?php
+
+namespace App\Entity;
+
+use App\Entity\Equipement;
+use App\Entity\User;
+use App\Repository\DeliveryRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: DeliveryRepository::class)]
+#[ORM\Table(name: 'delivery')]
+class Delivery
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\OneToOne(inversedBy: 'delivery', targetEntity: Equipement::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Equipement $equipement = null;
+
+    #[ORM\ManyToOne(inversedBy: 'livraisons')]
+    private ?User $acheteur = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $estimation = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateLivraison = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $rue = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $ville = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $codePostal = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $pays = null;
+
+    #[ORM\Column(length: 20)]
+    private ?string $statut = 'en_cours';
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getEquipement(): ?Equipement
+    {
+        return $this->equipement;
+    }
+
+    public function setEquipement(Equipement $equipement): static
+    {
+        $this->equipement = $equipement;
+
+        return $this;
+    }
+
+    public function getAcheteur(): ?User
+    {
+        return $this->acheteur;
+    }
+
+    public function setAcheteur(?User $acheteur): static
+    {
+        $this->acheteur = $acheteur;
+
+        return $this;
+    }
+
+    public function getEstimation(): ?\DateTimeInterface
+    {
+        return $this->estimation;
+    }
+
+    public function setEstimation(?\DateTimeInterface $estimation): static
+    {
+        $this->estimation = $estimation;
+
+        return $this;
+    }
+
+    public function getDateLivraison(): ?\DateTimeInterface
+    {
+        return $this->dateLivraison;
+    }
+
+    public function setDateLivraison(?\DateTimeInterface $dateLivraison): static
+    {
+        $this->dateLivraison = $dateLivraison;
+
+        return $this;
+    }
+
+    public function getRue(): ?string
+    {
+        return $this->rue;
+    }
+
+    public function setRue(?string $rue): static
+    {
+        $this->rue = $rue;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?string $ville): static
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
+    public function getCodePostal(): ?string
+    {
+        return $this->codePostal;
+    }
+
+    public function setCodePostal(?string $codePostal): static
+    {
+        $this->codePostal = $codePostal;
+
+        return $this;
+    }
+
+    public function getPays(): ?string
+    {
+        return $this->pays;
+    }
+
+    public function setPays(?string $pays): static
+    {
+        $this->pays = $pays;
+
+        return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
+
+        return $this;
+    }
+}

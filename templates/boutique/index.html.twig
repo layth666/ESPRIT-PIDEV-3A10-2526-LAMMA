@@ -1,0 +1,258 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique Équipements Camping — LAMMA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .lamma-boutique { background: #0f172a; min-height: 70vh; color: #e5e7eb; padding: 1.5rem 0 3rem; }
+        .lamma-boutique .card-eq {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            min-width: 200px;
+            max-width: 260px;
+            border: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer;
+        }
+        .lamma-boutique .card-eq a, .lamma-boutique .card-eq button { cursor: pointer; }
+        .lamma-boutique .card-eq h3 { color: #fff; font-size: 1rem; font-weight: 700; margin: 0 0 .35rem; }
+        .lamma-boutique .price { color: #F97316; font-weight: 700; font-size: 1.05rem; }
+        .lamma-boutique .meta { color: #94a3b8; font-size: .85rem; }
+        .lamma-boutique .toolbar { gap: .5rem; flex-wrap: wrap; }
+        .lamma-boutique input, .lamma-boutique select {
+            background: rgba(15,23,42,0.9); border: 1px solid rgba(255,255,255,0.12);
+            color: #e5e7eb; border-radius: 8px; padding: .4rem .75rem;
+        }
+        .lamma-boutique .weather-pill {
+            background: rgba(15,23,42,0.9); border-radius: 14px; padding: .35rem .75rem;
+            font-size: .8rem; font-weight: 600; cursor: pointer;
+        }
+        .lamma-boutique .count-pill {
+            background: rgba(249,115,22,0.12); color: #F97316; font-weight: 800;
+            border-radius: 12px; padding: .35rem .85rem; font-size: .85rem;
+        }
+        .lamma-boutique select.form-select {
+            background-color: rgba(15,23,42,0.95);
+            color: #e5e7eb;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .lamma-boutique select.form-select:focus {
+            border-color: #F97316;
+            box-shadow: 0 0 0 0.15rem rgba(249, 115, 22, 0.25);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="lamma-boutique">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span style="font-size:1.25rem">🛒</span>
+                <div>
+                    <h1 class="h4 mb-0 text-white">Boutique Équipements Camping</h1>
+                    <p class="small text-muted mb-0">Tentes, matelas, lunettes, sacs de couchage — LAMMA</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <div class="weather-pill text-white" id="lamma-weather" title="Cliquez pour les prévisions 14 jours (Tunis)">🌤 Météo: chargement…</div>
+                <span class="small text-success">● En stock</span>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center toolbar mb-3" id="boutique-toolbar"
+             data-search-url="{{ path('app_boutique_search') }}"
+             data-boutique-url="{{ path('app_boutique') }}">
+            <a href="{{ path('app_boutique_new') }}" class="boxed-btn3" style="font-size:.85rem;">+ Ajouter</a>
+            <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
+                <label class="small mb-0 text-white-50 d-none d-md-inline" for="boutique-q">Recherche</label>
+                <input type="search" id="boutique-q" name="q" value="{{ q }}" autocomplete="off"
+                       placeholder="🔍 Tapez pour filtrer en direct…" style="min-width:260px;"
+                       title="Filtrage à chaque frappe — plusieurs mots : tous doivent correspondre">
+                <select id="boutique-categorie" name="categorie" class="form-select form-select-sm" style="max-width:220px;" aria-label="Catégorie" data-boutique-native-select>
+                    {% for c in categories %}
+                        <option value="{{ c }}" {% if c == current_categorie %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <span class="count-pill" id="boutique-count">{{ equipements|length }} équipement(s)</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <form method="post" action="{{ path('app_boutique_set_user') }}" class="d-flex align-items-center gap-2">
+                <input type="hidden" name="_token" value="{{ csrf_token('set_current_user') }}">
+                <label class="text-white-50 mb-0">Utilisateur :</label>
+                <select name="user_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="0">Aucun</option>
+                    {% for user in users ?? [] %}
+                        <option value="{{ user.id }}" {% if current_user and current_user.id == user.id %}selected{% endif %}>{{ user.userid }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            {% if current_user %}
+                <a href="{{ path('app_my_deliveries') }}" class="btn btn-sm btn-outline-light">Mes livraisons</a>
+            {% endif %}
+        </div>
+
+        <div class="card mb-3" style="background:rgba(255,255,255,0.05);border:none;">
+            <div class="card-body py-2">
+                <form method="post" action="{{ path('app_boutique_user') }}" class="row g-2 align-items-center">
+                    <input type="hidden" name="_token" value="{{ csrf_token('boutique_user') }}">
+                    <div class="col-auto"><label class="small mb-0 text-white-50" for="user_id">UserId (comptage des vues)</label></div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control form-control-sm" id="user_id" name="user_id" placeholder="email ou login">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-outline-light">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+
+        <div class="d-flex flex-wrap" style="gap:1rem;" id="boutique-cards">
+            {% include 'boutique/_cards.html.twig' with { empty_message: 'Aucun équipement. Ajoutez-en un avec « + Ajouter ».' } %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    (function () {
+        const LAT = 36.80, LON = 10.18;
+        const urlCurrent = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON
+            + '&hourly=temperature_2m&current=rain,precipitation,wind_speed_10m,temperature_2m&timezone=auto';
+        const urlDaily = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON
+            + '&daily=temperature_2m_max,temperature_2m_min,weathercode&forecast_days=14&timezone=auto';
+        const el = document.getElementById('lamma-weather');
+        function extractDouble(json, key) {
+            const i = json.indexOf(key);
+            if (i < 0) return null;
+            const c = json.indexOf(':', i);
+            if (c < 0) return null;
+            let e = c + 1;
+            while (e < json.length && /\s/.test(json[e])) e++;
+            let s = e;
+            while (s < json.length && '0123456789+-.eE'.indexOf(json[s]) >= 0) s++;
+            const n = json.substring(e, s);
+            return n === '' ? null : parseFloat(n);
+        }
+        function parseCurrent(json) {
+            const idx = json.indexOf('"current"');
+            if (idx < 0) return null;
+            const st = json.indexOf('{', idx);
+            const en = json.indexOf('}', st);
+            if (st < 0 || en < 0) return null;
+            const cur = json.substring(st + 1, en);
+            const t = extractDouble(cur, '"temperature_2m"');
+            const w = extractDouble(cur, '"wind_speed_10m"');
+            const r = extractDouble(cur, '"rain"');
+            let out = 'Météo: ';
+            if (t != null) out += t.toFixed(1) + '°C';
+            if (w != null) out += (out.length > 8 ? ' · ' : '') + 'Vent ' + Math.round(w) + ' km/h';
+            if (r != null) out += (out.length > 8 ? ' · ' : '') + 'Pluie ' + r.toFixed(1) + ' mm';
+            return out.length > 8 ? out : null;
+        }
+        function bindCardNav() {
+            var container = document.getElementById('boutique-cards');
+            if (!container) return;
+            container.querySelectorAll('.card-eq').forEach(function (card) {
+                var url = card.getAttribute('data-detail-url');
+                if (!url) return;
+                card.addEventListener('dblclick', function (ev) {
+                    if (ev.target.closest('a, button, form, input, select')) return;
+                    window.location.href = url;
+                });
+                card.addEventListener('keydown', function (ev) {
+                    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+                    if (ev.target.closest('a, button')) return;
+                    ev.preventDefault();
+                    window.location.href = url;
+                });
+            });
+        }
+        bindCardNav();
+
+        /* main.js appelle $('select').niceSelect() dans $(document).ready) — il faut destroy APRÈS */
+        if (window.jQuery) {
+            window.jQuery(function ($) {
+                if ($.fn.niceSelect) {
+                    var $cat = $('#boutique-categorie');
+                    if ($cat.length && $cat.next('.nice-select').length) {
+                        $cat.niceSelect('destroy');
+                    }
+                }
+
+                var toolbar = document.getElementById('boutique-toolbar');
+                var qInput = document.getElementById('boutique-q');
+                var catSel = document.getElementById('boutique-categorie');
+                var cardsEl = document.getElementById('boutique-cards');
+                var countEl = document.getElementById('boutique-count');
+                if (!toolbar || !qInput || !catSel || !cardsEl || !countEl) return;
+
+                var searchUrl = toolbar.getAttribute('data-search-url');
+                var boutiqueUrl = toolbar.getAttribute('data-boutique-url');
+                var searchTimer = null;
+                function pushUrl(q, cat) {
+                    try {
+                        var u = new URL(boutiqueUrl, window.location.origin);
+                        if (q) u.searchParams.set('q', q);
+                        else u.searchParams.delete('q');
+                        if (cat && cat !== 'Toutes catégories') u.searchParams.set('categorie', cat);
+                        else u.searchParams.delete('categorie');
+                        window.history.replaceState({}, '', u.pathname + u.search);
+                    } catch (e) {}
+                }
+                function doSearch() {
+                    var q = (qInput.value || '').trim();
+                    var cat = catSel.value || '';
+                    var params = new URLSearchParams();
+                    if (q) params.set('q', q);
+                    params.set('categorie', cat);
+                    var url = searchUrl + '?' + params.toString();
+                    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                        .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+                        .then(function (data) {
+                            cardsEl.innerHTML = data.html;
+                            countEl.textContent = data.count + ' équipement(s)';
+                            bindCardNav();
+                            pushUrl(q, cat);
+                        })
+                        .catch(function () {});
+                }
+                function scheduleSearch() {
+                    clearTimeout(searchTimer);
+                    searchTimer = setTimeout(doSearch, 200);
+                }
+                qInput.addEventListener('input', scheduleSearch);
+                qInput.addEventListener('search', function () { scheduleSearch(); });
+                catSel.addEventListener('change', function () { doSearch(); });
+            });
+        }
+
+        if (el) {
+            fetch(urlCurrent).then(r => r.ok ? r.text() : Promise.reject()).then(t => {
+                const s = parseCurrent(t);
+                el.textContent = s || 'Météo: indisponible';
+            }).catch(() => { el.textContent = 'Météo: indisponible'; });
+            el.addEventListener('click', function () {
+                fetch(urlDaily).then(r => r.ok ? r.text() : Promise.reject()).then(t => {
+                    const i = t.indexOf('"daily"');
+                    if (i < 0) { alert('Prévisions indisponibles.'); return; }
+                    alert('Tunis — 14 jours (aperçu brut JSON disponible dans la console).');
+                    console.log(t.substring(i, i + 800));
+                }).catch(() => alert('Prévisions indisponibles.'));
+            });
+        }
+    })();
+    </script>
+{% endblock %}

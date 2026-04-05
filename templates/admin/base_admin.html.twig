@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration — LAMMA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+<div class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark">
+        <a class="navbar-brand ps-3" href="{{ path('app_admin') }}">LAMMA Admin</a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0 text-white me-3" id="sidebarToggle"><i class="fa fa-bars"></i></button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNavbar">
+            <ul class="navbar-nav ms-auto me-3">
+                <li class="nav-item d-none d-md-block">
+                    <a class="nav-link" href="{{ path('app_boutique') }}">Retour boutique</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-user-circle"></i> Admin
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ path('app_admin') }}">Tableau de bord</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_admin_add_user') }}">Ajouter utilisateur</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            {% include 'admin/Partials/sidebar.html.twig' %}
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    {% include 'admin/Partials/navbar.html.twig' %}
+                    {% block admin_content %}{% endblock %}
+                </div>
+            </main>
+            <footer class="py-4 mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small footer-admin">
+                        <div>© {{ "now"|date('Y') }} LAMMA</div>
+                        <div>Administration</div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/admin.js') }}"></script>
+{% endblock %}
