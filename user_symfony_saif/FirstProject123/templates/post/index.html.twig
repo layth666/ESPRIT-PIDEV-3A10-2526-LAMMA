@@ -1,0 +1,360 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <title>Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <style>
+        .reaction-btn { background:#f0f2f5; border:none; border-radius:20px; padding:5px 12px; margin:0 3px; cursor:pointer; transition:all 0.2s; }
+        .reaction-btn:hover { background:#e0e0e0; transform:scale(1.05); }
+        .translate-btn, .image-btn { background:#4a90e2; color:white; border:none; padding:5px 15px; border-radius:4px; margin:5px 5px 5px 0; cursor:pointer; transition:all 0.2s; }
+        .translate-btn:hover, .image-btn:hover { background:#357abd; }
+        .post-image-container { margin-bottom:15px; border-radius:8px; overflow:hidden; }
+        .post-image-container img { width:100%; height:200px; object-fit:cover; }
+        .loading { text-align:center; padding:10px; color:#666; }
+        .flash-messages { position:fixed; top:20px; right:20px; z-index:9999; }
+        .flash-success { background:#28a745; color:white; padding:12px 20px; border-radius:5px; margin-bottom:10px; animation:slideIn 0.3s ease; }
+        .flash-error { background:#dc3545; color:white; padding:12px 20px; border-radius:5px; margin-bottom:10px; animation:slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-area">
+        <div id="sticky-header" class="main-header-area">
+            <div class="container">
+                <div class="header_bottom_border">
+                    <div class="row align-items-center">
+                        <div class="col-xl-3 col-lg-3">
+                            <div class="logo">
+                                <a href="/post"><img src="{{ asset('img/logo.png') }}" alt="logo"></a>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6">
+                            <div class="main-menu d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><a href="/post">Posts</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 d-none d-lg-block">
+                            <div class="buy_tkt">
+                                <div class="book_btn d-none d-lg-block">
+                                    <a href="{{ path('app_post_new') }}">New Post</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="flash-messages">
+    {% for message in app.flashes('success') %}
+        <div class="flash-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="flash-error">{{ message }}</div>
+    {% endfor %}
+</div>
+
+<div class="bradcam_area">
+    <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xl-12">
+                    <div class="bradcam_text text-center">
+                        <h3>Blog</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="blog_area section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="blog_left_sidebar">
+
+                    <!-- Search and Sort Section -->
+                    <div class="search-sort-section" style="background:#f8f9fa;padding:20px;border-radius:8px;margin-bottom:30px;">
+                        <form method="get" action="{{ path('app_post_index') }}" style="display:flex;gap:15px;flex-wrap:wrap;align-items:flex-end;">
+                            <div style="flex:2;min-width:200px;">
+                                <label for="search" style="display:block;margin-bottom:5px;font-weight:600;color:#1a2f45;">Search by title:</label>
+                                <input type="text" id="search" name="search" value="{{ current_search }}" 
+                                       placeholder="Enter post title..." 
+                                       style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;">
+                            </div>
+                            
+                            <div style="flex:1;min-width:150px;">
+                                <label for="sort" style="display:block;margin-bottom:5px;font-weight:600;color:#1a2f45;">Sort by:</label>
+                                <select id="sort" name="sort" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;">
+                                    <option value="latest" {% if current_sort == 'latest' %}selected{% endif %}>Latest first</option>
+                                    <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Oldest first</option>
+                                    <option value="most_commented" {% if current_sort == 'most_commented' %}selected{% endif %}>Most comments</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <button type="submit" style="background:#f09000;color:white;border:none;padding:10px 25px;border-radius:4px;cursor:pointer;font-weight:600;">Apply</button>
+                                <a href="{{ path('app_post_index') }}" style="background:#6c757d;color:white;text-decoration:none;padding:10px 25px;border-radius:4px;display:inline-block;margin-left:10px;">Reset</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    {% if current_search %}
+                        <div style="margin-bottom:20px;padding:10px;background:#e9ecef;border-radius:4px;">
+                            <strong>Search results for: "{{ current_search }}"</strong> 
+                            ({{ posts|length }} post(s) found)
+                        </div>
+                    {% endif %}
+
+                    {% for post in posts %}
+                    <article class="blog_item" data-post-id="{{ post.id }}">
+                        <div class="blog_item_img">
+                            <div class="post-image-container">
+                                <div class="loading">Loading image...</div>
+                            </div>
+                            <a href="#" class="blog_item_date">
+                                <h3>{{ post.createdAt ? post.createdAt|date('d') : '' }}</h3>
+                                <p>{{ post.createdAt ? post.createdAt|date('M') : '' }}</p>
+                            </a>
+                        </div>
+                        <div class="blog_details">
+                            <div class="original-content">
+                                <h2>{{ post.title }}</h2>
+                                <p>{{ post.content }}</p>
+                            </div>
+                            
+                            <div class="translated-content" style="display:none;"></div>
+                            
+                            <div style="margin:15px 0;">
+                                <button class="translate-btn" data-post-id="{{ post.id }}">🌐 Translate to English</button>
+                                <button class="image-btn" data-post-id="{{ post.id }}">🖼️ Refresh Image</button>
+                            </div>
+                            
+                            <div class="reactions" style="margin:15px 0;display:flex;gap:5px;flex-wrap:wrap;">
+                                {% for emoji, count in post.reactions %}
+                                    <button class="reaction-btn" data-emoji="{{ emoji }}" data-post-id="{{ post.id }}">
+                                        {{ emoji }} {% if count > 0 %}{{ count }}{% endif %}
+                                    </button>
+                                {% endfor %}
+                            </div>
+                            
+                            <ul class="blog-info-link">
+                                <li><a href="#"><i class="fa fa-comments"></i> {{ post.comments|length }} Comments</a></li>
+                                <li><a href="{{ path('app_post_edit', {'id': post.id}) }}"><i class="fa fa-edit"></i> Edit Post</a></li>
+                                <li>
+                                    <form method="post" action="{{ path('app_post_delete', {'id': post.id}) }}" style="display:inline;" onsubmit="return confirm('Delete this post?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                        <button type="submit" style="background:none;border:none;color:#f09000;cursor:pointer;"><i class="fa fa-trash"></i> Delete Post</button>
+                                    </form>
+                                </li>
+                            </ul>
+
+                            <div class="comments-area mt-4">
+                                <h4 style="color:#1a2f45;font-size:16px;margin-bottom:12px;">Comments</h4>
+
+                                {% for comment in post.comments %}
+                                <div style="background:#f9f9f9;padding:12px;margin-bottom:10px;border-left:3px solid #f09000;border-radius:4px;">
+                                    <small style="color:#999;display:block;margin-bottom:5px;">{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i') : '' }}</small>
+                                    
+                                    <form id="edit-form-{{ comment.id }}" method="post" action="{{ path('app_comment_edit', {'id': comment.id}) }}" style="display:none;">
+                                        <input type="text" name="content" value="{{ comment.content }}" style="width:70%;padding:6px;border:1px solid #ddd;border-radius:4px;">
+                                        <button type="submit" style="background:#f09000;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;">Save</button>
+                                        <button type="button" onclick="document.getElementById('edit-form-{{ comment.id }}').style.display='none';document.getElementById('comment-text-{{ comment.id }}').style.display='block';" style="background:#ccc;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;margin-left:4px;">Cancel</button>
+                                    </form>
+
+                                    <div id="comment-text-{{ comment.id }}" style="display:flex;justify-content:space-between;align-items:center;">
+                                        <p style="margin:0;color:#444;">{{ comment.content }}</p>
+                                        <div>
+                                            <button onclick="document.getElementById('edit-form-{{ comment.id }}').style.display='block';document.getElementById('comment-text-{{ comment.id }}').style.display='none';" style="background:none;border:none;color:#f09000;cursor:pointer;margin-right:8px;"><i class="fa fa-edit"></i></button>
+                                            <form method="post" action="{{ path('app_comment_delete', {'id': comment.id}) }}" style="display:inline;" onsubmit="return confirm('Delete this comment?')">
+                                                <button type="submit" style="background:none;border:none;color:#e74c3c;cursor:pointer;"><i class="fa fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <p style="color:#999;">No comments yet. Be the first to comment!</p>
+                                {% endfor %}
+                            </div>
+
+                            <div class="add-comment mt-3">
+                                <form method="post" action="{{ path('app_comment_add', {'id': post.id}) }}" style="display:flex;gap:10px;align-items:center;">
+                                    <input type="text" name="content" placeholder="Write a comment..." style="flex:1;padding:8px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
+                                    <button type="submit" class="boxed-btn3" style="padding:8px 20px;">Comment</button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                    {% else %}
+                    <div style="text-align:center;padding:50px;background:#f9f9f9;border-radius:8px;">
+                        <p style="color:#666;font-size:18px;">No posts found.</p>
+                        <a href="{{ path('app_post_new') }}" style="background:#f09000;color:white;padding:10px 20px;text-decoration:none;border-radius:4px;display:inline-block;margin-top:10px;">Create a new post</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="copy-right_text">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <p class="copy_right text-center">Copyright &copy; 2026 All rights reserved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="{{ asset('js/vendor/jquery-1.12.4.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('js/main.js') }}"></script>
+
+<script>
+// Auto-hide flash messages
+setTimeout(function() {
+    var flashes = document.querySelectorAll('.flash-success, .flash-error');
+    for (var i = 0; i < flashes.length; i++) {
+        flashes[i].style.opacity = '0';
+        setTimeout(function(el) { 
+            if (el && el.remove) el.remove(); 
+        }, 300, flashes[i]);
+    }
+}, 3000);
+
+// Reaction buttons
+var reactionBtns = document.querySelectorAll('.reaction-btn');
+for (var i = 0; i < reactionBtns.length; i++) {
+    reactionBtns[i].addEventListener('click', function() {
+        var postId = this.getAttribute('data-post-id');
+        var emoji = this.getAttribute('data-emoji');
+        var self = this;
+        
+        fetch('/post/' + postId + '/reaction/' + emoji, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            var newCount = data.reactions[emoji];
+            if (newCount > 0) {
+                self.textContent = emoji + ' ' + newCount;
+            } else {
+                self.textContent = emoji;
+            }
+        })
+        .catch(function(error) { console.error('Error:', error); });
+    });
+}
+
+// Translate buttons
+var translateBtns = document.querySelectorAll('.translate-btn');
+for (var i = 0; i < translateBtns.length; i++) {
+    translateBtns[i].addEventListener('click', function() {
+        var postId = this.getAttribute('data-post-id');
+        var article = this.closest('.blog_item');
+        var originalDiv = article.querySelector('.original-content');
+        var translatedDiv = article.querySelector('.translated-content');
+        var self = this;
+        
+        if (translatedDiv.style.display === 'none' || translatedDiv.style.display === '') {
+            self.textContent = '⏳ Translating...';
+            self.disabled = true;
+            
+            fetch('/post/' + postId + '/translate')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    translatedDiv.innerHTML = '<h2>' + data.title + '</h2><p>' + data.content + '</p>';
+                    originalDiv.style.display = 'none';
+                    translatedDiv.style.display = 'block';
+                    self.textContent = '🔄 View Original';
+                    self.disabled = false;
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                    self.textContent = '🌐 Translate to English';
+                    self.disabled = false;
+                });
+        } else {
+            originalDiv.style.display = 'block';
+            translatedDiv.style.display = 'none';
+            self.textContent = '🌐 Translate to English';
+        }
+    });
+}
+
+// Load images
+var articles = document.querySelectorAll('.blog_item');
+for (var i = 0; i < articles.length; i++) {
+    var article = articles[i];
+    var postId = article.getAttribute('data-post-id');
+    var imgContainer = article.querySelector('.post-image-container');
+    
+    if (imgContainer) {
+        fetch('/post/' + postId + '/image')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.image_url && imgContainer) {
+                    imgContainer.innerHTML = '<img src="' + data.image_url + '" alt="Post image" style="width:100%;height:200px;object-fit:cover;border-radius:8px;">';
+                } else if (imgContainer) {
+                    imgContainer.innerHTML = '<div style="background:#e9ecef;height:200px;display:flex;align-items:center;justify-content:center;color:#999;">No image available</div>';
+                }
+            })
+            .catch(function(error) {
+                console.error('Error loading image:', error);
+                if (imgContainer) {
+                    imgContainer.innerHTML = '<div style="background:#e9ecef;height:200px;display:flex;align-items:center;justify-content:center;color:#999;">Failed to load image</div>';
+                }
+            });
+    }
+}
+
+// Refresh image buttons
+var imageBtns = document.querySelectorAll('.image-btn');
+for (var i = 0; i < imageBtns.length; i++) {
+    imageBtns[i].addEventListener('click', function() {
+        var postId = this.getAttribute('data-post-id');
+        var article = this.closest('.blog_item');
+        var imgContainer = article.querySelector('.post-image-container');
+        
+        imgContainer.innerHTML = '<div class="loading">Loading image...</div>';
+        
+        fetch('/post/' + postId + '/image')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.image_url && imgContainer) {
+                    imgContainer.innerHTML = '<img src="' + data.image_url + '" alt="Post image" style="width:100%;height:200px;object-fit:cover;border-radius:8px;">';
+                } else if (imgContainer) {
+                    imgContainer.innerHTML = '<div style="background:#e9ecef;height:200px;display:flex;align-items:center;justify-content:center;color:#999;">No image available</div>';
+                }
+            })
+            .catch(function(error) {
+                if (imgContainer) {
+                    imgContainer.innerHTML = '<div style="background:#e9ecef;height:200px;display:flex;align-items:center;justify-content:center;color:#999;">Failed to load image</div>';
+                }
+            });
+    });
+}
+</script>
+
+</body>
+</html>
