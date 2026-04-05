@@ -1,0 +1,105 @@
+<style>
+    .custom-input {
+        background-color: #1a1a1a !important;
+        border: 1px solid #333 !important;
+        color: #fff !important;
+        border-radius: 0;
+        transition: border-color 0.3s ease;
+    }
+    .custom-input:focus {
+        border-color: #ff3c36 !important;
+        box-shadow: none !important;
+    }
+    .custom-label {
+        font-family: 'Arial', sans-serif;
+        letter-spacing: 1px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #888;
+    }
+</style>
+
+{{ form_start(form) }}
+    <div class="row g-4 mt-2">
+        <div class="col-md-6 mb-4">
+            <label class="custom-label mb-2">Titre de l'événement <span class="text-danger">*</span></label>
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control form-control-lg custom-input', 'required': 'required', 'minlength': '3'}}) }}
+            {{ form_errors(form.titre) }}
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <label class="custom-label mb-2">Type d'événement <span class="text-danger">*</span></label>
+            {{ form_widget(form.type, {'attr': {'class': 'form-control form-control-lg custom-input', 'required': 'required'}}) }}
+            {{ form_errors(form.type) }}
+        </div>
+
+        <div class="col-12 mb-4">
+            <label class="custom-label mb-2">Description complète <span class="text-danger">*</span></label>
+            {{ form_widget(form.description, {'attr': {'class': 'form-control form-control-lg custom-input', 'rows': 5, 'required': 'required', 'minlength': '10'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <label class="custom-label mb-2">Date début <span class="text-danger">*</span></label>
+            {{ form_widget(form.date_debut, {'attr': {'class': 'form-control form-control-lg custom-input', 'required': 'required'}}) }}
+            {{ form_errors(form.date_debut) }}
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <label class="custom-label mb-2">Date fin <span class="text-danger">*</span></label>
+            {{ form_widget(form.date_fin, {'attr': {'class': 'form-control form-control-lg custom-input', 'required': 'required'}}) }}
+            {{ form_errors(form.date_fin) }}
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <label class="custom-label mb-2">Lieu <span class="text-danger">*</span></label>
+            {{ form_widget(form.lieu, {'attr': {'class': 'form-control form-control-lg custom-input', 'required': 'required'}}) }}
+            {{ form_errors(form.lieu) }}
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <label class="custom-label mb-2">Nom de l'image (Optionnel)</label>
+            {{ form_widget(form.image, {'attr': {'class': 'form-control form-control-lg custom-input'}}) }}
+            {{ form_errors(form.image) }}
+        </div>
+
+        <div class="col-12 mb-4">
+            <label class="custom-label mb-2">Équipements recommandés</label>
+            {{ form_widget(form.recommended_equipments, {'attr': {'class': 'form-control form-control-lg custom-input'}}) }}
+            {{ form_errors(form.recommended_equipments) }}
+        </div>
+
+        <div class="col-12 mb-5">
+            <label class="custom-label mb-2">Lien Spotify</label>
+            {{ form_widget(form.spotify_url, {'attr': {'class': 'form-control form-control-lg custom-input'}}) }}
+            {{ form_errors(form.spotify_url) }}
+        </div>
+
+        <div class="col-12 text-center">
+            <button class="btn btn-danger btn-lg px-5" style="background-color: #ff3c36; border: none; font-weight: bold; border-radius: 0; letter-spacing: 1px;">
+                <i class="fa fa-save"></i> {{ button_label|default('ENREGISTRER') }}
+            </button>
+        </div>
+    </div>
+{{ form_end(form) }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const typeInput = document.querySelector('input[name="evenement[type]"]');
+    const eqInput = document.querySelector('#equipments-input');
+
+    if (typeInput && eqInput) {
+        typeInput.addEventListener('input', function(e) {
+            const val = e.target.value.toLowerCase();
+            // Only auto-fill if the equipments input is empty
+            if (!eqInput.value) {
+                if (val.includes('camping') || val.includes('camp')) {
+                    eqInput.value = 'tente, matelas gonflable, sac de couchage';
+                } else if (val.includes('soire') || val.includes('soirée')) {
+                    eqInput.value = 'dress code, déguisement';
+                }
+            }
+        });
+    }
+});
+</script>

@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail événement{% endblock %}
+{% block hero %}{% endblock %}
+
+{% block body %}
+<div style="background-color: #000; min-height: 100vh; padding: 180px 0 60px 0;">
+    <div class="container">
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <h2 class="text-white mb-0" style="font-family: impact, sans-serif; letter-spacing: 1px;">DÉTAIL DE L'ÉVÉNEMENT</h2>
+            <div>
+                <a href="{{ path('app_evenement_index') }}" class="btn btn-outline-light me-2 rounded-0 border-2"><i class="fa fa-arrow-left"></i> Retour</a>
+                {% if role == 'admin' %}
+                    <a href="{{ path('app_evenement_edit', {'id': evenement.id_event}) }}" class="btn text-white rounded-0" style="background-color: #ff3c36; border: none;"><i class="fa fa-pencil"></i> Modifier</a>
+                {% endif %}
+            </div>
+        </div>
+
+    <div class="card bg-dark text-white border-0 shadow-lg">
+        <div class="row g-0">
+            <div class="col-md-5">
+                {% if evenement.image is not empty %}
+                    <img
+                        src="{{ asset('uploads/' ~ evenement.image) }}"
+                        alt="{{ evenement.titre }}"
+                        class="img-fluid h-100 w-100"
+                        style="object-fit: cover; min-height: 400px; background-color: #1a1a1a;"
+                        onerror="this.onerror=null; this.src='{{ asset('uploads/logo.png') }}';"
+                    >
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center h-100 text-secondary" style="min-height: 400px;">
+                        Aucune image
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-7">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-3">{{ evenement.titre }}</h3>
+
+                    <p class="mb-3">
+                        <span class="badge bg-danger">{{ evenement.type }}</span>
+                    </p>
+
+                    <p><strong>Description :</strong><br>{{ evenement.description ?: 'Sans description' }}</p>
+                    <p><strong>Date début :</strong> {{ evenement.date_debut ? evenement.date_debut|date('d/m/Y') : '' }}</p>
+                    <p><strong>Date fin :</strong> {{ evenement.date_fin ? evenement.date_fin|date('d/m/Y') : '' }}</p>
+                    <p><strong>Lieu :</strong> {{ evenement.lieu }}</p>
+                    <p><strong>Nombre de vues :</strong> {{ evenement.nb_vues }}</p>
+
+                    <p>
+                        <strong>Spotify :</strong>
+                        {% if evenement.spotify_url %}
+                            <a href="{{ evenement.spotify_url }}" target="_blank" class="btn btn-sm btn-success ms-2">
+                                Ouvrir
+                            </a>
+                        {% else %}
+                            <span class="text-secondary">Aucun lien</span>
+                        {% endif %}
+                    </p>
+
+                    <p class="text-muted small mt-3">
+                        <i class="fa fa-eye"></i> {{ evenement.nb_vues }} personnes ont consulté cet événement
+                    </p>
+
+                    <h5 class="text-white mt-4 border-bottom border-secondary pb-2" style="font-family: impact, sans-serif; letter-spacing: 1px;">PROGRAMME</h5>
+                    {% if evenement.programmes is not empty %}
+                        <ul class="list-group list-group-flush bg-transparent">
+                            {% for prog in evenement.programmes %}
+                                <li class="list-group-item bg-transparent text-light border-secondary border-bottom-0"><i class="fa fa-angle-right text-danger me-2"></i> <strong>{{ prog.titre }}</strong> <span class="text-muted small ms-2">({{ prog.date_debut|date('H:i') }}{{ prog.date_fin ? ' - ' ~ prog.date_fin|date('H:i') : '' }})</span></li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-secondary mb-0">Le programme n'a pas encore été annoncé.</p>
+                    {% endif %}
+
+                    <h5 class="text-white mt-4 border-bottom border-secondary pb-2" style="font-family: impact, sans-serif; letter-spacing: 1px;">ÉQUIPEMENTS </h5>
+                    {% if evenement.equipments is not empty %}
+                        <div class="mt-2 text-light">
+                            {% for eq in evenement.equipments %}
+                                <span class="badge bg-secondary me-1 mb-1">{{ eq.libelle }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-warning btn-sm fw-bold rounded-0">
+                                <i class="fa fa-shopping-cart"></i> Allez au store
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-secondary mb-0">Aucun équipement recommandé.</p>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        {% if role == 'admin' %}
+                            {{ include('evenement/_delete_form.html.twig') }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

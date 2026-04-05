@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des événements{% endblock %}
+{% block hero %}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* Styling for Nice Select dropdown in dark mode */
+    .nice-select.bg-transparent {
+        background-color: transparent !important;
+        border: none !important;
+        border-bottom: 2px solid rgba(255,255,255,0.2) !important;
+        border-radius: 0 !important;
+        color: white !important;
+        width: 100%;
+        line-height: normal;
+        display: flex;
+        align-items: center;
+        height: auto;
+        padding: 5px 0;
+    }
+    .nice-select::after {
+        border-bottom: 2px solid white !important;
+        border-right: 2px solid white !important;
+        right: 15px;
+    }
+    .nice-select .list {
+        background-color: #111 !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        width: 100%;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+    .nice-select .option {
+        color: white !important;
+        background-color: #111 !important;
+    }
+    .nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
+        background-color: #ff3c36 !important;
+        color: white !important;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div style="background-color: #000000; min-height: 100vh; padding: 160px 0 80px 0; font-family: 'Inter', sans-serif;">
+    <div class="container">
+        
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="text-white fw-bold mb-0 text-uppercase" style="font-size: 3rem; background: linear-gradient(90deg, #ff3c36, #ff7b00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Événements</h2>
+                <p class="text-muted mt-2" style="font-size: 1.1rem; letter-spacing: 0.5px;">Découvrez et participez à nos événements exclusifs.</p>
+            </div>
+        </div>
+
+        <!-- Search & Sort Form -->
+        <div class="p-4 mb-5 shadow" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;">
+            <form method="get" action="{{ path('app_evenement_index') }}">
+                <div class="row align-items-center">
+                    <div class="col-md-5 mb-3 mb-md-0">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0 text-white h-100 px-3"><i class="fa fa-search d-flex align-items-center"></i></span>
+                            </div>
+                            <input type="text" name="search" class="form-control bg-transparent text-white shadow-none" placeholder="Rechercher par titre ou lieu..." value="{{ app.request.query.get('search') }}" style="border: none; border-bottom: 2px solid rgba(255,255,255,0.2) !important; border-radius: 0;">
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-transparent border-0 text-white h-100 px-3"><i class="fa fa-filter d-flex align-items-center"></i></span>
+                            </div>
+                            <select name="sort" class="form-control bg-transparent text-white" style="border: none; border-bottom: 2px solid rgba(255,255,255,0.2) !important; border-radius: 0; appearance: none;">
+                                <option value="" style="color: #000;">Trier par...</option>
+                                <option value="date_debut" style="color: #000;" {% if app.request.query.get('sort') == 'date_debut' %}selected{% endif %}>Date de début</option>
+                                <option value="titre" style="color: #000;" {% if app.request.query.get('sort') == 'titre' %}selected{% endif %}>Titre</option>
+                                <option value="nb_vues" style="color: #000;" {% if app.request.query.get('sort') == 'nb_vues' %}selected{% endif %}>Nombre de Vues</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn w-100 font-weight-bold text-white shadow-sm" style="background: linear-gradient(90deg, #ff3c36, #ff7b00); border-radius: 30px; padding: 12px 20px; transition: transform 0.2s; border: none;">
+                            Rechercher
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            {% for evenement in evenements %}
+                <div class="col-lg-4 col-md-6 mb-5">
+                    <div class="card h-100 text-white shadow-lg border-0 overflow-hidden" 
+                         style="background: rgba(20, 20, 30, 0.8); backdrop-filter: blur(5px); border-radius: 20px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);"
+                         ondblclick="window.location.href='{{ path('app_evenement_show', {'id': evenement.id_event}) }}'"
+                         onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 30px rgba(255,60,54,0.3)';"
+                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.5)';">
+                         
+                        <div class="position-relative" style="height: 250px;">
+                            {% if evenement.image is not empty %}
+                                <img src="{{ asset('uploads/' ~ evenement.image) }}" class="w-100 h-100" alt="{{ evenement.titre }}" style="object-fit: cover;" onerror="this.onerror=null; this.src='{{ asset('uploads/logo.png') }}';">
+                            {% else %}
+                                <div class="d-flex align-items-center justify-content-center w-100 h-100" style="background: linear-gradient(135deg, #2a2a3a, #1a1a2a);">
+                                    <i class="fa fa-image fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="position-absolute d-inline-block m-3 px-3 py-1 text-white" style="top: 0; right: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); font-size: 0.85rem; border-radius: 20px;">
+                                <i class="fa fa-eye text-warning"></i> {{ evenement.nb_vues }}
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="mb-2">
+                                <span class="badge px-3 py-2" style="background: rgba(255, 60, 54, 0.2); color: #ff3c36; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; border-radius: 20px;">
+                                    {{ evenement.type }}
+                                </span>
+                            </div>
+                            <h3 class="card-title font-weight-bold mb-3 text-white" style="font-size: 1.5rem; line-height: 1.3;">{{ evenement.titre }}</h3>
+                            
+                            <div class="d-flex align-items-center text-muted mb-2 text-sm" style="font-size: 0.95rem;">
+                                <i class="fa fa-calendar mr-2" style="width: 20px; color: #ff7b00;"></i> 
+                                {{ evenement.date_debut ? evenement.date_debut|date('d M Y') : 'N/A' }} 
+                                - {{ evenement.date_fin ? evenement.date_fin|date('d M Y') : 'N/A' }}
+                            </div>
+                            <div class="d-flex align-items-center text-muted mb-4 text-sm" style="font-size: 0.95rem;">
+                                <i class="fa fa-map-marker mr-2" style="width: 20px; color: #ff3c36;"></i> {{ evenement.lieu }}
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-3" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                                {% if evenement.spotify_url %}
+                                    <a href="{{ evenement.spotify_url }}" target="_blank" class="btn btn-sm btn-success px-3 shadow" title="Spotify" onclick="event.stopPropagation();" style="border-radius: 20px;">
+                                        <i class="fa fa-spotify mr-1"></i> Écouter
+                                    </a>
+                                {% else %}
+                                    <span></span>
+                                {% endif %}
+                                
+                                {% if role == 'admin' %}
+                                    <a href="{{ path('app_evenement_edit', {'id': evenement.id_event}) }}" class="btn btn-sm btn-outline-light px-3" onclick="event.stopPropagation();" style="border-radius: 20px;">
+                                        <i class="fa fa-pencil mr-1"></i> Éditer
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 py-5 text-center">
+                    <div class="p-5" style="background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 20px;">
+                        <i class="fa fa-frown-o fa-4x text-muted mb-3"></i>
+                        <h3 class="text-white font-weight-light">Aucun événement n'a été trouvé.</h3>
+                        <p class="text-muted">Essayez de modifier vos critères de recherche.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
