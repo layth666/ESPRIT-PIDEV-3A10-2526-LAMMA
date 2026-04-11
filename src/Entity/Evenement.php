@@ -4,286 +4,202 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Doctrine\Common\Collections\Collection;
-use App\Entity\Reservation_maquillage;
-
 #[ORM\Entity]
 class Evenement
 {
-
-    public function __construct()
-    {
-        $this->equipments = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->programmes = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->reservation_maquillages = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private ?int $id_event = null;
+    private int $idEvent;
 
     #[ORM\Column(type: "string", length: 255)]
-    private ?string $titre = null;
+    private string $titre;
 
-    #[ORM\Column(type: "text")]
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(type: "string", length: 100)]
-    private ?string $type = null;
+    private string $type;
 
-    #[ORM\Column(type: "date")]
-    private ?\DateTimeInterface $date_debut = null;
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $dateDebut = null;
 
-    #[ORM\Column(type: "date")]
-    private ?\DateTimeInterface $date_fin = null;
-
-    #[ORM\Column(type: "string", length: 255)]
-    private ?string $lieu = null;
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $dateFin = null;
 
     #[ORM\Column(type: "string", length: 255)]
+    private string $lieu;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\Column(type: "string", length: 500)]
-    private ?string $spotify_url = null;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $spotifyUrl = null;
 
     #[ORM\Column(type: "integer")]
-    private ?int $nb_vues = null;
+    private int $nbVues = 0;
 
-    public function getId_event()
+    // ================= CONSTRUCTEUR
+
+    public function __construct()
     {
-        return $this->id_event;
+        $this->nbVues = 0;
     }
 
-    public function getIdEvent()
-    {
-        return $this->id_event;
+    public function initialiser(
+        string $titre,
+        string $description,
+        string $type,
+        ?\DateTimeInterface $dateDebut,
+        ?\DateTimeInterface $dateFin,
+        string $lieu,
+        ?string $image,
+        ?string $spotifyUrl
+    ): void {
+        $this->titre = $titre;
+        $this->description = $description;
+        $this->type = $type;
+        $this->dateDebut = $dateDebut;
+        $this->dateFin = $dateFin;
+        $this->lieu = $lieu;
+        $this->image = $image;
+        $this->spotifyUrl = $spotifyUrl;
     }
 
-    public function setId_event($id_event)
+    // ================= MÉTHODES UTILES
+
+    public function incrementerVues(): void
     {
-        $this->id_event = $id_event;
+        $this->nbVues++;
     }
 
-    public function setIdEvent($id_event)
+    public function estEnCours(): bool
     {
-        $this->id_event = $id_event;
+        $now = new \DateTime();
+
+        return $this->dateDebut <= $now &&
+            ($this->dateFin === null || $this->dateFin >= $now);
     }
 
-    public function getTitre()
+    public function estTermine(): bool
+    {
+        if (!$this->dateFin) return false;
+
+        return $this->dateFin < new \DateTime();
+    }
+
+    // ================= GETTERS / SETTERS
+
+    public function getIdEvent(): int
+    {
+        return $this->idEvent;
+    }
+
+    public function getId(): int
+    {
+        return $this->idEvent;
+    }
+
+    public function getTitre(): string
     {
         return $this->titre;
     }
 
-    public function setTitre($titre)
+    public function setTitre(string $titre)
     {
         $this->titre = $titre;
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription($description)
+    public function setDescription(?string $description)
     {
         $this->description = $description;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function setType($type)
+    public function setType(string $type)
     {
         $this->type = $type;
     }
 
-    public function getDate_debut()
+    public function getDateDebut(): ?\DateTimeInterface
     {
-        return $this->date_debut;
+        return $this->dateDebut;
     }
 
-    public function getDateDebut()
+    public function setDateDebut(?\DateTimeInterface $dateDebut)
     {
-        return $this->date_debut;
+        $this->dateDebut = $dateDebut;
     }
 
-    public function setDate_debut($date_debut)
+    public function getDateFin(): ?\DateTimeInterface
     {
-        $this->date_debut = $date_debut;
+        return $this->dateFin;
     }
 
-    public function setDateDebut($date_debut)
+    public function setDateFin(?\DateTimeInterface $dateFin)
     {
-        $this->date_debut = $date_debut;
+        $this->dateFin = $dateFin;
     }
 
-    public function getDate_fin()
-    {
-        return $this->date_fin;
-    }
-
-    public function getDateFin()
-    {
-        return $this->date_fin;
-    }
-
-    public function setDate_fin($date_fin)
-    {
-        $this->date_fin = $date_fin;
-    }
-
-    public function setDateFin($date_fin)
-    {
-        $this->date_fin = $date_fin;
-    }
-
-    public function getLieu()
+    public function getLieu(): string
     {
         return $this->lieu;
     }
 
-    public function setLieu($lieu)
+    public function setLieu(string $lieu)
     {
         $this->lieu = $lieu;
     }
 
-    public function getImage()
+    public function getImage(): ?string
     {
         return $this->image;
     }
 
-    public function setImage($image)
+    public function setImage(?string $image)
     {
         $this->image = $image;
     }
 
-    public function getSpotify_url()
+    public function getSpotifyUrl(): ?string
     {
-        return $this->spotify_url;
+        return $this->spotifyUrl;
     }
 
-    public function getSpotifyUrl()
+    public function setSpotifyUrl(?string $spotifyUrl)
     {
-        return $this->spotify_url;
+        $this->spotifyUrl = $spotifyUrl;
     }
 
-    public function setSpotify_url($spotify_url)
+    public function getNbVues(): int
     {
-        $this->spotify_url = $spotify_url;
+        return $this->nbVues;
     }
 
-    public function setSpotifyUrl($spotify_url)
+    public function setNbVues(int $nbVues)
     {
-        $this->spotify_url = $spotify_url;
+        $this->nbVues = $nbVues;
     }
 
-    public function getNb_vues()
+    public function __toString(): string
     {
-        return $this->nb_vues;
-    }
-
-    public function getNbVues()
-    {
-        return $this->nb_vues;
-    }
-
-    public function setNb_vues($nb_vues)
-    {
-        $this->nb_vues = $nb_vues;
-    }
-
-    public function setNbVues($nb_vues)
-    {
-        $this->nb_vues = $nb_vues;
-    }
-
-    #[ORM\OneToMany(mappedBy: "event_id", targetEntity: Equipment::class)]
-    private Collection $equipments;
-
-        public function getEquipments(): Collection
-        {
-            return $this->equipments;
-        }
-    
-        public function addEquipment(Equipment $relatedEntityVariable): self
-        {
-            if (!$this->equipments->contains($relatedEntityVariable)) {
-                $this->equipments[] = $relatedEntityVariable;
-                $relatedEntityVariable->setEvent_id($this);
-            }
-    
-            return $this;
-        }
-    
-        public function removeEquipment(Equipment $relatedEntityVariable): self
-        {
-            if ($this->equipments->removeElement($relatedEntityVariable)) {
-                if ($relatedEntityVariable->getEvent_id() === $this) {
-                    $relatedEntityVariable->setEvent_id(null);
-                }
-            }
-    
-            return $this;
-        }
-
-        public function getProgrammes(): Collection
-        {
-            return $this->programmes;
-        }
-
-        public function addProgramme(Programme $programme): self
-        {
-            if (!$this->programmes->contains($programme)) {
-                $this->programmes[] = $programme;
-                $programme->setEvent_id($this);
-            }
-
-            return $this;
-        }
-
-        public function removeProgramme(Programme $programme): self
-        {
-            if ($this->programmes->removeElement($programme)) {
-                if ($programme->getEvent_id() === $this) {
-                    $programme->setEvent_id(null);
-                }
-            }
-
-            return $this;
-        }
-
-    #[ORM\OneToMany(mappedBy: "event_id", targetEntity: Programme::class)]
-    private Collection $programmes;
-
-    #[ORM\OneToMany(mappedBy: "event_id", targetEntity: Reservation_maquillage::class)]
-    private Collection $reservation_maquillages;
-
-    public function getReservationMaquillages(): Collection
-    {
-        return $this->reservation_maquillages;
-    }
-
-    public function addReservationMaquillage(Reservation_maquillage $reservationMaquillage): self
-    {
-        if (!$this->reservation_maquillages->contains($reservationMaquillage)) {
-            $this->reservation_maquillages[] = $reservationMaquillage;
-            $reservationMaquillage->setEvent_id($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReservationMaquillage(Reservation_maquillage $reservationMaquillage): self
-    {
-        if ($this->reservation_maquillages->removeElement($reservationMaquillage)) {
-            if ($reservationMaquillage->getEvent_id() === $this) {
-                $reservationMaquillage->setEvent_id(null);
-            }
-        }
-
-        return $this;
+        return sprintf(
+            "Evenement{id=%d, titre=%s, type=%s, dateDebut=%s, lieu=%s, vues=%d}",
+            $this->idEvent,
+            $this->titre,
+            $this->type,
+            $this->dateDebut->format('Y-m-d H:i'),
+            $this->lieu,
+            $this->nbVues
+        );
     }
 }

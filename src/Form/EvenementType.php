@@ -4,12 +4,12 @@ namespace App\Form;
 
 use App\Entity\Evenement;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\{
+    TextType, TextareaType, DateTimeType, ChoiceType
+};
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class EvenementType extends AbstractType
 {
@@ -17,73 +17,63 @@ class EvenementType extends AbstractType
     {
         $builder
             ->add('titre', TextType::class, [
-                'label' => 'Titre',
-                'attr' => [
-                    'placeholder' => "Entrez le titre de l'événement",
-                ],
+                'label' => 'Titre de l\'Événement',
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le titre est obligatoire']),
+                    new Assert\Length(['max' => 255, 'maxMessage' => 'Le titre ne peut pas dépasser {{ limit }} caractères'])
+                ]
             ])
-
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
-                'required' => false,
-                'attr' => [
-                    'rows' => 4,
-                    'placeholder' => 'Décrivez votre événement',
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'La description est obligatoire'])
+                ]
+            ])
+            ->add('type', ChoiceType::class, [
+                'label' => 'Type d\'Événement',
+                'choices' => [
+                    'Conférence' => 'Conférence',
+                    'Webinaire' => 'Webinaire',
+                    'Atelier' => 'Atelier',
+                    'Séminaire' => 'Séminaire'
                 ],
+                'placeholder' => '-- Sélectionner un type --',
+                'attr' => ['class' => 'form-select'],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le type d\'événement est obligatoire'])
+                ]
             ])
-
-            ->add('type', TextType::class, [
-                'label' => 'Type',
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'Ex: SOIREE, CAMPING, SEJOUR',
-                ],
-            ])
-
-            ->add('date_debut', DateType::class, [
-                'label' => 'Date début',
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-
-            ->add('date_fin', DateType::class, [
-                'label' => 'Date fin',
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-
             ->add('lieu', TextType::class, [
-                'label' => 'Lieu',
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'Entrez le lieu',
-                ],
+                'label' => 'Lieu / Salle',
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le lieu est obligatoire']),
+                    new Assert\Length(['max' => 255])
+                ]
             ])
-
+            ->add('dateDebut', DateTimeType::class, [
+                'label' => 'Date de Début',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'La date de début est obligatoire']),
+                    new Assert\GreaterThanOrEqual(['value' => 'now', 'message' => 'La date de début doit être dans le futur'])
+                ]
+            ])
+            ->add('dateFin', DateTimeType::class, [
+                'label' => 'Date de Fin',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'La date de fin est obligatoire']),
+                ]
+            ])
             ->add('image', TextType::class, [
-                'label' => "Nom de l'image",
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'Ex: evenement.jpg',
-                ],
-            ])
-
-            ->add('spotify_url', UrlType::class, [
-                'label' => 'Lien Spotify',
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'https://open.spotify.com/...',
-                ],
-            ])
-
-            ->add('recommended_equipments', TextType::class, [
-                'mapped' => false,
-                'label' => 'Équipements recommandés (séparés par des virgules)',
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'Ex: tente, sac de couchage, dress code...',
-                    'id' => 'equipments-input',
-                ],
+                'label' => 'URL de l\'image',
+                'attr' => ['class' => 'form-control'],
+                'required' => false
             ]);
     }
 
