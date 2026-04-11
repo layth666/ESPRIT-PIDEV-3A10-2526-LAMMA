@@ -1,0 +1,32 @@
+{% extends is_granted('ROLE_ADMIN') ? 'admin/sb_admin_base.html.twig' : 'base.html.twig' %}
+
+{% block page_title %}{% block admin_title %}{% endblock %}{% endblock %}
+
+{% block body %}
+    {% if not is_granted('ROLE_ADMIN') %}
+        <div class="bradcam_area" style="padding-top: 60px; padding-bottom: 60px;">
+            <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay">
+                <div class="container">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-xl-9">
+                            <div class="bradcam_text text-center">
+                                <h3 style="color: #fff; font-family: 'Anton', sans-serif; text-transform: uppercase;">
+                                    {{ block('admin_title') }}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="padding-top: 50px; padding-bottom: 80px; min-height: 50vh;">
+            <div class="scout-card p-4">
+                {% block admin_content %}{% endblock %}
+            </div>
+        </div>
+    {% else %}
+        {% block admin_content_wrapper %}
+            {{ block('admin_content') }}
+        {% endblock %}
+    {% endif %}
+{% endblock %}

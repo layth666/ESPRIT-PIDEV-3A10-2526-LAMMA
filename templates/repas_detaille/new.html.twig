@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Repas Détaille - LAMMA{% endblock %}
+{% block page_title %}Ajout de Repas Détaille{% endblock %}
+
+{% block body %}
+<section class="crud-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="fiche-card">
+                    <div class="fiche-header text-uppercase d-flex justify-content-between align-items-center">
+                        <div><i class="fa fa-cutlery mr-2"></i> FICHE D'INFORMATION PLAT DÉTAILLÉ</div>
+                    </div>
+                    
+                    {# Zone Gemini AI #}
+                    <div class="p-3 mb-4" style="background: rgba(139, 92, 246, 0.1); border: 1px dashed var(--scout-purple); border-radius: 12px;">
+                        <h6 style="color: var(--scout-purple); font-weight: 700;"><i class="fa fa-magic mr-2"></i> Auto-complétion par IA (Gemini 1.5)</h6>
+                        <p class="small text-muted mb-2">Uploadez une photo du plat, notre IA va générer automatiquement le nom, la description marketing et estimer le prix !</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="file" id="gemini_image_upload" class="form-control form-control-sm" accept="image/*" style="max-width: 300px;">
+                            <button type="button" id="gemini_analyze_btn" class="btn btn-sm" style="background: var(--scout-purple); color: white; border-radius: 8px;">
+                                <i class="fa fa-braille"></i> Analyser l'image
+                            </button>
+                            <span id="gemini_loading" class="spinner-border spinner-border-sm text-primary d-none" role="status"></span>
+                            <span id="gemini_status" class="small ml-2 font-weight-bold"></span>
+                        </div>
+                    </div>
+
+                    <div class="fiche-body">
+                        {{ form_start(form) }}
+                            <div class="row">
+                                <div class="col-md-6">{{ form_row(form.nom) }}</div>
+                                <div class="col-md-6">{{ form_row(form.prix) }}</div>
+                                <div class="col-12">{{ form_row(form.description) }}</div>
+                                <div class="col-md-4">{{ form_row(form.calories) }}</div>
+                                <div class="col-md-4">{{ form_row(form.typeRepas) }}</div>
+                                <div class="col-md-4">{{ form_row(form.imageUrl) }}</div>
+                                <div class="col-12">{{ form_row(form.notes) }}</div>
+                                
+                                <div class="col-md-3 mt-3">{{ form_row(form.vegetarien) }}</div>
+                                <div class="col-md-3 mt-3">{{ form_row(form.vegan) }}</div>
+                                <div class="col-md-3 mt-3">{{ form_row(form.sansGluten) }}</div>
+                                <div class="col-md-3 mt-3">{{ form_row(form.halal) }}</div>
+                                <div class="col-md-3 mt-3">{{ form_row(form.actif) }}</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center pb-4">
+                            <button class="btn btn-add">Enregistrer Plat</button>
+                            <a href="{{ path('app_repas_detaille_index') }}" class="btn btn-secondary" style="border-radius:25px;padding:10px 30px;">Annuler</a>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.getElementById('gemini_analyze_btn').addEventListener('click', function() {
+    const fileInput = document.getElementById('gemini_image_upload');
+    const statusSpan = document.getElementById('gemini_status');
+    const loadingSpinner = document.getElementById('gemini_loading');
+
+    if (!fileInput.files.length) {
+        statusSpan.innerText = 'Veuillez sélectionner une image.';
+        statusSpan.className = 'small ml-2 text-danger font-weight-bold';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+
+    loadingSpinner.classList.remove('d-none');
+    statusSpan.innerText = 'Analyse en cours par Gemini...';
+    statusSpan.className = 'small ml-2 text-primary font-weight-bold';
+    this.disabled = true;
+
+    fetch('{{ path("app_repas_detaille_analyze_image") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        loadingSpinner.classList.add('d-none');
+        document.getElementById('gemini_analyze_btn').disabled = false;
+
+        if (data.error) {
+            statusSpan.innerText = 'Erreur: ' + data.error;
+            statusSpan.className = 'small ml-2 text-danger font-weight-bold';
+        } else {
+            statusSpan.innerText = '✨ Analyse réussie ! Formulaire rempli.';
+            statusSpan.className = 'small ml-2 text-success font-weight-bold';
+            
+            // Hydratation du formulaire
+            if(data.nom) document.getElementById('repas_detaille_nom').value = data.nom;
+            if(data.description) document.getElementById('repas_detaille_description').value = data.description;
+            if(data.prix) document.getElementById('repas_detaille_prix').value = data.prix;
+            
+            // Injecter les tags dans les notes s'ils existent
+            if(data.tags && data.tags.length > 0) {
+                let currentNotes = document.getElementById('repas_detaille_notes').value;
+                document.getElementById('repas_detaille_notes').value = currentNotes + (currentNotes ? '\n\n' : '') + 'Tags IA: ' + data.tags.join(', ');
+            }
+        }
+    })
+    .catch(error => {
+        loadingSpinner.classList.add('d-none');
+        document.getElementById('gemini_analyze_btn').disabled = false;
+        statusSpan.innerText = 'Erreur réseau.';
+        statusSpan.className = 'small ml-2 text-danger font-weight-bold';
+    });
+});
+</script>
+{% endblock %}

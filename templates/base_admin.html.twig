@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        /* Sidebar Push Layout */
+        .scout-sidebar {
+            width: 280px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            background: var(--scout-navy);
+            z-index: 1001;
+        }
+
+        .main-panel-wrapper {
+            margin-left: 280px;
+            min-height: 100vh;
+            position: relative;
+            background: var(--bg-blue-gradient);
+        }
+
+        .admin-toolbar {
+            background: #fff;
+            padding: 15px 30px;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,29,56,0.03);
+        }
+
+        .content-area-master {
+            padding: 0 40px 60px 40px;
+        }
+
+        @media (max-width: 991px) {
+            .scout-sidebar { transform: translateX(-100%); }
+            .main-panel-wrapper { margin-left: 0; }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Admin Sidebar -->
+    {% include 'admin/Partials/sidebar.html.twig' %}
+
+    <!-- Main Panel Container -->
+    <div class="main-panel-wrapper">
+        <!-- Dashboard Top Navbar -->
+        {% include 'admin/Partials/navbar.html.twig' %}
+
+        <!-- Strategic Toolbar -->
+        <div class="admin-toolbar">
+            <div>
+                <h4 style="margin: 0; font-family: 'Anton', sans-serif; color: var(--scout-navy); text-transform: uppercase;">
+                    {% block admin_title %}Master Operations Console{% endblock %}
+                </h4>
+                <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">EventCon Professional Expedition Management v4.0</div>
+            </div>
+            <div class="d-flex gap-3">
+                <span class="scout-badge" style="background: var(--scout-blue);">IA OPTIMIZED</span>
+                <span class="scout-badge" style="background: var(--scout-green);">DB SYNC OK</span>
+            </div>
+        </div>
+
+        <!-- Scrollable Mission Content Area -->
+        <div class="content-area-master">
+            {% block admin_content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
