@@ -109,7 +109,8 @@
                         <div class="position-relative" style="height: 250px;">
                             {% if evenement.image is not empty %}
                                 <img src="{{ (evenement.image starts with 'http') ? evenement.image : asset('uploads/' ~ evenement.image) }}" class="w-100 h-100" alt="{{ evenement.titre }}" style="object-fit: cover;" onerror="this.onerror=null; this.src='{{ asset('uploads/logo.png') }}';">
-{% else %}
+                            {% else %}
+
                                 <div class="d-flex align-items-center justify-content-center w-100 h-100" style="background: linear-gradient(135deg, #2a2a3a, #1a1a2a);">
                                     <i class="fa fa-image fa-3x text-muted"></i>
                                 </div>
@@ -140,9 +141,6 @@
                                     <i class="fa fa-cloud-sun me-1"></i>
                                     <span class="weather-text-small">...</span>
                                 </div>
-
-
-
                             </div>
 
                             
@@ -209,4 +207,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-{% endblock %}
+{% endblock %}

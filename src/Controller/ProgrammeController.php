@@ -43,6 +43,7 @@ class ProgrammeController extends AbstractController
             $entityManager->flush();
 
             return $this->redirectToRoute('app_evenement_show', ['id' => $programme->getEvent_id()?->getId_event()], Response::HTTP_SEE_OTHER);
+
         }
 
         return $this->render('programme/new.html.twig', [
@@ -110,5 +111,6 @@ class ProgrammeController extends AbstractController
 
         return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }
 

@@ -61,7 +61,7 @@ final class EvenementController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         if ($request->getSession()->get('role') !== 'admin') {
-            throw $this->createAccessDeniedException('AccÃ¨s refusÃ© - RÃ©servÃ© aux administrateurs.');
+            throw $this->createAccessDeniedException('Accès refusé - Réservé aux administrateurs.');
         }
 
         $evenement = new Evenement();
@@ -69,27 +69,30 @@ final class EvenementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($evenement);
-            
-            $equipmentsString = $form->get('recommended_equipments')->getData();
-            if ($equipmentsString) {
-                $equipmentsList = explode(',', $equipmentsString);
-                foreach ($equipmentsList as $equipmentName) {
-                    $equipmentName = trim($equipmentName);
-                    if ($equipmentName !== '') {
-                        $equipment = new Equipment();
-                        $equipment->setLibelle($equipmentName);
-                        $equipment->setEvent_id($evenement);
-                        $entityManager->persist($equipment);
+            try {
+                $entityManager->persist($evenement);
+
+                $equipmentsString = $form->get('recommended_equipments')->getData();
+                if ($equipmentsString) {
+                    $equipmentsList = explode(',', $equipmentsString);
+                    foreach ($equipmentsList as $equipmentName) {
+                        $equipmentName = trim($equipmentName);
+                        if ($equipmentName !== '') {
+                            $equipment = new Equipment();
+                            $equipment->setLibelle($equipmentName);
+                            $equipment->setEvent_id($evenement);
+                            $entityManager->persist($equipment);
+                        }
                     }
                 }
+
+                $entityManager->flush();
+                $this->addFlash('ask_add_prog', $evenement->getId_event());
+                return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la sauvegarde : ' . $e->getMessage());
             }
-            
-            $entityManager->flush();
-
-            $this->addFlash('ask_add_prog', $evenement->getId_event());
-
-            return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin_evenement/new.html.twig', [
@@ -97,6 +100,7 @@ final class EvenementController extends AbstractController
             'form' => $form,
         ]);
     }
+
 
     #[Route('/{id}', name: 'app_evenement_show', methods: ['GET'])]
     public function show(Evenement $evenement, Request $request): Response

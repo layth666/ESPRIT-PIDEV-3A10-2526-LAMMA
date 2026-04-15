@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
 use App\Entity\Evenement;
 
 #[ORM\Entity]
@@ -32,8 +33,9 @@ class Programme
 
     #[ORM\Column(type: "datetime")]
     #[Assert\NotBlank(message: "La date de fin est obligatoire.")]
-    #[Assert\GreaterThanOrEqual(propertyPath: "date_debut", message: "La date de fin doit être ultérieure à la date de début.")]
+    #[Assert\GreaterThanOrEqual(propertyPath: "date_debut", message: "La date de fin doit être ultérieure ou égale à la date de début.")]
     private ?\DateTimeInterface $date_fin = null;
+
 
     public function getId_prog()
     {

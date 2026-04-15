@@ -7,11 +7,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use App\Entity\Reservation_maquillage;
+use App\Entity\ReservationMaquillage;
+
 use App\Entity\Equipment;
 use App\Entity\Programme;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity]
+#[Vich\Uploadable]
 class Evenement
 {
 
@@ -19,8 +23,12 @@ class Evenement
     {
         $this->equipments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->programmes = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->reservation_maquillages = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->reservationMaquillages = new \Doctrine\Common\Collections\ArrayCollection();
+
         $this->nb_vues = 0;
+        $this->propose_makeup = false;
+
+
     }
 
     #[ORM\Id]
@@ -55,13 +63,20 @@ class Evenement
     #[Assert\NotBlank(message: "Le lieu est obligatoire.")]
     private ?string $lieu = null;
 
-    #[ORM\Column(type: "string", length: 1000)]
+    #[ORM\Column(type: "string", length: 1000, nullable: true)]
     private ?string $image = null;
 
+    #[Vich\UploadableField(mapping: 'evenements', fileNameProperty: 'image')]
+    private ?File $imageFile = null;
 
-    #[ORM\Column(type: "string", length: 500)]
-    #[Assert\Url(message: "L'URL Spotify n'est pas valide.")]
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+
+    #[ORM\Column(type: "string", length: 500, nullable: true)]
     private ?string $spotify_url = null;
+
+
 
     #[ORM\Column(type: "boolean", nullable: true, options: ["default" => false])]
     private ?bool $propose_makeup = false;
@@ -179,6 +194,32 @@ class Evenement
         $this->image = $image;
     }
 
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // Requis pour forcer Doctrine à mettre à jour l'entité
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
     public function getSpotify_url()
     {
         return $this->spotify_url;
@@ -289,32 +330,36 @@ class Evenement
     #[ORM\OneToMany(mappedBy: "event_id", targetEntity: Programme::class)]
     private Collection $programmes;
 
-    #[ORM\OneToMany(mappedBy: "event_id", targetEntity: Reservation_maquillage::class)]
-    private Collection $reservation_maquillages;
+    #[ORM\OneToMany(mappedBy: "event", targetEntity: ReservationMaquillage::class)]
+    private Collection $reservationMaquillages;
+
+
 
     public function getReservationMaquillages(): Collection
     {
-        return $this->reservation_maquillages;
+        return $this->reservationMaquillages;
     }
 
-    public function addReservationMaquillage(Reservation_maquillage $reservationMaquillage): self
+    public function addReservationMaquillage(ReservationMaquillage $reservationMaquillage): self
     {
-        if (!$this->reservation_maquillages->contains($reservationMaquillage)) {
-            $this->reservation_maquillages[] = $reservationMaquillage;
-            $reservationMaquillage->setEvent_id($this);
+        if (!$this->reservationMaquillages->contains($reservationMaquillage)) {
+            $this->reservationMaquillages[] = $reservationMaquillage;
+            $reservationMaquillage->setEvent($this);
         }
 
         return $this;
     }
 
-    public function removeReservationMaquillage(Reservation_maquillage $reservationMaquillage): self
+    public function removeReservationMaquillage(ReservationMaquillage $reservationMaquillage): self
     {
-        if ($this->reservation_maquillages->removeElement($reservationMaquillage)) {
-            if ($reservationMaquillage->getEvent_id() === $this) {
-                $reservationMaquillage->setEvent_id(null);
+        if ($this->reservationMaquillages->removeElement($reservationMaquillage)) {
+            if ($reservationMaquillage->getEvent() === $this) {
+                $reservationMaquillage->setEvent(null);
             }
         }
 
         return $this;
     }
+
+
 }

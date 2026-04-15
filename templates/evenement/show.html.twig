@@ -15,6 +15,7 @@
                    target="_blank" class="btn btn-info text-white me-2 rounded-0 border-0">
                    <i class="fa fa-calendar-plus"></i> Google Agenda
                 </a>
+
                 <a href="{{ path('app_evenement_index') }}" class="btn btn-outline-light me-2 rounded-0 border-2"><i class="fa fa-arrow-left"></i> Retour</a>
                 {% if role == 'admin' %}
                     <a href="{{ path('app_evenement_edit', {'id': evenement.id_event}) }}" class="btn text-white rounded-0" style="background-color: #ff3c36; border: none;"><i class="fa fa-pencil"></i> Modifier</a>
@@ -27,6 +28,7 @@
             <div class="col-md-5">
                 {% if evenement.image is not empty %}
                     <img src="{{ (evenement.image starts with 'http') ? evenement.image : asset('uploads/' ~ evenement.image) }}" class="w-100 h-100" alt="{{ evenement.titre }}" style="object-fit: cover; min-height: 400px;" onerror="this.onerror=null; this.src='{{ asset('uploads/logo.png') }}';">
+
                 {% else %}
                     <div class="d-flex align-items-center justify-content-center h-100 text-secondary" style="min-height: 400px;">
                         Aucune image
@@ -190,4 +192,5 @@ document.addEventListener("DOMContentLoaded", function() {
       });
 });
 </script>
+
 {% endblock %}

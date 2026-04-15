@@ -30,6 +30,7 @@ class GeminiService
         $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 
+
         try {
             $response = $this->httpClient->request('POST', $url . '?key=' . $this->apiKey, [
                 'verify_peer' => false,
@@ -86,8 +87,9 @@ class GeminiService
 
             $statusCode = $response->getStatusCode();
             if ($statusCode !== 200) {
-                return ['error' => "HTTP $statusCode"];
+                return ['error' => "HTTP $statusCode: " . $response->getContent(false)];
             }
+
 
             $data = $response->toArray();
             if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
