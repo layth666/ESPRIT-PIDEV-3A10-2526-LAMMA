@@ -50,9 +50,13 @@ class Sponsor
     #[ORM\OneToMany(targetEntity: EventSponsor::class, mappedBy: 'sponsor')]
     private Collection $eventSponsors;
 
+    #[ORM\OneToMany(mappedBy: 'sponsor', targetEntity: SponsorFeedback::class, cascade: ['remove'])]
+    private Collection $feedbacks;
+
     public function __construct()
     {
         $this->eventSponsors = new ArrayCollection();
+        $this->feedbacks = new ArrayCollection();
         $this->dateCreation = new \DateTime();
     }
 
@@ -96,4 +100,53 @@ class Sponsor
         }
         return $this;
     }
+
+    public function addFeedback(SponsorFeedback $feedback): static
+{
+    if (!$this->feedbacks->contains($feedback)) {
+        $this->feedbacks->add($feedback);
+        $feedback->setSponsor($this);
+    }
+    return $this;
+}
+ 
+public function removeFeedback(SponsorFeedback $feedback): static
+{
+    if ($this->feedbacks->removeElement($feedback)) {
+        if ($feedback->getSponsor() === $this) {
+            $feedback->setSponsor(null);
+        }
+    }
+    return $this;
+}
+
+#[ORM\Column(type: 'boolean')]
+private bool $emailVerified = false;
+
+#[ORM\Column(length: 100, nullable: true)]
+private ?string $verificationToken = null;
+
+// Getters & Setters
+public function isEmailVerified(): bool 
+{ 
+    return $this->emailVerified; 
+}
+
+public function setEmailVerified(bool $emailVerified): static 
+{ 
+    $this->emailVerified = $emailVerified; 
+    return $this; 
+}
+
+public function getVerificationToken(): ?string 
+{ 
+    return $this->verificationToken; 
+}
+
+public function setVerificationToken(?string $verificationToken): static 
+{ 
+    $this->verificationToken = $verificationToken; 
+    return $this; 
+}
+
 }

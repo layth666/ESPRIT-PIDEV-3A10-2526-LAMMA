@@ -1,0 +1,269 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Sponsor Feedbacks & Reports{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-comments"></i> Sponsor Feedbacks & Reports
+        </h1>
+        <span class="badge badge-secondary" style="font-size:14px;">
+            Total: <strong id="total-count">{{ entries|length }}</strong>
+        </span>
+    </div>
+
+    <!-- Search + Filter Bar -->
+    <div class="card shadow mb-4">
+        <div class="card-body py-3">
+            <div class="row align-items-center">
+                <div class="col-md-4 mb-2 mb-md-0">
+                    <input type="text" id="search-input"
+                           placeholder="🔍 Rechercher par nom, email, sponsor..."
+                           class="form-control"
+                           style="border-radius:20px; padding-left:15px;">
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <select id="type-filter" class="form-control" style="border-radius:20px;">
+                        <option value="">Tous les types</option>
+                        <option value="feedback">💬 Feedback</option>
+                        <option value="report">🚨 Report</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <select id="sponsor-filter" class="form-control" style="border-radius:20px;">
+                        <option value="">Tous les sponsors</option>
+                        {% set seen = [] %}
+                        {% for entry in entries %}
+                            {% if entry.sponsor.nom not in seen %}
+                                <option value="{{ entry.sponsor.nom }}">{{ entry.sponsor.nom }}</option>
+                                {% set seen = seen|merge([entry.sponsor.nom]) %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button onclick="resetFilters()"
+                            class="btn btn-outline-secondary btn-block"
+                            style="border-radius:20px;">
+                        Réinitialiser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="feedback-table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="sortable" data-col="0" style="cursor:pointer; user-select:none;">
+                                # <span class="sort-icon">↕</span>
+                            </th>
+                            <th class="sortable" data-col="1" style="cursor:pointer; user-select:none;">
+                                Type <span class="sort-icon">↕</span>
+                            </th>
+                            <th class="sortable" data-col="2" style="cursor:pointer; user-select:none;">
+                                Sponsor <span class="sort-icon">↕</span>
+                            </th>
+                            <th class="sortable" data-col="3" style="cursor:pointer; user-select:none;">
+                                Nom <span class="sort-icon">↕</span>
+                            </th>
+                            <th class="sortable" data-col="4" style="cursor:pointer; user-select:none;">
+                                Email <span class="sort-icon">↕</span>
+                            </th>
+                            <th>Contenu</th>
+                            <th class="sortable" data-col="6" style="cursor:pointer; user-select:none;">
+                                Date <span class="sort-icon">↕</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        {% if entries|length == 0 %}
+                        <tr id="empty-row">
+                            <td colspan="7" class="text-center text-muted py-4">
+                                Aucun feedback ou report pour le moment.
+                            </td>
+                        </tr>
+                        {% else %}
+                            {% for entry in entries %}
+                            <tr class="data-row"
+                                data-type="{{ entry.type }}"
+                                data-sponsor="{{ entry.sponsor.nom|lower }}"
+                                data-nom="{{ entry.nom|lower }}"
+                                data-email="{{ entry.email|lower }}"
+                                data-contenu="{{ entry.contenu|lower }}">
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    {% if entry.type == 'feedback' %}
+                                        <span class="badge badge-success" style="font-size:13px; padding:6px 12px;">
+                                            💬 Feedback
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-danger" style="font-size:13px; padding:6px 12px;">
+                                            🚨 Report
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td><strong>{{ entry.sponsor.nom }}</strong></td>
+                                <td>{{ entry.nom }}</td>
+                                <td>{{ entry.email }}</td>
+                                <td>
+                                    <span title="{{ entry.contenu }}">
+                                        {{ entry.contenu|length > 80 ? entry.contenu|slice(0, 80) ~ '...' : entry.contenu }}
+                                    </span>
+                                </td>
+                                <td>{{ entry.createdAt|date('d/m/Y H:i') }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+
+                <div id="no-results" style="display:none;" class="text-center text-muted py-4">
+                    <i class="fas fa-search" style="font-size:30px; margin-bottom:10px;"></i>
+                    <p>Aucun résultat trouvé pour votre recherche.</p>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <small class="text-muted">
+                    Affichage de <strong id="visible-count">{{ entries|length }}</strong>
+                    sur <strong>{{ entries|length }}</strong> entrées
+                </small>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .sortable:hover { background-color: #2c3e50 !important; }
+    .sortable.asc .sort-icon::after  { content: ' ▲'; }
+    .sortable.desc .sort-icon::after { content: ' ▼'; }
+    .sort-icon { font-size: 11px; color: #aaa; }
+    tr.data-row:hover { background-color: #f8f9fc; }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    var searchInput   = document.getElementById('search-input');
+    var typeFilter    = document.getElementById('type-filter');
+    var sponsorFilter = document.getElementById('sponsor-filter');
+    var visibleCount  = document.getElementById('visible-count');
+    var totalCount    = document.getElementById('total-count');
+    var noResults     = document.getElementById('no-results');
+    var sortState     = { col: -1, dir: 'asc' };
+
+    function filterTable() {
+        var search  = searchInput.value.toLowerCase().trim();
+        var type    = typeFilter.value.toLowerCase();
+        var sponsor = sponsorFilter.value.toLowerCase();
+        var rows    = document.querySelectorAll('tr.data-row');
+        var visible = 0;
+
+        rows.forEach(function (row) {
+            var matchSearch = !search ||
+                row.dataset.sponsor.includes(search) ||
+                row.dataset.nom.includes(search) ||
+                row.dataset.email.includes(search) ||
+                row.dataset.contenu.includes(search);
+
+            var matchType    = !type    || row.dataset.type === type;
+            var matchSponsor = !sponsor || row.dataset.sponsor === sponsor;
+
+            if (matchSearch && matchType && matchSponsor) {
+                row.style.display = '';
+                visible++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        visibleCount.textContent = visible;
+        noResults.style.display  = visible === 0 ? 'block' : 'none';
+
+        var idx = 1;
+        rows.forEach(function (row) {
+            if (row.style.display !== 'none') {
+                row.cells[0].textContent = idx++;
+            }
+        });
+    }
+
+    searchInput.addEventListener('keyup', filterTable);
+    typeFilter.addEventListener('change', filterTable);
+    sponsorFilter.addEventListener('change', filterTable);
+
+    document.querySelectorAll('.sortable').forEach(function (th) {
+        th.addEventListener('click', function () {
+            var col = parseInt(this.dataset.col);
+            var dir = (sortState.col === col && sortState.dir === 'asc') ? 'desc' : 'asc';
+            sortState = { col: col, dir: dir };
+
+            document.querySelectorAll('.sortable').forEach(function (h) {
+                h.classList.remove('asc', 'desc');
+                h.querySelector('.sort-icon').textContent = '↕';
+            });
+            this.classList.add(dir);
+
+            var tbody = document.getElementById('table-body');
+            var rows  = Array.from(tbody.querySelectorAll('tr.data-row'));
+
+            rows.sort(function (a, b) {
+                var aVal = a.cells[col] ? a.cells[col].textContent.trim().toLowerCase() : '';
+                var bVal = b.cells[col] ? b.cells[col].textContent.trim().toLowerCase() : '';
+
+                if (col === 6) {
+                    var parseDate = function(s) {
+                        var p = s.split(' ');
+                        var d = p[0].split('/');
+                        return new Date(d[2], d[1]-1, d[0],
+                            p[1] ? p[1].split(':')[0] : 0,
+                            p[1] ? p[1].split(':')[1] : 0);
+                    };
+                    aVal = parseDate(aVal);
+                    bVal = parseDate(bVal);
+                    return dir === 'asc' ? aVal - bVal : bVal - aVal;
+                }
+
+                if (aVal < bVal) return dir === 'asc' ? -1 : 1;
+                if (aVal > bVal) return dir === 'asc' ?  1 : -1;
+                return 0;
+            });
+
+            rows.forEach(function (row) { tbody.appendChild(row); });
+            filterTable();
+        });
+    });
+
+    totalCount.textContent   = document.querySelectorAll('tr.data-row').length;
+    visibleCount.textContent = document.querySelectorAll('tr.data-row').length;
+});
+
+function resetFilters() {
+    document.getElementById('search-input').value   = '';
+    document.getElementById('type-filter').value    = '';
+    document.getElementById('sponsor-filter').value = '';
+    document.querySelectorAll('tr.data-row').forEach(function (r) {
+        r.style.display = '';
+    });
+    document.getElementById('no-results').style.display = 'none';
+    var idx = 1;
+    document.querySelectorAll('tr.data-row').forEach(function (r) {
+        r.cells[0].textContent = idx++;
+    });
+    var total = document.querySelectorAll('tr.data-row').length;
+    document.getElementById('visible-count').textContent = total;
+    document.getElementById('total-count').textContent   = total;
+}
+</script>
+{% endblock %}

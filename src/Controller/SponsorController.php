@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use App\Service\SponsorMailerService; 
 
 #[Route('/sponsor')]
 final class SponsorController extends AbstractController
@@ -46,35 +47,45 @@ final class SponsorController extends AbstractController
     }
 
     #[Route('/new', name: 'app_sponsor_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger,
+        SponsorMailerService $mailerService
+    ): Response {
         $sponsor = new Sponsor();
-        $form = $this->createForm(SponsorType::class, $sponsor);
+        $form    = $this->createForm(SponsorType::class, $sponsor);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Téléphone
             $numLocal = $form->get('numLocal')->getData();
             $sponsor->setTelephone('+216' . $numLocal);
             $sponsor->setDateCreation(new \DateTime());
 
-            // Logo upload
             $logoFile = $form->get('logoFile')->getData();
             if ($logoFile) {
                 $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
-
-                $logoFile->move(
-                    $this->getParameter('logos_directory'),
-                    $newFilename
-                );
-
+                $safeFilename     = $slugger->slug($originalFilename);
+                $newFilename      = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+                $logoFile->move($this->getParameter('logos_directory'), $newFilename);
                 $sponsor->setLogo($newFilename);
             }
 
+            // Générer un token unique
+            $token = bin2hex(random_bytes(32));
+            $sponsor->setVerificationToken($token);
+            $sponsor->setStatut(false); // Inactif jusqu'à vérification
+            $sponsor->setEmailVerified(false);
+
             $entityManager->persist($sponsor);
             $entityManager->flush();
+
+            // Envoyer l'email
+            $mailerService->sendVerificationEmail($sponsor);
+
+            $this->addFlash('success', 
+                '✅ Sponsor créé ! Un email de vérification a été envoyé à ' . $sponsor->getEmail()
+            );
 
             return $this->redirectToRoute('app_sponsor_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -94,32 +105,51 @@ final class SponsorController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_sponsor_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Sponsor $sponsor, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
-    {
+    public function edit(
+        Request $request,
+        Sponsor $sponsor,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger,
+        SponsorMailerService $mailerService
+    ): Response {
+        $originalEmail = $sponsor->getEmail();
         $form = $this->createForm(SponsorType::class, $sponsor);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Téléphone
             $numLocal = $form->get('numLocal')->getData();
             $sponsor->setTelephone('+216' . $numLocal);
 
-            // Logo upload
             $logoFile = $form->get('logoFile')->getData();
             if ($logoFile) {
                 $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
-
-                $logoFile->move(
-                    $this->getParameter('logos_directory'),
-                    $newFilename
-                );
-
+                $safeFilename     = $slugger->slug($originalFilename);
+                $newFilename      = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+                $logoFile->move($this->getParameter('logos_directory'), $newFilename);
                 $sponsor->setLogo($newFilename);
             }
 
+            $emailChanged = $sponsor->getEmail() !== $originalEmail;
+            if ($emailChanged) {
+                // Générer un token unique
+                $token = bin2hex(random_bytes(32));
+                $sponsor->setVerificationToken($token);
+                $sponsor->setStatut(false); // Inactif jusqu'à vérification
+                $sponsor->setEmailVerified(false);
+            }
+
             $entityManager->flush();
+
+            if ($emailChanged) {
+                // Envoyer l'email
+                $mailerService->sendVerificationEmail($sponsor);
+
+                $this->addFlash('success', 
+                    '✅ Sponsor modifié ! Un email de vérification a été envoyé à ' . $sponsor->getEmail()
+                );
+            } else {
+                $this->addFlash('success', '✅ Sponsor modifié avec succès !');
+            }
 
             return $this->redirectToRoute('app_sponsor_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -133,11 +163,35 @@ final class SponsorController extends AbstractController
     #[Route('/{id}', name: 'app_sponsor_delete', methods: ['POST'])]
     public function delete(Request $request, Sponsor $sponsor, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sponsor->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $sponsor->getId(), $request->request->get('_token'))) {
             $entityManager->remove($sponsor);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_sponsor_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/verify/{token}', name: 'sponsor_verify_email', methods: ['GET'])]
+public function verifyEmail(
+    string $token,
+    SponsorRepository $sponsorRepository,
+    EntityManagerInterface $entityManager
+): Response {
+    $sponsor = $sponsorRepository->findOneBy(['verificationToken' => $token]);
+
+    if (!$sponsor) {
+        $this->addFlash('danger', '❌ Lien de vérification invalide ou expiré.');
+        return $this->redirectToRoute('front_home');
+    }
+
+    // Activer le sponsor
+    $sponsor->setStatut(true);
+    $sponsor->setEmailVerified(true);
+    $sponsor->setVerificationToken(null); // Invalider le token
+    $entityManager->flush();
+
+    return $this->render('sponsor/email_verified.html.twig', [
+        'sponsor' => $sponsor,
+    ]);
+}
 }

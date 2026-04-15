@@ -1,0 +1,148 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}LAMMA Events{% endblock %}</title>
+    <meta name="description" content="{% block description %}{% endblock %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('front/img/favicon.png') }}">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ asset('front/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/gijgo.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/nice-select.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/flaticon.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/slicknav.css') }}">
+    <link rel="stylesheet" href="{{ asset('front/css/style.css') }}">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- header-start -->
+    <header>
+        <div class="header-area">
+            <div id="sticky-header" class="main-header-area">
+                <div class="container">
+                    <div class="header_bottom_border">
+                        <div class="row align-items-center">
+                            <div class="col-xl-3 col-lg-3">
+                                <div class="logo">
+                                    <a href="{{ path('front_home') }}">
+                                        <img src="{{ asset('front/img/logo.png') }}" alt="LAMMA Events">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6">
+                                <div class="main-menu d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">
+                                            <li><a href="{{ path('front_home') }}">Home</a></li>
+                                            <li><a href="{{ path('front_performer') }}">Performer</a></li>
+                                            <li><a href="#">Pages <i class="ti-angle-down"></i></a>
+                                                <ul class="submenu">
+                                                    <li><a href="{{ path('front_about') }}">About</a></li>
+                                                    <li><a href="{{ path('front_program') }}">Program</a></li>
+                                                    <li><a href="{{ path('front_venue') }}">Venue</a></li>
+                                                </ul>
+                                            </li>
+                                            <li><a href="#">Blog <i class="ti-angle-down"></i></a>
+                                                <ul class="submenu">
+                                                    <li><a href="{{ path('front_blog') }}">Blog</a></li>
+                                                    <li><a href="{{ path('front_single_blog') }}">Single Blog</a></li>
+                                                </ul>
+                                            </li>
+                                            <li><a href="{{ path('front_contact') }}">Contact</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 d-none d-lg-block">
+                                <div class="buy_tkt">
+                                    <div class="book_btn d-none d-lg-block">
+                                        <a href="#">Buy Tickets</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- header-end -->
+
+    {% block body %}{% endblock %}
+
+    <!-- footer_start -->
+    <footer class="footer">
+        <div class="footer_top">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 col-md-8">
+                        <div class="footer_widget">
+                            <div class="address_details text-center">
+                                <h4 class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s">12 Feb, 2020</h4>
+                                <h3 class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".4s">Green Avenue, New York</h3>
+                                <p class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".5s">The event regularly attracts a diverse range of attendees from around the world.</p>
+                                <a href="#" class="boxed-btn3 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s">Buy Tickets</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="copy-right_text">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <p class="copy_right text-center wow fadeInDown" data-wow-duration="1s" data-wow-delay=".5s">
+                            Copyright &copy; {{ "now"|date("Y") }} All rights reserved | LAMMA Events
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- footer_end -->
+
+    <!-- JS -->
+    <script src="{{ asset('front/js/vendor/modernizr-3.5.0.min.js') }}"></script>
+    <script src="{{ asset('front/js/vendor/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('front/js/popper.min.js') }}"></script>
+    <script src="{{ asset('front/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('front/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('front/js/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('front/js/ajax-form.js') }}"></script>
+    <script src="{{ asset('front/js/waypoints.min.js') }}"></script>
+    <script src="{{ asset('front/js/jquery.counterup.min.js') }}"></script>
+    <script src="{{ asset('front/js/imagesloaded.pkgd.min.js') }}"></script>
+    <script src="{{ asset('front/js/scrollIt.js') }}"></script>
+    <script src="{{ asset('front/js/jquery.scrollUp.min.js') }}"></script>
+    <script src="{{ asset('front/js/wow.min.js') }}"></script>
+    <script src="{{ asset('front/js/gijgo.min.js') }}"></script>
+    <script src="{{ asset('front/js/nice-select.min.js') }}"></script>
+    <script src="{{ asset('front/js/jquery.slicknav.min.js') }}"></script>
+    <script src="{{ asset('front/js/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('front/js/tilt.jquery.js') }}"></script>
+    <script src="{{ asset('front/js/plugins.js') }}"></script>
+    <script src="{{ asset('front/js/contact.js') }}"></script>
+    <script src="{{ asset('front/js/jquery.ajaxchimp.min.js') }}"></script>
+    <script src="{{ asset('front/js/main.js') }}"></script>
+
+    {% block javascripts %}{% endblock %}
+
+</body>
+</html>

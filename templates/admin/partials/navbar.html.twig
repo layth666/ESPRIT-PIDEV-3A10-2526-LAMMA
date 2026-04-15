@@ -2,9 +2,30 @@
     <!-- Navbar Brand -->
     <a class="navbar-brand ps-3" href="{{ path('app_admin') }}">LAMMA Admin</a>
     <!-- Sidebar Toggle -->
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!">
+    <button type="button" class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle">
         <i class="fas fa-bars"></i>
     </button>
+    <script>
+        (function () {
+            function initSidebarToggle() {
+                var sidebarToggle = document.getElementById('sidebarToggle');
+                if (!sidebarToggle) {
+                    return;
+                }
+                sidebarToggle.type = 'button';
+                sidebarToggle.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+                });
+                if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
+                    document.body.classList.add('sb-sidenav-toggled');
+                }
+            }
+            document.addEventListener('DOMContentLoaded', initSidebarToggle);
+            document.addEventListener('turbo:load', initSidebarToggle);
+        })();
+    </script>
     <!-- Navbar Search -->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
           action="{{ path('app_sponsor_index') }}" method="GET">
