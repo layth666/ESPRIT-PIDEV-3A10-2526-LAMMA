@@ -10,3 +10,7 @@
 /.env/
 /.env
 ###< symfony/framework-bundle ###
+
+models.json
+/scratch/
+

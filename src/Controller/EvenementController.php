@@ -21,7 +21,7 @@ final class EvenementController extends AbstractController
     }
 
     #[Route(name: 'app_evenement_index', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, \Knp\Component\Pager\PaginatorInterface $paginator): Response
     {
         $search = $request->query->get('search');
         $sort = $request->query->get('sort');
@@ -41,18 +41,22 @@ final class EvenementController extends AbstractController
             }
         }
 
-        $evenements = $qb->getQuery()->getResult();
+        $pagination = $paginator->paginate(
+            $qb->getQuery(),
+            $request->query->getInt('page', 1),
+            6
+        );
         $role = $request->getSession()->get('role', 'user');
 
         if ($role === 'admin') {
             return $this->render('admin_evenement/index.html.twig', [
-                'evenements' => $evenements,
+                'evenements' => $pagination,
                 'role' => $role,
             ]);
         }
 
         return $this->render('evenement/index.html.twig', [
-            'evenements' => $evenements,
+            'evenements' => $pagination,
             'role' => $role,
         ]);
     }
@@ -92,6 +96,10 @@ final class EvenementController extends AbstractController
 
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Erreur lors de la sauvegarde : ' . $e->getMessage());
+            }
+        } elseif ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors(true) as $error) {
+                $this->addFlash('error', 'Erreur de validation : ' . $error->getMessage());
             }
         }
 

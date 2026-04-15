@@ -63,7 +63,7 @@ class Evenement
     #[Assert\NotBlank(message: "Le lieu est obligatoire.")]
     private ?string $lieu = null;
 
-    #[ORM\Column(type: "string", length: 1000, nullable: true)]
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $image = null;
 
     #[Vich\UploadableField(mapping: 'evenements', fileNameProperty: 'image')]
