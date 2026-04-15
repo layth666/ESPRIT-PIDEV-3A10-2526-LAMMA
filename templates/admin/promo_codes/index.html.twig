@@ -6,40 +6,43 @@
 {% block admin_content %}
 <style>
     :root {
-        --scout-navy: #1a1f2c;
-        --scout-blue: #2d3648;
-        --scout-orange: #ff7a1a;
-        --scout-orange-hover: #e66a15;
-        --scout-red: #ff3e3e;
+        --scout-dark: #0f172a;
+        --scout-card: #1e293b;
+        --scout-orange: #f97316;
+        --scout-orange-hover: #ea580c;
+        --scout-red: #ef4444;
         --scout-glass: rgba(255, 255, 255, 0.05);
+        --scout-border: rgba(255, 255, 255, 0.1);
+        --scout-text-muted: #94a3b8;
     }
 
-    .promo-container {
+    .promo-dashboard {
+        background: var(--scout-dark);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .promo-layout {
         display: flex;
-        gap: 20px;
-        height: calc(100vh - 200px);
-        background: var(--scout-navy);
-        padding: 20px;
-        border-radius: 15px;
+        gap: 30px;
+        min-height: 600px;
     }
 
+    /* List Panel */
     .promo-list-panel {
         flex: 2;
-        background: var(--scout-blue);
+        background: var(--scout-card);
         border-radius: 12px;
-        overflow-y: auto;
-        border: 1px solid rgba(255,255,255,0.05);
-        padding: 0;
-    }
-
-    .promo-editor-panel {
-        flex: 1;
-        background: var(--scout-blue);
-        border-radius: 12px;
-        padding: 25px;
-        border: 1px solid rgba(255,255,255,0.05);
+        border: 1px solid var(--scout-border);
+        overflow: hidden;
         display: flex;
         flex-direction: column;
+    }
+
+    .table-container {
+        overflow-y: auto;
+        flex-grow: 1;
     }
 
     .scout-table {
@@ -50,188 +53,238 @@
     }
 
     .scout-table th {
-        background: rgba(255,255,255,0.05);
-        padding: 15px;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 15px 20px;
         text-transform: uppercase;
-        font-size: 0.8rem;
-        color: #aab1b7;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--scout-text-muted);
         position: sticky;
         top: 0;
+        z-index: 10;
+        text-align: left;
     }
 
     .scout-table td {
-        padding: 15px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--scout-border);
         font-size: 0.9rem;
     }
 
-    .scout-table tr:hover {
-        background: rgba(255,255,255,0.02);
-        cursor: pointer;
+    .scout-table tr { transition: 0.2s; cursor: pointer; }
+    .scout-table tr:hover { background: rgba(255, 255, 255, 0.03); }
+    .scout-table tr.selected-row { background: rgba(249, 115, 22, 0.1) !important; color: var(--scout-orange); }
+
+    /* Editor Panel */
+    .promo-editor-panel {
+        flex: 1;
+        background: var(--scout-card);
+        border-radius: 12px;
+        padding: 30px;
+        border: 1px solid var(--scout-border);
+        position: sticky;
+        top: 20px;
+        height: fit-content;
     }
 
-    .scout-table tr.active-promo {
-        background: rgba(255, 122, 26, 0.1);
+    .editor-title {
+        font-family: 'Anton', sans-serif;
+        font-size: 1.25rem;
+        color: #fff;
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
-
-    .badge-status {
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.75rem;
-        font-weight: bold;
-    }
-
-    .badge-active { background: #28a745; color: #fff; }
-    .badge-inactive { background: #dc3545; color: #fff; }
 
     .form-scout label {
-        color: #aab1b7;
-        font-size: 0.9rem;
+        color: var(--scout-text-muted);
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
         margin-bottom: 8px;
         display: block;
     }
 
     .form-scout .form-control {
-        background: var(--scout-navy);
-        border: 1px solid rgba(255,255,255,0.1);
+        background: #0f172a;
+        border: 1px solid var(--scout-border);
         color: #fff;
         border-radius: 8px;
-        padding: 12px;
+        padding: 12px 15px;
         margin-bottom: 20px;
+        font-weight: 600;
     }
 
     .form-scout .form-control:focus {
         border-color: var(--scout-orange);
-        box-shadow: none;
+        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
     }
 
-    .btn-save {
+    .form-check {
+        background: #0f172a;
+        padding: 12px 15px 12px 40px;
+        border-radius: 8px;
+        border: 1px solid var(--scout-border);
+        margin-bottom: 25px;
+    }
+
+    .btn-scout-orange {
         background: var(--scout-orange);
         color: #fff;
         border: none;
-        padding: 15px;
+        padding: 14px;
         border-radius: 10px;
-        font-weight: bold;
+        font-weight: 800;
         width: 100%;
-        margin-top: 10px;
-        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
     }
+    .btn-scout-orange:hover { background: var(--scout-orange-hover); transform: translateY(-2px); }
 
-    .btn-new {
-        background: rgba(255,255,255,0.1);
+    .btn-scout-new {
+        background: rgba(255, 255, 255, 0.05);
         color: #fff;
-        border: none;
-        padding: 10px 20px;
+        border: 1px solid var(--scout-border);
+        padding: 10px;
         border-radius: 8px;
-        margin-bottom: 20px;
+        width: 100%;
+        margin-bottom: 25px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
     }
+    .btn-scout-new:hover { background: rgba(255, 255, 255, 0.1); }
 
-    .btn-delete {
+    .btn-scout-delete {
         background: var(--scout-red);
         color: #fff;
         border: none;
-        padding: 12px;
+        padding: 14px;
         border-radius: 10px;
-        font-weight: bold;
+        font-weight: 800;
         width: 100%;
-        margin-top: 20px;
-        opacity: 0.8;
+        text-transform: uppercase;
+        margin-top: 15px;
     }
 
-    .btn-delete:hover {
-        opacity: 1;
-    }
-
-    .usage-bar {
+    /* Progress Bar */
+    .usage-progress {
         height: 6px;
-        background: #333;
+        background: #0f172a;
         border-radius: 3px;
-        margin-top: 5px;
+        margin-top: 8px;
         overflow: hidden;
     }
-
-    .usage-fill {
+    .usage-bar {
         height: 100%;
         background: var(--scout-orange);
+        transition: 0.5s;
     }
+
+    .badge-status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 900;
+        text-transform: uppercase;
+    }
+    .status-true { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .status-false { background: rgba(239, 68, 68, 0.2); color: #f87171; }
 </style>
 
-<div class="row mb-3">
-    <div class="col-6">
-        <a href="{{ path('app_restauration_dashboard') }}" class="btn btn-outline-light btn-sm">
-            <i class="fas fa-arrow-left"></i> Retour au Dashboard
-        </a>
+<div class="row mb-4 align-items-center">
+    <div class="col-8">
+        <h2 style="font-family: 'Anton', sans-serif; color: #fff; margin: 0;">Gestion des Codes Promo</h2>
     </div>
-    <div class="col-6 text-end">
-        <button class="btn btn-outline-light btn-sm" onclick="location.reload()">Actualiser</button>
+    <div class="col-4 text-end">
+        <button class="btn btn-sm" style="background: var(--scout-card); color: #fff; border: 1px solid var(--scout-border);" onclick="location.reload()">
+            <i class="fas fa-sync-alt mr-2"></i> Actualiser
+        </button>
     </div>
 </div>
 
-<div class="promo-container">
-    <!-- List Side -->
-    <div class="promo-list-panel">
-        <table class="scout-table">
-            <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Remise (%)</th>
-                    <th>Expiration</th>
-                    <th>Actif</th>
-                    <th>Usage</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for code in codes %}
-                <tr onclick="window.location.href='?id={{ code.id }}'" class="{{ currentPromo.id == code.id ? 'active-promo' : '' }}">
-                    <td style="font-weight: bold; color: var(--scout-orange);">{{ code.code }}</td>
-                    <td>{{ code.remise }}%</td>
-                    <td>{{ code.dateExpiration|date('Y-m-d') }}</td>
-                    <td>
-                        <span class="badge-status {{ code.isActive ? 'badge-active' : 'badge-inactive' }}">
-                            {{ code.isActive ? 'true' : 'false' }}
-                        </span>
-                    </td>
-                    <td>
-                        {{ code.usageCount }} / {{ code.usageLimit }}
-                        <div class="usage-bar">
-                            {% set pct = (code.usageCount / code.usageLimit * 100)|round %}
-                            <div class="usage-fill" style="width: {{ pct }}%"></div>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Edit Side -->
-    <div class="promo-editor-panel">
-        <h4 style="color: #fff; margin-bottom: 25px;">Édition du Code</h4>
-        
-        <a href="{{ path('app_admin_promo_codes_index') }}" class="btn-new text-center w-100 mb-4">
-            <i class="fas fa-plus"></i> Nouveau Code
-        </a>
-
-        {{ form_start(form, {'attr': {'class': 'form-scout'}}) }}
-            {{ form_row(form.code) }}
-            {{ form_row(form.remise) }}
-            {{ form_row(form.dateExpiration) }}
-            {{ form_row(form.usageLimit) }}
-            
-            <div class="mb-4 d-flex align-items-center gap-3">
-                {{ form_widget(form.isActive) }}
-                {{ form_label(form.isActive) }}
+<div class="promo-dashboard">
+    <div class="promo-layout">
+        <!-- Panel Liste -->
+        <div class="promo-list-panel">
+            <div class="table-container">
+                <table class="scout-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Remise (%)</th>
+                            <th>Expiration</th>
+                            <th>Statut</th>
+                            <th>Usage / Limite</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for code in codes %}
+                        <tr onclick="window.location.href='?id={{ code.id }}'" class="{{ currentPromo.id == code.id ? 'selected-row' : '' }}">
+                            <td style="font-weight: 800; color: var(--scout-orange);">{{ code.code }}</td>
+                            <td>{{ code.discountPercentage }}%</td>
+                            <td>{{ code.expirationDate ? code.expirationDate|date('Y-m-d') : '∞' }}</td>
+                            <td>
+                                {% if not code.active %}
+                                    <span class="badge-status status-false">Inactif</span>
+                                {% elseif code.isExpired %}
+                                    <span class="badge-status" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">EXPIRÉ</span>
+                                {% elseif code.isLimitReached %}
+                                    <span class="badge-status" style="background: rgba(249, 115, 22, 0.2); color: #fb923c;">ÉPUISÉ</span>
+                                {% else %}
+                                    <span class="badge-status status-true">Actif</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-size: 0.8rem; font-weight: 700;">{{ code.currentUsage }} / {{ code.usageLimit }}</span>
+                                </div>
+                                <div class="usage-progress">
+                                    {% set pct = (code.usageLimit > 0) ? (code.currentUsage / code.usageLimit * 100)|round : 0 %}
+                                    <div class="usage-bar" style="width: {{ pct > 100 ? 100 : pct }}%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">Aucun code promo configuré.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <button type="submit" class="btn-save">Enregistrer</button>
-        {{ form_end(form) }}
+        <!-- Panel Éditeur -->
+        <div class="promo-editor-panel">
+            <div class="editor-title">Édition du Code</div>
+            
+            <a href="{{ path('app_admin_promo_codes_index') }}" class="btn btn-scout-new">
+                <i class="fas fa-plus mr-2"></i> Nouveau
+            </a>
 
-        {% if currentPromo.id %}
-            <form method="post" action="{{ path('app_admin_promo_codes_delete', {'id': currentPromo.id}) }}" onsubmit="return confirm('Confirmer la suppression ?');">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ currentPromo.id) }}">
-                <button class="btn-delete">Supprimer</button>
-            </form>
-        {% endif %}
+            {{ form_start(form, {'attr': {'class': 'form-scout'}}) }}
+                {{ form_row(form.code) }}
+                {{ form_row(form.discountPercentage) }}
+                {{ form_row(form.expirationDate) }}
+                {{ form_row(form.usageLimit) }}
+                
+                <div class="form-check mb-4">
+                    {{ form_widget(form.active) }}
+                    {{ form_label(form.active) }}
+                </div>
+
+                <button type="submit" class="btn-scout-orange">Enregistrer</button>
+            {{ form_end(form) }}
+
+            {% if currentPromo.id %}
+                <form method="post" action="{{ path('app_admin_promo_codes_delete', {'id': currentPromo.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce code ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ currentPromo.id) }}">
+                    <button class="btn-scout-delete">Supprimer</button>
+                </form>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

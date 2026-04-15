@@ -146,4 +146,39 @@ class IngredientController extends AbstractController
 
         return new Response(json_encode(['success' => true]), 200, ['Content-Type' => 'application/json']);
     }
+
+    #[Route('/api/analyze-image', name: 'app_ingredient_analyze_image', methods: ['POST'])]
+    public function analyzeImage(Request $request, \App\Service\GeminiMenuAnalyzer $gemini): Response
+    {
+        $file = $request->files->get('image');
+        if (!$file) {
+            return $this->json(['error' => 'Aucune image fournie'], 400);
+        }
+        
+        try {
+            // Extract data using Gemini
+            $data = $gemini->extractMenuData($file);
+            return $this->json($data);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    #[Route('/api/predict-data', name: 'app_ingredient_predict_data', methods: ['POST'])]
+    public function predictData(Request $request, \App\Service\GeminiMenuAnalyzer $gemini): Response
+    {
+        $payload = json_decode($request->getContent(), true);
+        $name = $payload['nom'] ?? '';
+
+        if (empty($name)) {
+            return $this->json(['error' => 'Le nom de l\'ingrédient est requis'], 400);
+        }
+
+        try {
+            $data = $gemini->predictNutritionByName($name);
+            return $this->json($data);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

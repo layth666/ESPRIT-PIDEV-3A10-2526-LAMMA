@@ -49,4 +49,19 @@ class AbonnementRepository
             ->select($alias)
             ->from($this->entityClass, $alias);
     }
+
+    /**
+     * Retourne les revenus cumulés par type d'abonnement pour les abonnements actifs
+     */
+    public function getRevenueStats(): array
+    {
+        return $this->em->createQueryBuilder()
+            ->select('a.type as label, SUM(a.prix) as total')
+            ->from(Abonnement::class, 'a')
+            ->where('a.statut = :statut')
+            ->setParameter('statut', Abonnement::STATUT_ACTIF)
+            ->groupBy('a.type')
+            ->getQuery()
+            ->getResult();
+    }
 }

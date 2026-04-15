@@ -24,6 +24,9 @@ class Ingredient
     #[ORM\Column(type: "integer", nullable: true)]
     private ?int $calories = null;
 
+    #[ORM\Column(type: "integer", nullable: true)]
+    private ?int $proteines = null;
+
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $iconUrl = null;
 
@@ -35,6 +38,10 @@ class Ingredient
 
     #[ORM\Column(type: "boolean")]
     private bool $actif = true;
+
+    #[ORM\ManyToOne(targetEntity: RepasDetaille::class)]
+    #[ORM\JoinColumn(name: "repas_id", referencedColumnName: "id", nullable: true, onDelete: "SET NULL")]
+    private ?RepasDetaille $repas = null;
 
     // ================= ENUM (équivalent Java)
     public const CATEGORIE_BASE = 'BASE';
@@ -66,12 +73,14 @@ class Ingredient
         string $nom,
         string $categorie,
         string $prixSupplement,
-        ?int $calories
+        ?int $calories,
+        ?int $proteines = null
     ): void {
         $this->nom = $nom;
         $this->categorie = $categorie;
         $this->prixSupplement = $prixSupplement;
         $this->calories = $calories;
+        $this->proteines = $proteines;
     }
 
     // ================= LOGIQUE MÉTIER
@@ -133,6 +142,16 @@ class Ingredient
         $this->calories = $calories;
     }
 
+    public function getProteines(): ?int
+    {
+        return $this->proteines;
+    }
+
+    public function setProteines(?int $proteines)
+    {
+        $this->proteines = $proteines;
+    }
+
     public function getIconUrl(): ?string
     {
         return $this->iconUrl;
@@ -171,6 +190,17 @@ class Ingredient
     public function setActif(bool $actif)
     {
         $this->actif = $actif;
+    }
+
+    public function getRepas(): ?RepasDetaille
+    {
+        return $this->repas;
+    }
+
+    public function setRepas(?RepasDetaille $repas): self
+    {
+        $this->repas = $repas;
+        return $this;
     }
 
     // ================= EQUIVALENT equals()

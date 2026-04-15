@@ -21,15 +21,18 @@ class MenuController extends AbstractController
     private MenuRepository $repository;
     private EntityManagerInterface $em;
     private RestaurantRepository $restaurantRepo;
+    private \App\Repository\RepasDetailleRepository $repasRepo;
 
     public function __construct(
         MenuRepository $repository,
         EntityManagerInterface $em,
-        RestaurantRepository $restaurantRepo
+        RestaurantRepository $restaurantRepo,
+        \App\Repository\RepasDetailleRepository $repasRepo
     ) {
         $this->repository     = $repository;
         $this->em             = $em;
         $this->restaurantRepo = $restaurantRepo;
+        $this->repasRepo      = $repasRepo;
     }
 
     // ─── ACTIONS WEB (Twig) ─────────────────────────────────────────────────
@@ -54,6 +57,10 @@ class MenuController extends AbstractController
             // Synchroniser restaurantNom depuis restaurantId
             $this->syncRestaurantNom($menu);
 
+            // Handle dishesIds from custom checkbox list in template
+            $dishes = $request->request->all('dishes') ?? [];
+            $menu->setDishesIds(array_keys($dishes));
+
             $this->em->persist($menu);
             $this->em->flush();
 
@@ -63,6 +70,8 @@ class MenuController extends AbstractController
 
         return $this->render('menu/new.html.twig', [
             'form' => $form->createView(),
+            'allDishes' => $this->repasRepo->findAll(),
+            'restaurants' => $this->restaurantRepo->findAll()
         ]);
     }
 
@@ -95,6 +104,10 @@ class MenuController extends AbstractController
             // Synchroniser restaurantNom depuis restaurantId
             $this->syncRestaurantNom($menu);
 
+            // Handle dishesIds
+            $dishes = $request->request->all('dishes') ?? [];
+            $menu->setDishesIds(array_keys($dishes));
+
             $this->em->flush();
             $this->addFlash('success', 'Menu modifié avec succès !');
             return $this->redirectToRoute('app_menu_index');
@@ -103,6 +116,8 @@ class MenuController extends AbstractController
         return $this->render('menu/edit.html.twig', [
             'form' => $form->createView(),
             'menu' => $menu,
+            'allDishes' => $this->repasRepo->findAll(),
+            'restaurants' => $this->restaurantRepo->findAll()
         ]);
     }
 

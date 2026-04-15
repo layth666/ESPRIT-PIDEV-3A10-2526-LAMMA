@@ -34,6 +34,14 @@ class ParticipationRepository
     }
 
     /**
+     * Retourne les participations correspondant à des critères
+     */
+    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null): array
+    {
+        return $this->em->getRepository($this->entityClass)->findBy($criteria, $orderBy, $limit, $offset);
+    }
+
+    /**
      * Retourne les participations correspondant à un statut donné
      *
      * @param string $statut

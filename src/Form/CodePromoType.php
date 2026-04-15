@@ -31,11 +31,12 @@ class CodePromoType extends AbstractType
                     ])
                 ]
             ])
-            ->add('remise', IntegerType::class, [
+            ->add('discountPercentage', IntegerType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
-                    'max' => 100
+                    'max' => 100,
+                    'placeholder' => '10'
                 ],
                 'label' => 'Remise (%)',
                 'constraints' => [
@@ -47,27 +48,23 @@ class CodePromoType extends AbstractType
                     ])
                 ]
             ])
-            ->add('dateExpiration', DateTimeType::class, [
+            ->add('expirationDate', DateTimeType::class, [
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'label' => 'Date d\'expiration',
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La date d\'expiration est obligatoire']),
-                    new Assert\GreaterThan([
-                        'value' => 'now',
-                        'message' => 'La date d\'expiration doit être dans le futur'
-                    ])
                 ]
             ])
             ->add('usageLimit', IntegerType::class, [
-                'attr' => ['class' => 'form-control', 'min' => 1],
+                'attr' => ['class' => 'form-control', 'min' => 0, 'placeholder' => '100'],
                 'label' => 'Limite d\'usage',
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La limite d\'usage est obligatoire']),
-                    new Assert\Positive(['message' => 'La limite doit être un nombre positif'])
+                    new Assert\PositiveOrZero(['message' => 'La limite doit être un nombre positif ou nul'])
                 ]
             ])
-            ->add('isActive', CheckboxType::class, [
+            ->add('active', CheckboxType::class, [
                 'label' => 'Code Actif',
                 'required' => false,
                 'attr' => ['class' => 'form-check-input']

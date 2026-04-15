@@ -1,0 +1,25 @@
+flasher:
+    default: toastr
+    scripts:
+        - https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js
+        - https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js
+    styles:
+        - https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css
+    auto_translate: false
+    flash_bag:
+        success: ['success']
+        error: ['error', 'danger']
+        warning: ['warning']
+        info: ['info']
+    options:
+        closeButton: true
+        progressBar: true
+        positionClass: toast-top-right
+        showDuration: 300
+        hideDuration: 500
+        timeOut: 4000
+        extendedTimeOut: 1500
+        showEasing: swing
+        hideEasing: linear
+        showMethod: slideDown
+        hideMethod: slideUp
