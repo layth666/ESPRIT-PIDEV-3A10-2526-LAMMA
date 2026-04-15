@@ -1,52 +1,70 @@
 <?php
+
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\RequestStack;
+use App\Repository\RepasDetailleRepository;
 
 class CartService
 {
-    private $requestStack;
+    private RequestStack $requestStack;
+    private RepasDetailleRepository $repasRepository;
+    private \App\Repository\IngredientRepository $ingredientRepository;
+    private \App\Repository\CodePromoRepository $promoRepository;
 
-    public function __construct(RequestStack $requestStack)
-    {
+    public function __construct(
+        RequestStack $requestStack, 
+        RepasDetailleRepository $repasRepository,
+        \App\Repository\IngredientRepository $ingredientRepository,
+        \App\Repository\CodePromoRepository $promoRepository
+    ) {
         $this->requestStack = $requestStack;
+        $this->repasRepository = $repasRepository;
+        $this->ingredientRepository = $ingredientRepository;
+        $this->promoRepository = $promoRepository;
     }
 
-    /**
-     * @param int $id ID de l'article (ex: ID du RepasDetaille ou Menu)
-     * @param float $price Prix unitaire de l'article
-     */
-    public function add(int $id, float $price = 0.0): void
+    public function add(int $id): void
+    {
+        $this->addCustom($id, []);
+    }
+
+    public function addCustom(int $repasId, array $supplements = []): void
     {
         $session = $this->requestStack->getSession();
         $cart = $session->get('cart', []);
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
+        // Sort supplements to ensure consistent hashing regardless of array order
+        ksort($supplements);
+        $hashData = $repasId . '_' . json_encode($supplements);
+        $hash = md5($hashData);
+
+        if (!empty($cart[$hash])) {
+            $cart[$hash]['qty']++;
         } else {
-            $cart[$id] = [
-                'quantity' => 1,
-                'price' => $price
+            $cart[$hash] = [
+                'repasId' => $repasId,
+                'qty' => 1,
+                'supplements' => $supplements
             ];
         }
 
         $session->set('cart', $cart);
     }
 
-    /**
-     * @param int $id
-     * @param bool $completely Si vrai, supprime l'article entièrement, sinon décrémente
-     */
-    public function remove(int $id, bool $completely = false): void
+    public function remove(string $hash): void
     {
         $session = $this->requestStack->getSession();
         $cart = $session->get('cart', []);
 
-        if (isset($cart[$id])) {
-            if ($completely || $cart[$id]['quantity'] <= 1) {
-                unset($cart[$id]);
-            } else {
-                $cart[$id]['quantity']--;
+        // Compatibilité avec l'ancienne méthode où $hash pouvait être un simple ID (int casts to string)
+        if (isset($cart[$hash])) {
+            unset($cart[$hash]);
+        } else {
+            // Check if user passed an ID instead of a hash from old views
+            $idHash = md5($hash . '_' . json_encode([]));
+            if (isset($cart[$idHash])) {
+                unset($cart[$idHash]);
             }
         }
 
@@ -56,39 +74,116 @@ class CartService
     public function getFullCart(): array
     {
         $session = $this->requestStack->getSession();
-        return $session->get('cart', []);
+        $cart = $session->get('cart', []);
+
+        $cartData = [];
+
+        foreach ($cart as $hash => $data) {
+            // Migration douceur des vieux paniers non hashés
+            if (!is_array($data)) {
+                $repasId = $hash;
+                $qty = $data;
+                $supplements = [];
+            } else {
+                $repasId = $data['repasId'];
+                $qty = $data['qty'];
+                $supplements = $data['supplements'];
+            }
+
+            $item = $this->repasRepository->find($repasId);
+
+            if (!$item) {
+                unset($cart[$hash]);
+                $session->set('cart', $cart);
+                continue;
+            }
+
+            // Calcul du prix et récupération des objets Ingredients
+            $totalUnitaire = (float) $item->getPrix();
+            $supplementsObj = [];
+
+            foreach ($supplements as $ingId => $ingQty) {
+                if ($ingQty > 0) {
+                    $ingredient = $this->ingredientRepository->find($ingId);
+                    if ($ingredient) {
+                        $totalUnitaire += ((float) $ingredient->getPrixSupplement()) * $ingQty;
+                        $supplementsObj[] = [
+                            'ingredient' => $ingredient,
+                            'qty' => $ingQty
+                        ];
+                    }
+                }
+            }
+
+            $cartData[] = [
+                'hash' => $hash,
+                'repas' => $item,
+                'quantity' => $qty,
+                'supplements' => $supplementsObj,
+                'prixUnitaireTotal' => $totalUnitaire
+            ];
+        }
+
+        return $cartData;
+    }
+
+    public function getTotal(): float
+    {
+        $total = 0;
+        foreach ($this->getFullCart() as $item) {
+            $total += $item['prixUnitaireTotal'] * $item['quantity'];
+        }
+
+        return $total;
     }
 
     public function clear(): void
     {
         $session = $this->requestStack->getSession();
         $session->remove('cart');
+        $session->remove('applied_promo_id');
     }
 
-    /**
-     * Retourne le total sous forme de chaîne formatée (équivalent exactitude type BigDecimal)
-     */
-    public function getTotal(): string
+    // --- PROMO CODE LOGIC ---
+
+    public function setPromoCode(?\App\Entity\CodePromo $promo): void
     {
-        $total = 0.0;
-        $cart = $this->getFullCart();
-        
-        foreach ($cart as $item) {
-            $total += ((float)$item['price'] * $item['quantity']);
+        $session = $this->requestStack->getSession();
+        if ($promo) {
+            $session->set('applied_promo_id', $promo->getId());
+        } else {
+            $session->remove('applied_promo_id');
         }
-        
-        return number_format($total, 2, '.', '');
     }
 
-    public function countItems(): int
+    public function getAppliedPromo(): ?\App\Entity\CodePromo
     {
-        $count = 0;
-        $cart = $this->getFullCart();
+        $session = $this->requestStack->getSession();
+        $promoId = $session->get('applied_promo_id');
         
-        foreach ($cart as $item) {
-            $count += $item['quantity'];
+        if (!$promoId) return null;
+        
+        $promo = $this->promoRepository->find($promoId);
+        
+        if (!$promo || !$promo->canBeUsed()) {
+            $session->remove('applied_promo_id');
+            return null;
         }
         
-        return $count;
+        return $promo;
+    }
+
+    public function getDiscountAmount(): float
+    {
+        $promo = $this->getAppliedPromo();
+        if (!$promo) return 0.0;
+        
+        $total = $this->getTotal();
+        return $total * ($promo->getDiscountPercentage() / 100);
+    }
+
+    public function getDiscountedTotal(): float
+    {
+        return $this->getTotal() - $this->getDiscountAmount();
     }
 }

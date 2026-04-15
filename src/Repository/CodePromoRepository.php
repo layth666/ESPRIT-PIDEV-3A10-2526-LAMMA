@@ -53,6 +53,11 @@ class CodePromoRepository
         return $this->em->getRepository($this->entityClass)->findBy($criteria);
     }
 
+    public function findOneBy(array $criteria): ?CodePromo
+    {
+        return $this->em->getRepository($this->entityClass)->findOneBy($criteria);
+    }
+
     public function find(int $id): ?CodePromo
     {
         return $this->em->getRepository($this->entityClass)->find($id);

@@ -26,11 +26,21 @@ class RestaurantController extends AbstractController
     }
 
     #[Route('', name: 'app_restaurant_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(\App\Repository\FavoriRepository $favoriRepo): Response
     {
         $restaurants = $this->restaurantRepository->findAll();
+        $user = $this->getUser();
+        $favIds = [];
+        if ($user) {
+            $favs = $favoriRepo->findByUser($user->getId());
+            foreach ($favs as $f) {
+                if ($f->getRestaurant()) $favIds[] = $f->getRestaurant()->getId();
+            }
+        }
+
         return $this->render('restaurant/index.html.twig', [
             'items' => $restaurants,
+            'favorite_ids' => $favIds,
         ]);
     }
 

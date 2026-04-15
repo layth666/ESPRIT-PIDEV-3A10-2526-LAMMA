@@ -1,5 +1,4 @@
 {% extends 'admin/base_admin.html.twig' %}
-{% import '_macros.html.twig' as macros %}
 
 {% block title %}Participations - LAMMA{% endblock %}
 {% block admin_title %}Gestion des Inscriptions{% endblock %}
@@ -18,16 +17,179 @@
         </div>
     </div>
 
-    <div class="scout-card" style="padding: 0;">
-        {% set columns = {
-            'evenementId': 'Événement',
-            'type': 'Type',
-            'statut': 'Statut',
-            'totalParticipants': 'Membres',
-            'montantCalcule': 'Budget',
-            'mealOption': 'Repas'
-        } %}
-        {{ macros.crud_table(items, columns, 'app_participation_show', 'app_participation_show', 'participation', ['type', 'statut']) }}
+    {# ====== SEARCH & FILTER BAR ====== #}
+    <div class="scout-card mb-4" style="padding: 15px; background: rgba(0,0,0,0.2);">
+        <div class="row align-items-center">
+            <div class="col-md-12 mb-3">
+                <span style="color: #3b82f6; font-weight: bold; font-family: 'Anton', sans-serif;"><i class="fa fa-filter"></i> FILTRES ET TRI</span>
+            </div>
+            <div class="col-md-6 d-flex flex-wrap gap-2 mb-2 mb-md-0">
+                <div class="filter-group d-flex align-items-center gap-2 mr-3 mb-2">
+                    <span style="font-size: 0.7rem; color: #aab1b7; font-weight: bold; text-transform: uppercase;">Statut :</span>
+                    <select id="filterStatut" class="form-control" style="background: transparent; border: 1px solid #444; color: white; border-radius: 5px; width: auto; height: 30px; font-size: 0.8rem; padding: 0 10px;">
+                        <option value="ALL" style="color: black;">TOUS</option>
+                        <option value="EN_ATTENTE" style="color: black;">En Attente</option>
+                        <option value="CONFIRME" style="color: black;">Confirmé</option>
+                        <option value="ANNULE" style="color: black;">Annulé</option>
+                    </select>
+                </div>
+                <div class="filter-group d-flex align-items-center gap-2 mr-3 mb-2">
+                    <span style="font-size: 0.7rem; color: #aab1b7; font-weight: bold; text-transform: uppercase;">Type :</span>
+                    <select id="filterType" class="form-control" style="background: transparent; border: 1px solid #444; color: white; border-radius: 5px; width: auto; height: 30px; font-size: 0.8rem; padding: 0 10px;">
+                        <option value="ALL" style="color: black;">TOUS</option>
+                        <option value="SIMPLE" style="color: black;">Simple</option>
+                        <option value="HEBERGEMENT" style="color: black;">Hébergement</option>
+                        <option value="GROUPE" style="color: black;">Groupe</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex gap-2 justify-content-md-end">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher..." style="background: transparent; border: 1px solid #ff005a; color: white; border-radius: 5px; flex: 1;">
+            </div>
+        </div>
+    </div>
+
+    {# ====== PARTICIPATION CARDS GRID ====== #}
+    <div class="row mt-4" id="participationGrid" style="gap: 20px 0;">
+        {% for item in items %}
+            <div class="col-md-6 col-lg-4 d-flex align-items-stretch participation-card-wrap"
+                 data-statut="{{ item.statut }}"
+                 data-type="{{ item.type }}"
+                 data-search="{{ item.evenementId }} {{ item.type }} {{ item.statut }} {{ item.montantCalcule }} {{ item.mealOption }} {{ item.totalParticipants }}">
+                <div class="card w-100" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px); color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+
+                    {# Card Header with status badge #}
+                    <div class="card-body" style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="font-family: 'Anton', sans-serif; color: #3b82f6; margin: 0; text-transform: uppercase; font-size: 1.1rem;">
+                                {{ eventMap[item.evenementId].titre|default('Événement #' ~ item.evenementId) }}
+                            </h4>
+                            <span class="badge" style="
+                                {% if item.statut == 'CONFIRME' %}
+                                    background: linear-gradient(135deg, #10b981, #059669);
+                                {% elseif item.statut == 'ANNULE' %}
+                                    background: linear-gradient(135deg, #ef4444, #dc2626);
+                                {% else %}
+                                    background: linear-gradient(135deg, #f59e0b, #d97706);
+                                {% endif %}
+                                color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px;">
+                                {{ item.statut|replace({'_': ' '}) }}
+                            </span>
+                        </div>
+
+                        {# Card Info Lines #}
+                        <div style="font-size: 0.9rem; line-height: 1.6;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 4px;">
+                                <span style="color: #aab1b7; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Type</span>
+                                <span style="font-weight: bold;">{{ item.type }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 4px;">
+                                <span style="color: #aab1b7; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Participants</span>
+                                <span style="font-weight: bold;">{{ item.totalParticipants }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 4px;">
+                                <span style="color: #aab1b7; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Budget</span>
+                                <span style="font-weight: bold; color: #10b981;">{{ item.montantCalcule }} {{ item.devise }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 4px;">
+                                <span style="color: #aab1b7; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Repas</span>
+                                <span style="font-weight: bold;">{{ item.mealOption ?? '-' }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding-bottom: 4px;">
+                                <span style="color: #aab1b7; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Date</span>
+                                <span style="font-weight: bold; font-size: 0.85rem;">{{ item.dateInscription|date('d/m/Y H:i') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Card Footer with Actions #}
+                    <div class="card-footer" style="background: transparent; border-top: 1px solid rgba(255,255,255,0.1); padding: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
+                        
+                        {# View Details Button #}
+                        <a href="{{ path('app_participation_show', {'id': item.id}) }}" class="btn btn-sm" style="background: rgba(59,130,246,0.1); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); border-radius: 20px; font-size: 10px; padding: 6px 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <i class="fa fa-eye mr-1"></i> Voir Détail
+                        </a>
+
+                        <div class="d-flex gap-2 align-items-center">
+                            {# Admin Quick Actions (Text Buttons) #}
+                            {% if is_granted('ROLE_ADMIN') and item.statut == 'EN_ATTENTE' %}
+                                <a href="{{ path('app_participation_confirmer', {'id': item.id}) }}" class="btn btn-sm" style="background: #10b981; color: white; border-radius: 20px; font-size: 10px; padding: 6px 14px; font-weight: 800; text-transform: uppercase;">
+                                    <i class="fa fa-check mr-1"></i> Confirmez
+                                </a>
+                                <a href="{{ path('app_participation_annuler', {'id': item.id}) }}" class="btn btn-sm" style="background: #ef4444; color: white; border-radius: 20px; font-size: 10px; padding: 6px 14px; font-weight: 800; text-transform: uppercase;">
+                                    <i class="fa fa-times mr-1"></i> Annulez
+                                </a>
+                            {% endif %}
+
+                            {# Badge for regular users (Pencil removed as requested) #}
+                            {% if not is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_participation_badge', {'id': item.id}) }}" class="btn btn-sm" style="background: linear-gradient(135deg, #00ff8a, #6c5ce7); color: white; border-radius: 20px; font-size: 10px; padding: 6px 12px; border: none; font-weight: 800;">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                            {% endif %}
+
+                            {# Delete Button #}
+                            <form method="post" action="{{ path('app_participation_delete', {'id': item.id}) }}" onsubmit="return confirm('Supprimer cette participation ?');" style="display:inline; margin:0;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                                <button type="submit" class="btn btn-sm" style="background: rgba(220,53,69,0.1); color: #f87171; border: 1px solid rgba(220,53,69,0.2); border-radius: 20px; font-size: 10px; padding: 6px 10px;">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center" style="padding: 40px; color: #aab1b7;">
+                <i class="fa fa-folder-open mb-3" style="font-size: 3rem; color: #3b82f6; opacity: 0.5;"></i>
+                <h4>Aucune inscription trouvée</h4>
+                <p style="font-size: 0.85rem;">Commencez par créer une nouvelle inscription à un événement.</p>
+            </div>
+        {% endfor %}
     </div>
 </section>
+
+<style>
+    .participation-card-wrap .card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 10px 25px rgba(59,130,246,0.15) !important;
+        border-color: rgba(59,130,246,0.3) !important;
+    }
+    .participation-card-wrap .btn:hover {
+        transform: translateY(-1px);
+    }
+</style>
+
+<script>
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const filterStatut = document.getElementById('filterStatut');
+        const filterType = document.getElementById('filterType');
+        const cards = document.querySelectorAll('.participation-card-wrap');
+
+        function filterCards() {
+            const search = searchInput.value.toLowerCase().trim();
+            const statut = filterStatut.value;
+            const type = filterType.value;
+
+            cards.forEach(function(card) {
+                const cardSearch = (card.getAttribute('data-search') || '').toLowerCase();
+                const cardStatut = card.getAttribute('data-statut') || '';
+                const cardType = card.getAttribute('data-type') || '';
+
+                const matchSearch = !search || cardSearch.includes(search);
+                const matchStatut = statut === 'ALL' || cardStatut === statut;
+                const matchType = type === 'ALL' || cardType === type;
+
+                card.style.display = (matchSearch && matchStatut && matchType) ? '' : 'none';
+            });
+        }
+
+        if (searchInput) searchInput.addEventListener('input', filterCards);
+        if (filterStatut) filterStatut.addEventListener('change', filterCards);
+        if (filterType) filterType.addEventListener('change', filterCards);
+    });
+})();
+</script>
 {% endblock %}

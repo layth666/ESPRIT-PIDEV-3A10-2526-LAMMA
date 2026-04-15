@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 #[Route('/abonnements')]
 #[IsGranted('ROLE_USER')]
@@ -18,7 +21,9 @@ class AbonnementController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private AbonnementRepository $repository
+        private AbonnementRepository $repository,
+        private \App\Service\SmsService $smsService,
+        private \App\Service\BadgeService $badgeService
     ) {}
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -33,10 +38,10 @@ class AbonnementController extends AbstractController
             ->setParameter('t', false);
 
         if (!$this->isGranted('ROLE_ADMIN')) {
-            /** @var \App\Entity\User $user */
             $user = $this->getUser();
+            $uid = method_exists($user, 'getId') ? $user->getId() : 0;
             $qb->andWhere('a.userId = :uid')
-               ->setParameter('uid', $user instanceof \App\Entity\User ? $user->getId() : 0);
+               ->setParameter('uid', $uid);
         }
 
         return $this->render('abonnement/index.html.twig', [
@@ -60,9 +65,8 @@ class AbonnementController extends AbstractController
         // Vérifier si l'utilisateur a déjà un abonnement actif
         $userAbonnements = [];
         if (!$this->isGranted('ROLE_ADMIN')) {
-            /** @var \App\Entity\User $user */
             $user = $this->getUser();
-            $userId = $user instanceof \App\Entity\User ? $user->getId() : 0;
+            $userId = method_exists($user, 'getId') ? $user->getId() : 0;
             $subs = $this->repository->createQueryBuilder('a')
                 ->andWhere('a.isTemplate = :f')
                 ->andWhere('a.userId = :uid')
@@ -85,7 +89,7 @@ class AbonnementController extends AbstractController
     // SOUSCRIRE À UN PLAN — POST, utilisateur seulement
     // ─────────────────────────────────────────────────────────────────────────
     #[Route('/souscrire/{planId}', name: 'app_abonnement_souscrire', methods: ['POST'])]
-    public function souscrire(int $planId, Request $request): Response
+    public function souscrire(int $planId, Request $request, UrlGeneratorInterface $urlGenerator): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('error', '⛔ Les administrateurs ne peuvent pas souscrire à un abonnement.');
@@ -103,9 +107,8 @@ class AbonnementController extends AbstractController
             return $this->redirectToRoute('app_abonnement_plans');
         }
 
-        /** @var \App\Entity\User $user */
         $user   = $this->getUser();
-        $userId = $user instanceof \App\Entity\User ? $user->getId() : 0;
+        $userId = method_exists($user, 'getId') ? $user->getId() : 0;
 
         // Vérifier si l'utilisateur a déjà souscrit à ce plan
         $existing = $this->repository->createQueryBuilder('a')
@@ -127,7 +130,7 @@ class AbonnementController extends AbstractController
         // Créer la souscription à partir du plan
         $abonnement = new Abonnement();
         $abonnement->setUserId($userId);
-        $abonnement->setUserName(method_exists($user, 'getEmail') ? $user->getEmail() : (string)$userId);
+        $abonnement->setUserName($user ? $user->getUserIdentifier() : (string)$userId);
         $abonnement->setNom($plan->getNom());
         $abonnement->setType($plan->getType());
         $abonnement->setPrix($plan->getPrix());
@@ -145,17 +148,143 @@ class AbonnementController extends AbstractController
         $this->em->persist($abonnement);
         $this->em->flush();
 
-        // Générer un ticket automatiquement
-        $ticket = new \App\Entity\Ticket();
-        $ticket->setAbonnementId($abonnement->getId());
-        $ticket->setUserId($userId);
-        $ticket->setType('TICKET');
-        $ticket->setQrCode('TICKET-' . uniqid());
-        $this->em->persist($ticket);
-        $this->em->flush();
+        // ─────────────────────────────────────────────────────────────────────────
+        // INITIALISER STRIPE CHECKOUT
+        // ─────────────────────────────────────────────────────────────────────────
+        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
-        $this->addFlash('success', '🎉 Vous avez souscrit au plan "' . $plan->getNom() . '" ! En attente de validation.');
-        return $this->redirectToRoute('app_abonnement_index');
+        $checkout_session = Session::create([
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => 'Abonnement : ' . $plan->getNom(),
+                        'description' => 'Facturation de souscription - Lamma Expédition',
+                    ],
+                    'unit_amount' => (int) ($plan->getPrix() * 100),
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => $urlGenerator->generate('app_abonnement_payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL) . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => $urlGenerator->generate('app_abonnement_payment_cancel', ['id' => $abonnement->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+            'metadata' => [
+                'abonnement_id' => $abonnement->getId(),
+            ],
+        ]);
+
+        return $this->redirect($checkout_session->url, 303);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // PAIEMENT SUCCES (STRIPE CALLBACK)
+    // ─────────────────────────────────────────────────────────────────────────
+    #[Route('/paiement/success', name: 'app_abonnement_payment_success', methods: ['GET'])]
+    public function paymentSuccess(Request $request): Response
+    {
+        $sessionId = $request->query->get('session_id');
+        if (!$sessionId) {
+            return $this->redirectToRoute('app_abonnement_plans');
+        }
+
+        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+        try {
+            $session = Session::retrieve($sessionId);
+            if ($session->payment_status !== 'paid') {
+                $this->addFlash('error', 'Le paiement n\'a pas été validé.');
+                return $this->redirectToRoute('app_abonnement_plans');
+            }
+
+            $abonnementId = $session->metadata->abonnement_id ?? null;
+            if (!$abonnementId) {
+                throw new \Exception('ID d\'abonnement manquant dans les métadonnées Stripe.');
+            }
+
+            $abonnement = $this->repository->find($abonnementId);
+            if (!$abonnement) {
+                throw $this->createNotFoundException('Abonnement introuvable.');
+            }
+
+            // Seulement activer si ce n'est pas déjà fait
+            if ($abonnement->getStatut() === Abonnement::STATUT_ATTENTE) {
+                $abonnement->setStatut(Abonnement::STATUT_ACTIF);
+                
+                // Générer un ticket
+                $ticket = new \App\Entity\Ticket();
+                $ticket->setAbonnementId($abonnement->getId());
+                $ticket->setUserId($abonnement->getUserId());
+                $ticket->setType('TICKET');
+                $ticket->setQrCode('TICKET-' . uniqid());
+                
+                $this->em->persist($ticket);
+                $this->em->flush();
+
+                // Notification SMS
+                try {
+                    $this->smsService->sendWelcomeSms("+21629051913"); // Vous pouvez adapter avec le vrai numéro récupéré
+                } catch (\Exception $e) { }
+
+                $this->addFlash('success', '💳 Paiement réussi ! Votre abonnement est maintenant Actif et votre facture a été générée.');
+            }
+
+            return $this->redirectToRoute('app_abonnement_show', ['id' => $abonnement->getId()]);
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erreur lors de la vérification du paiement : ' . $e->getMessage());
+            return $this->redirectToRoute('app_abonnement_plans');
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // PAIEMENT ANNULE (STRIPE CALLBACK)
+    // ─────────────────────────────────────────────────────────────────────────
+    #[Route('/paiement/cancel/{id}', name: 'app_abonnement_payment_cancel', methods: ['GET'])]
+    public function paymentCancel(int $id): Response
+    {
+        $abonnement = $this->repository->find($id);
+        if ($abonnement && $abonnement->getStatut() === Abonnement::STATUT_ATTENTE) {
+            // Option 1 : Supprimer l'abonnement en attente pour nettoyer la bdd
+            $this->em->remove($abonnement);
+            $this->em->flush();
+        }
+
+        $this->addFlash('warning', 'Paiement annulé. Vous pouvez réessayer quand vous serez prêt.');
+        return $this->redirectToRoute('app_abonnement_plans');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // FACTURE PDF
+    // ─────────────────────────────────────────────────────────────────────────
+    #[Route('/{id}/facture', name: 'app_abonnement_facture', methods: ['GET'])]
+    public function downloadFacture(int $id): Response
+    {
+        $abonnement = $this->repository->find($id);
+
+        if (!$abonnement) {
+            throw $this->createNotFoundException('Abonnement non trouvé.');
+        }
+
+        // Ownership check
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+            if ($abonnement->getUserId() !== $userId) {
+                throw $this->createAccessDeniedException('Accès refusé à la facture.');
+            }
+        }
+
+        if ($abonnement->getStatut() !== Abonnement::STATUT_ACTIF) {
+            $this->addFlash('error', 'La facture n\'est disponible que pour les abonnements payés et actifs.');
+            return $this->redirectToRoute('app_abonnement_show', ['id' => $id]);
+        }
+
+        $participantName = $user ? $user->getUserIdentifier() : 'Client';
+        $pdfContent = $this->badgeService->generateFacturePdf($abonnement, $participantName);
+
+        return new Response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="facture-lamma-' . $id . '.pdf"',
+        ]);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -265,6 +394,35 @@ class AbonnementController extends AbstractController
             'abonnement' => $abonnement,
         ]);
     }
+
+    // ===== BADGE PDF =====
+    #[Route('/{id}/badge', name: 'app_abonnement_badge', methods: ['GET'])]
+    public function downloadBadge(int $id): Response
+    {
+        $abonnement = $this->repository->find($id);
+
+        if (!$abonnement) {
+            throw $this->createNotFoundException('Abonnement non trouvé.');
+        }
+
+        // Ownership check
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+            if ($abonnement->getUserId() !== $userId) {
+                throw $this->createAccessDeniedException('Accès refusé au badge.');
+            }
+        }
+
+        $participantName = $user ? $user->getUserIdentifier() : 'Participant';
+        $pdfContent = $this->badgeService->generateAbonnementBadgePdf($abonnement, $participantName);
+
+        return new Response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="pass-lamma-' . $id . '.pdf"',
+        ]);
+    }
+
 
     // ─────────────────────────────────────────────────────────────────────────
     // ADMIN — Confirmer / Suspendre une souscription

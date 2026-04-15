@@ -13,9 +13,11 @@
             de restauration et de participations. LAMMA propulse vos expériences au niveau supérieur.
         </p>
 
-        <div class="d-flex justify-content-center gap-4">
-            <a href="{{ path('app_evenement_index') }}" class="genric-btn danger e-large" style="margin-right: 20px;">DÉCOUVRIR LES ÉVÉNEMENTS</a>
-            <a href="{{ path('app_abonnement_index') }}" class="genric-btn info-border e-large">NOS ABONNEMENTS</a>
+        <div class="d-flex justify-content-center gap-4 flex-wrap">
+            <a href="{{ path('app_evenement_index') }}" class="genric-btn danger e-large mb-3" style="margin-right: 20px;">DÉCOUVRIR LES ÉVÉNEMENTS</a>
+            <a href="{{ path('app_repas_composition_list') }}" class="genric-btn success e-large mb-3" style="margin-right: 20px;"><i class="fa fa-cutlery"></i> COMPOSITION REPAS</a>
+            <a href="{{ path('app_menu_planner_index') }}" class="genric-btn primary e-large mb-3" style="margin-right: 20px;"><i class="fa fa-calendar"></i> PLANIFIER VOS REPAS</a>
+            <a href="{{ path('app_abonnement_index') }}" class="genric-btn info-border e-large mb-3">NOS ABONNEMENTS</a>
         </div>
         
         <div style="margin-top: 80px;">

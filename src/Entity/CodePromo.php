@@ -112,6 +112,11 @@ class CodePromo
         return $this->expirationDate !== null && $this->expirationDate < new \DateTimeImmutable('today');
     }
 
+    public function isLimitReached(): bool
+    {
+        return $this->usageLimit > 0 && $this->currentUsage >= $this->usageLimit;
+    }
+
     public function canBeUsed(): bool
     {
         $withinLimit = $this->usageLimit <= 0 || $this->currentUsage < $this->usageLimit;

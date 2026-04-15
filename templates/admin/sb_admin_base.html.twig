@@ -67,7 +67,7 @@
                                     <a class="nav-link" href="{{ path('app_restauration_dashboard') }}">Dashboard Restauration</a>
                                     <a class="nav-link" href="{{ path('app_restaurant_index') }}">Restaurants</a>
                                     <a class="nav-link" href="{{ path('app_menu_index') }}">Menus</a>
-                                    <a class="nav-link" href="{{ path('app_repas_index') }}">Repas</a>
+                                    <a class="nav-link" href="{{ path('app_repas_detaille_index') }}">Repas</a>
                                     <a class="nav-link" href="{{ path('app_ingredient_index') }}">Ingrédients</a>
                                     <a class="nav-link" href="{{ path('app_admin_promo_codes_index') }}">Codes Promo</a>
                                 </nav>
@@ -132,14 +132,17 @@
         <script>
             $(document).ready(function() {
                 if ($.fn.DataTable) {
-                    $('.crud-datatable').not('.dt-initialized').DataTable({
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
-                        },
-                        "pageLength": 10,
-                        "lengthMenu": [5, 10, 25, 50],
-                        "responsive": true
-                    }).addClass('dt-initialized');
+                    $('.crud-datatable').not('.dt-initialized').each(function() {
+                        $(this).DataTable({
+                            "language": {
+                                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+                            },
+                            "pageLength": 10,
+                            "lengthMenu": [5, 10, 25, 50],
+                            "responsive": true
+                        });
+                        $(this).addClass('dt-initialized');
+                    });
                 }
             });
         </script>

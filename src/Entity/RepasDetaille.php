@@ -28,6 +28,9 @@ class RepasDetaille
     #[ORM\Column(type:"integer", nullable:true)]
     private ?int $calories = null;
 
+    #[ORM\Column(type:"integer", nullable:true)]
+    private ?int $proteines = null;
+
     #[ORM\Column(type:"string", length:50, nullable:true)]
     private ?string $typeRepas = null;
 
@@ -42,6 +45,12 @@ class RepasDetaille
 
     #[ORM\Column(type:"integer", nullable:true)]
     private ?int $restaurantId = null;
+
+    #[ORM\Column(type:"integer", nullable:true)]
+    private ?int $menuId = null;
+
+    #[ORM\Column(type:"integer", nullable:true)]
+    private ?int $tempsPreparation = null;
 
     #[ORM\Column(type:"json", nullable:true)]
     private array $ingredients = [];
@@ -93,6 +102,9 @@ class RepasDetaille
     public function getCalories(): ?int { return $this->calories; }
     public function setCalories(?int $c): self { $this->calories = $c; return $this; }
 
+    public function getProteines(): ?int { return $this->proteines; }
+    public function setProteines(?int $p): self { $this->proteines = $p; return $this; }
+
     public function getTypeRepas(): ?string { return $this->typeRepas; }
     public function setTypeRepas(?string $t): self { $this->typeRepas = $t; return $this; }
 
@@ -107,6 +119,12 @@ class RepasDetaille
 
     public function getRestaurantId(): ?int { return $this->restaurantId; }
     public function setRestaurantId(?int $id): self { $this->restaurantId = $id; return $this; }
+
+    public function getMenuId(): ?int { return $this->menuId; }
+    public function setMenuId(?int $id): self { $this->menuId = $id; return $this; }
+
+    public function getTempsPreparation(): ?int { return $this->tempsPreparation; }
+    public function setTempsPreparation(?int $t): self { $this->tempsPreparation = $t; return $this; }
 
     public function getIngredients(): array { return $this->ingredients; }
     public function setIngredients(array $i): self { $this->ingredients = $i; return $this; }

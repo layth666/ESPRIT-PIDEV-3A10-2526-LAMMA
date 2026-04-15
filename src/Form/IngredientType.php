@@ -42,6 +42,11 @@ class IngredientType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control', 'min' => 0]
             ])
+            ->add('proteines', IntegerType::class, [
+                'label' => 'Protéines (g)',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'min' => 0]
+            ])
             ->add('iconUrl', TextType::class, [
                 'label' => 'URL de l\'icône',
                 'required' => false,
@@ -61,6 +66,14 @@ class IngredientType extends AbstractType
                 'label' => 'Actif',
                 'required' => false,
                 'attr' => ['class' => 'form-check-input']
+            ])
+            ->add('repas', \Symfony\Bridge\Doctrine\Form\Type\EntityType::class, [
+                'class' => \App\Entity\RepasDetaille::class,
+                'choice_label' => 'nom',
+                'label' => 'Plat Associé',
+                'placeholder' => '-- Aucun plat associé --',
+                'required' => false,
+                'attr' => ['class' => 'form-select']
             ]);
     }
 

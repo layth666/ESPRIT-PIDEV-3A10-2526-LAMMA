@@ -33,6 +33,14 @@ class IngredientRepository
     }
 
     /**
+     * Proxies findOneBy to the actual repository
+     */
+    public function findOneBy(array $criteria, array $orderBy = null): ?Ingredient
+    {
+        return $this->em->getRepository($this->entityClass)->findOneBy($criteria, $orderBy);
+    }
+
+    /**
      * Retourne les ingrédients actifs
      *
      * @return Ingredient[]

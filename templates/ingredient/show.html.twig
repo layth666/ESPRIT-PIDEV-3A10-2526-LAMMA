@@ -30,6 +30,16 @@
                                 <tr><th>Catégorie</th><td><span class="badge badge-info">{{ item.categorie }}</span></td></tr>
                                 <tr><th>Prix Supplément</th><td>{{ item.prixSupplement ?? '0' }} €</td></tr>
                                 <tr><th>Calories</th><td>{{ item.calories ?? '0' }} kcal</td></tr>
+                                <tr><th>Protéines (g)</th><td>{{ item.proteines ?? '0' }} g</td></tr>
+                                <tr><th>Plat Associé</th><td>
+                                    {% if item.repas %}
+                                        <a href="{{ path('app_repas_detaille_show', {id: item.repas.id}) }}" class="badge badge-info" style="font-size: 0.9rem; padding: 5px 12px;">
+                                            <i class="fa fa-utensils mr-1"></i> {{ item.repas.nom }}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">Aucun plat associé</span>
+                                    {% endif %}
+                                </td></tr>
                                 <tr><th>Quantité en Stock</th><td>{{ item.stockQuantite }}</td></tr>
                                 <tr><th>Seuil d'Alerte</th><td>{{ item.stockSeuilAlerte }}</td></tr>
                             </tbody>

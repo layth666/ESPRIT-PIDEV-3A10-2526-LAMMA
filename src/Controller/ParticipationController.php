@@ -18,7 +18,9 @@ class ParticipationController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private ParticipationRepository $repository
+        private ParticipationRepository $repository,
+        private \App\Service\SmsService $smsService,
+        private \App\Service\BadgeService $badgeService
     ) {}
 
     // ===== INDEX =====
@@ -33,8 +35,23 @@ class ParticipationController extends AbstractController
                ->setParameter('user', method_exists($user, 'getId') ? $user->getId() : 0);
         }
 
+        $participations = $qb->getQuery()->getResult();
+        
+        // Fetch event titles to avoid showing IDs in the list
+        $evenementRepo = $this->em->getRepository(\App\Entity\Evenement::class);
+        $eventMap = [];
+        foreach ($participations as $p) {
+            if ($p->getEvenementId() && !isset($eventMap[$p->getEvenementId()])) {
+                $event = $evenementRepo->find($p->getEvenementId());
+                if ($event) {
+                    $eventMap[$p->getEvenementId()] = $event;
+                }
+            }
+        }
+
         return $this->render('participation/index.html.twig', [
-            'items' => $qb->getQuery()->getResult(),
+            'items' => $participations,
+            'eventMap' => $eventMap,
         ]);
     }
 
@@ -100,13 +117,15 @@ class ParticipationController extends AbstractController
                 $this->em->flush();
             }
 
-            // If user wants abonnement, redirect to abonnement creation page
-            if ($wantAbonnement === '1') {
-                $this->addFlash('success', '✅ Inscription réussie ! Créez maintenant votre abonnement.');
-                return $this->redirectToRoute('app_abonnement_new');
+            // 🔥 SMS Notification
+            try {
+                $this->smsService->sendWelcomeSms("+21629051913");
+            } catch (\Exception $e) {
+                // SMS failure should not block the flow
             }
 
-            $this->addFlash('success', '✅ Inscription réussie ! Le ticket a été généré.');
+
+            $this->addFlash('success', '✅ Inscription réussie !');
             return $this->redirectToRoute('app_participation_index');
         }
 
@@ -117,28 +136,73 @@ class ParticipationController extends AbstractController
     }
 
     // ===== SHOW =====
-    #[Route('/{id}', name: 'app_participation_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_participation_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(int $id): Response
     {
         $participation = $this->repository->find($id);
 
         if (!$participation) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('Participation introuvable.');
+        }
+
+        // Ownership check for non-admin users
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $user = $this->getUser();
+            $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+            if ($participation->getUserId() !== $userId) {
+                throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette participation.');
+            }
+        }
+
+        // Fetch event name for display
+        $evenement = null;
+        if ($participation->getEvenementId()) {
+            $evenementRepo = $this->em->getRepository(\App\Entity\Evenement::class);
+            $evenement = $evenementRepo->find($participation->getEvenementId());
         }
 
         return $this->render('participation/show.html.twig', [
             'item' => $participation,
+            'event' => $evenement,
         ]);
     }
 
+    // ===== BADGE PDF =====
+    #[Route('/{id}/badge', name: 'app_participation_badge', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function downloadBadge(int $id): Response
+    {
+        $participation = $this->repository->find($id);
+
+        if (!$participation) {
+            throw $this->createNotFoundException('Participation non trouvée.');
+        }
+
+        // Ownership check
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $user = $this->getUser();
+            $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+            if ($participation->getUserId() !== $userId) {
+                throw $this->createAccessDeniedException('Accès refusé au badge.');
+            }
+        }
+
+        // Get participant name from session user
+        $user = $this->getUser();
+        $participantName = $user ? $user->getUserIdentifier() : 'Participant';
+
+        $pdfContent = $this->badgeService->generateBadgePdf($participation, $participantName);
+
+        return new Response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="badge-participation-' . $id . '.pdf"',
+        ]);
+    }
+
+
     // ===== EDIT =====
-    #[Route('/{id}/edit', name: 'app_participation_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_participation_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(int $id, Request $request): Response
     {
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('error', '⛔ Les administrateurs ne peuvent pas modifier les inscriptions directement.');
-            return $this->redirectToRoute('app_participation_show', ['id' => $id]);
-        }
         $participation = $this->repository->find($id);
 
         if (!$participation) {
@@ -170,7 +234,7 @@ class ParticipationController extends AbstractController
     }
 
     // ===== CONFIRMER =====
-    #[Route('/{id}/confirmer', name: 'app_participation_confirmer', methods: ['GET', 'POST'])]
+    #[Route('/{id}/confirmer', name: 'app_participation_confirmer', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function confirmer(int $id): Response
     {
@@ -186,7 +250,7 @@ class ParticipationController extends AbstractController
     }
 
     // ===== ANNULER =====
-    #[Route('/{id}/annuler', name: 'app_participation_annuler', methods: ['GET', 'POST'])]
+    #[Route('/{id}/annuler', name: 'app_participation_annuler', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function annuler(int $id): Response
     {
@@ -202,7 +266,7 @@ class ParticipationController extends AbstractController
     }
 
     // ===== DELETE =====
-    #[Route('/{id}/delete', name: 'app_participation_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_participation_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(int $id, Request $request): Response
     {
         $item = $this->repository->find($id);

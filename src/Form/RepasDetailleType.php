@@ -3,7 +3,7 @@ namespace App\Form;
 
 use App\Entity\RepasDetaille;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\{TextType, TextareaType, ChoiceType, NumberType, IntegerType, CheckboxType};
+use Symfony\Component\Form\Extension\Core\Type\{TextType, TextareaType, ChoiceType, NumberType, IntegerType, CheckboxType, FileType};
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -39,10 +39,22 @@ class RepasDetailleType extends AbstractType
                 'placeholder' => '-- Choisir --',
                 'attr' => ['class' => 'form-control'],
             ])
-            ->add('imageUrl', TextType::class, [
-                'label' => 'URL de l\'image',
+            ->add('imageUrl', FileType::class, [
+                'label' => 'Image du Plat',
+                'mapped' => false,
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPG, PNG, WEBP)',
+                    ])
+                ],
             ])
             ->add('notes', TextareaType::class, [
                 'label' => 'Notes Internes',
@@ -78,6 +90,9 @@ class RepasDetailleType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => RepasDetaille::class]);
+        $resolver->setDefaults([
+            'data_class' => RepasDetaille::class,
+            'allow_extra_fields' => true
+        ]);
     }
 }

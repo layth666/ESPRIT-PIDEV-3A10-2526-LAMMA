@@ -18,7 +18,7 @@ class CompositionMenu
     private ?Restauration $menu = null;
 
     #[ORM\ManyToOne(targetEntity:RepasDetaille::class)]
-    #[ORM\JoinColumn(name:"repas_id", referencedColumnName:"id", nullable:true)]
+    #[ORM\JoinColumn(name:"repas_id", referencedColumnName:"id", nullable:true, onDelete: "CASCADE")]
     private ?RepasDetaille $repas = null;
 
     #[ORM\Column(type:"integer", nullable:true)]
