@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/evenement')]
-final class EvenementController extends AbstractController
+class EvenementController extends AbstractController
 {
     #[Route('/switch-role/{role}', name: 'app_switch_role', methods: ['GET'])]
     public function switchRole(string $role, Request $request): Response
@@ -20,7 +20,7 @@ final class EvenementController extends AbstractController
         return $this->redirectToRoute('app_evenement_index');
     }
 
-    #[Route(name: 'app_evenement_index', methods: ['GET'])]
+    #[Route('/', name: 'app_evenement_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager, \Knp\Component\Pager\PaginatorInterface $paginator): Response
     {
         $search = $request->query->get('search');
@@ -46,6 +46,7 @@ final class EvenementController extends AbstractController
             $request->query->getInt('page', 1),
             6
         );
+
         $role = $request->getSession()->get('role', 'user');
 
         if ($role === 'admin') {
@@ -91,20 +92,19 @@ final class EvenementController extends AbstractController
                 }
 
                 $entityManager->flush();
-                $this->addFlash('ask_add_prog', $evenement->getId_event());
-                return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+                $this->addFlash('success', 'Événement créé avec succès');
 
+                return $this->redirectToRoute('app_evenement_index');
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Erreur lors de la sauvegarde : ' . $e->getMessage());
+                $this->addFlash('error', 'Erreur : ' . $e->getMessage());
             }
         }
 
         return $this->render('admin_evenement/new.html.twig', [
             'evenement' => $evenement,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
-
 
     #[Route('/{id}', name: 'app_evenement_show', methods: ['GET'])]
     public function show(Evenement $evenement, Request $request): Response
@@ -128,7 +128,7 @@ final class EvenementController extends AbstractController
     public function edit(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
         if ($request->getSession()->get('role') !== 'admin') {
-            throw $this->createAccessDeniedException('AccÃ¨s refusÃ© - RÃ©servÃ© aux administrateurs.');
+            throw $this->createAccessDeniedException('Accès refusé - Réservé aux administrateurs.');
         }
 
         $form = $this->createForm(EvenementType::class, $evenement);
@@ -137,7 +137,7 @@ final class EvenementController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_evenement_index');
         }
 
         return $this->render('admin_evenement/edit.html.twig', [
@@ -150,7 +150,7 @@ final class EvenementController extends AbstractController
     public function delete(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
         if ($request->getSession()->get('role') !== 'admin') {
-            throw $this->createAccessDeniedException('AccÃ¨s refusÃ© - RÃ©servÃ© aux administrateurs.');
+            throw $this->createAccessDeniedException('Accès refusé - Réservé aux administrateurs.');
         }
 
         if ($this->isCsrfTokenValid('delete'.$evenement->getId_event(), $request->getPayload()->getString('_token'))) {
@@ -158,7 +158,6 @@ final class EvenementController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_evenement_index');
     }
 }
-

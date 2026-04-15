@@ -28,7 +28,6 @@
             <div class="col-md-5">
                 {% if evenement.image is not empty %}
                     <img src="{{ (evenement.image starts with 'http') ? evenement.image : asset('uploads/' ~ evenement.image) }}" class="w-100 h-100" alt="{{ evenement.titre }}" style="object-fit: cover; min-height: 400px;" onerror="this.onerror=null; this.src='{{ asset('uploads/logo.png') }}';">
-
                 {% else %}
                     <div class="d-flex align-items-center justify-content-center h-100 text-secondary" style="min-height: 400px;">
                         Aucune image
@@ -90,8 +89,8 @@
                     {% if evenement.isProposeMakeup() %}
                         <div class="mt-4 p-4 border border-warning rounded text-white" style="background: rgba(255,193,7,0.1);">
                             <h5 class="text-warning mb-3"><i class="fa fa-magic me-2"></i> Réserver le Coin Make-up</h5>
-                            <p class="small text-light">Cet événement dispose d'un espace maquillage exclusif. Réservez votre place dès maintenant ! Vous recevrez un email de confirmation.</p>
-                            <form action="{{ path('app_evenement_reserver_makeup', {'id': evenement.id_event}) }}" method="POST" class="d-flex w-100">
+                            <p class="small text-light">Cet événement dispose d'un espace maquillage exclusif. Réservez votre place dès maintenant !</p>
+                            <form action="#" method="POST" class="d-flex w-100">
                                 <input type="email" name="email" class="form-control rounded-0 me-2" placeholder="Votre adresse e-mail" required>
                                 <button type="submit" class="btn btn-warning rounded-0 fw-bold px-4">Réserver</button>
                             </form>
@@ -116,11 +115,6 @@
                                 <span class="badge bg-secondary me-1 mb-1">{{ eq.libelle }}</span>
                             {% endfor %}
                         </div>
-                        <div class="mt-3">
-                            <a href="#" class="btn btn-warning btn-sm fw-bold rounded-0">
-                                <i class="fa fa-shopping-cart"></i> Allez au store
-                            </a>
-                        </div>
                     {% else %}
                         <p class="text-secondary mb-0">Aucun équipement recommandé.</p>
                     {% endif %}
@@ -134,13 +128,10 @@
             </div>
         </div>
     </div>
-    </div>
-    </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Fetch random quote anonymously
     fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://zenquotes.io/api/random'))
       .then(response => response.ok ? response.json() : null)
       .then(data => {
@@ -152,17 +143,14 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       });
 
-    // --- RELIABLE WEATHER SYSTEM (Open-Meteo) ---
     const lieu = "{{ evenement.lieu|url_encode }}";
     const weatherText = document.getElementById('weather-text');
 
-    // 1. Get coordinates
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${lieu}&count=1&language=fr&format=json`)
       .then(res => res.json())
       .then(geo => {
         if (geo.results && geo.results.length > 0) {
             const { latitude, longitude, name } = geo.results[0];
-            // 2. Get weather
             return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
         }
         throw new Error('Ville non trouvée');
@@ -172,19 +160,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (data.current_weather) {
             const temp = Math.round(data.current_weather.temperature);
             const code = data.current_weather.weathercode;
-            
-            // Map weather codes to emojis
-            const icons = {
-                0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
-                45: '🌫️', 48: '🌫️',
-                51: '🌦️', 53: '🌦️', 55: '🌦️',
-                61: '🌧️', 63: '🌧️', 65: '🌧️',
-                71: '❄️', 73: '❄️', 75: '❄️',
-                80: '🌦️', 81: '🌦️', 82: '🌦️',
-                95: '⛈️'
-            };
+            const icons = {0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 51: '🌦️', 61: '🌧️', 71: '❄️', 95: '⛈️'};
             const icon = icons[code] || '🌡️';
-            weatherText.innerHTML = `${name} : ${icon} ${temp}°C`;
+            weatherText.innerHTML = `${temp}°C ${icon}`;
         }
       })
       .catch(() => {
@@ -192,5 +170,5 @@ document.addEventListener("DOMContentLoaded", function() {
       });
 });
 </script>
-
 {% endblock %}
+

@@ -1,0 +1,38 @@
+security:
+    providers:
+        app_user_provider:
+            id: App\Security\SessionUserProvider
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+            
+            # Authentification automatique via session
+            custom_authenticator: App\Security\DummyAuthenticator
+
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                target: app_home
+
+    # Easy way to control access for large sections of your site
+    access_control:
+         - { path: ^/admin, roles: ROLE_ADMIN }
+         
+         # ==========================================
+         # 1. CATALOGUE ADMIN (Évènements, Restos...)
+         # ==========================================
+         - { path: ^/(evenement|restaurant|menu|repas|ingredient), roles: ROLE_ADMIN, methods: [POST, PUT, DELETE, PATCH] }
+         - { path: ^/(evenement|restaurant|menu|repas|ingredient)/(new|.*/edit), roles: ROLE_ADMIN }
+         - { path: ^/(evenement|restaurant|menu|repas|ingredient), roles: ROLE_USER }
+
+         # ==========================================
+         # 2. ACTIONS UTILISATEUR (Abo, participations)
+         # ==========================================
+         - { path: ^/(participation|abonnement|ticket), roles: ROLE_USER, methods: [POST, PUT, DELETE, PATCH] }
+         - { path: ^/(participation|abonnement|ticket)/(new|.*/edit), roles: ROLE_USER }
+         - { path: ^/(participation|abonnement|ticket), roles: ROLE_USER }
