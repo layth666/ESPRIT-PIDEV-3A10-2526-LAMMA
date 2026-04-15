@@ -1,6 +1,13 @@
 {
+<<<<<<< HEAD
     "type": "project",
     "license": "proprietary",
+=======
+    "name": "symfony/skeleton",
+    "type": "project",
+    "license": "proprietary",
+    "description": "A minimal Symfony project recommended to create bare bones applications",
+>>>>>>> feryelPI
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
@@ -8,10 +15,18 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^2.18",
+<<<<<<< HEAD
+=======
+        "doctrine/doctrine-migrations-bundle": "^3.7",
+>>>>>>> feryelPI
         "doctrine/orm": "^3.6",
         "dompdf/dompdf": "^3.1",
         "endroid/qr-code": "^6.0",
         "khanamiryan/qrcode-detector-decoder": "^2.0",
+<<<<<<< HEAD
+=======
+        "knplabs/knp-paginator-bundle": "^6.10",
+>>>>>>> feryelPI
         "nyholm/psr7": "*",
         "openai-php/client": "*",
         "php-flasher/flasher-symfony": "1.15",
@@ -26,15 +41,31 @@
         "symfony/form": "6.4.*",
         "symfony/framework-bundle": "6.4.*",
         "symfony/http-client": "6.4.*",
+<<<<<<< HEAD
+=======
+        "symfony/mailer": "6.4.*",
+>>>>>>> feryelPI
         "symfony/mime": "6.4.*",
         "symfony/runtime": "6.4.*",
         "symfony/security-bundle": "6.4.*",
         "symfony/security-csrf": "6.4.*",
+<<<<<<< HEAD
+=======
+        "symfony/sendgrid-mailer": "6.4.*",
+>>>>>>> feryelPI
         "symfony/twig-bundle": "6.4.*",
         "symfony/validator": "6.4.*",
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
+<<<<<<< HEAD
         "twig/twig": "^2.12|^3.0"
+=======
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "^2.9"
+    },
+    "require-dev": {
+        "symfony/maker-bundle": "^1.67"
+>>>>>>> feryelPI
     },
     "config": {
         "allow-plugins": {
@@ -84,4 +115,8 @@
             "require": "6.4.*"
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> feryelPI

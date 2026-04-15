@@ -14,6 +14,14 @@ framework:
 
     #esi: true
     #fragments: true
+<<<<<<< HEAD
+=======
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        fallbacks:
+            - en
+
+>>>>>>> feryelPI
     php_errors:
         log: true
 
@@ -21,4 +29,8 @@ when@test:
     framework:
         test: true
         session:
+<<<<<<< HEAD
             storage_factory_id: session.storage.factory.mock_file
+=======
+            storage_factory_id: session.storage.factory.mock_file
+>>>>>>> feryelPI

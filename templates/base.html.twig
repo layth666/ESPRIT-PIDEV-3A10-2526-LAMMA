@@ -5,7 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{% block title %}LAMMA - EventCon{% endblock %}</title>
+<<<<<<< HEAD
     <meta name="description" content="Plateforme de gestion pour LAMMA">
+=======
+    <meta name="description" content="{% block meta_description %}Plateforme de gestion pour LAMMA{% endblock %}">
+>>>>>>> feryelPI
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.png') }}">
@@ -36,6 +40,7 @@
         .performar_area {
             flex: 1 0 auto;
         }
+<<<<<<< HEAD
         .performance_crud_container {
             background-color: #0b0b0b;
             padding: 40px;
@@ -45,13 +50,20 @@
             color: #fff;
             margin-bottom: 20px;
         }
+=======
+>>>>>>> feryelPI
         
         /* -------------------------------------
            PREMIUM GLASSMORPHISM OVERRIDES 
            ------------------------------------- */
+<<<<<<< HEAD
         /* Make glass panels and cards transparent with blur */
         .glass-panel, .scout-card, .metric-card, .scout-header {
             background: rgba(30, 41, 59, 0.4) !important; /* Soft dark slate background */
+=======
+        .glass-panel, .scout-card, .metric-card, .scout-header {
+            background: rgba(30, 41, 59, 0.4) !important;
+>>>>>>> feryelPI
             backdrop-filter: blur(20px) !important;
             -webkit-backdrop-filter: blur(20px) !important;
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -60,9 +72,14 @@
             border-radius: 12px !important;
         }
         
+<<<<<<< HEAD
         /* Transparent Form Inputs */
         .form-control, .form-select, select, input[type="text"], input[type="date"], input[type="number"], textarea {
             background-color: rgba(15, 23, 42, 0.6) !important; /* Deep dark slate inner */
+=======
+        .form-control, .form-select, select, input[type="text"], input[type="date"], input[type="number"], textarea {
+            background-color: rgba(15, 23, 42, 0.6) !important;
+>>>>>>> feryelPI
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
             color: #f8fafc !important;
             border-radius: 8px !important;
@@ -71,6 +88,7 @@
             transition: all 0.2s ease-in-out;
             box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
         }
+<<<<<<< HEAD
         .form-control:focus, .form-select:focus, select:focus, input:focus, textarea:focus {
             background-color: rgba(15, 23, 42, 0.8) !important;
             border-color: #3b82f6 !important; /* Electric Blue focus */
@@ -154,28 +172,45 @@
         }
         table.dataTable thead th, table.dataTable thead td { border-bottom: 2px solid #3b82f6 !important; color: #3b82f6 !important; border-top: none !important; }
         table.dataTable.no-footer { border-bottom: 1px solid #475569 !important; }
+=======
+>>>>>>> feryelPI
     </style>
 </head>
 
 <body>
+<<<<<<< HEAD
         <!-- header-start -->
     <header>
         <div class="header-area ">
+=======
+    <header>
+        <div class="header-area">
+>>>>>>> feryelPI
             <div id="sticky-header" class="main-header-area">
                 <div class="container">
                     <div class="header_bottom_border">
                         <div class="row align-items-center">
                             <div class="col-xl-3 col-lg-3">
                                 <div class="logo">
+<<<<<<< HEAD
                                     <a href="{{ path('app_home') }}">
                                         <img src="{{ asset('img/logo_lamma.png') }}" alt="LAMMA Logo" style="max-height: 50px;" onerror="this.outerHTML='<h2 style='color: white; font-family: Anton, sans-serif; margin: 0; position: relative; top: 10px;'>LAMMA <span style='font-size:12px;color:#3b82f6;'>EXPEDITION</span></h2>';">
                                     </a>
                                 </div>
                             </div>
+=======
+                                    <a href="{{ path('app_evenement_index') }}">
+                                        <img src="{{ asset('img/logo_lamma.png') }}" alt="LAMMA Logo" style="max-height: 50px;" onerror="this.outerHTML='<h2 style=\'color: white; font-family: Anton, sans-serif; margin: 0; position: relative; top: 10px;\'>LAMMA <span style=\'font-size:12px;color:#3b82f6;\'>EXPEDITION</span></h2>\';">
+                                    </a>
+                                </div>
+                            </div>
+
+>>>>>>> feryelPI
                             <div class="col-xl-6 col-lg-6">
                                 <div class="main-menu d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">
+<<<<<<< HEAD
                                             <li><a href="{{ path('app_home') }}">Accueil</a></li>
                                             <li><a href="#">Événements <i class="ti-angle-down"></i></a>
                                                 <ul class="submenu">
@@ -186,6 +221,19 @@
                                                     <li><a href="{{ path('app_participation_index') }}">Participations</a></li>
                                                     <li><a href="{{ path('app_ticket_index') }}">Tickets</a></li>
                                                     <li><a href="{{ path('app_menu_planner_index') }}">📅 Menu Hebdomadaire</a></li>
+=======
+                                            <li><a href="{{ path('app_evenement_index') }}">Accueil</a></li>
+                                            <li><a href="#">Événements <i class="ti-angle-down"></i></a>
+                                                <ul class="submenu">
+                                                    <li><a href="{{ path('app_evenement_index') }}">Liste Événements</a></li>
+                                                    <li><a href="{{ path('app_tiktok_search') }}">📱 TikTok Search</a></li>
+                                                    <li><a href="{{ path('app_abonnement_plans') }}">📦 Nos Abonnements</a></li>
+                                                    <li><a href="{{ path('app_participation_index') }}">Participations</a></li>
+                                                    <li><a href="{{ path('app_menu_planner_index') }}">📅 Menu Hebdomadaire</a></li>
+                                                    {% if app.session.get('role') == 'admin' %}
+                                                        <li><a href="{{ path('app_evenement_new') }}"><i class="fa fa-plus-circle"></i> Créer Événement</a></li>
+                                                    {% endif %}
+>>>>>>> feryelPI
                                                 </ul>
                                             </li>
                                             <li><a href="#">Logistique <i class="ti-angle-down"></i></a>
@@ -193,7 +241,10 @@
                                                     <li><a href="{{ path('app_restaurant_index') }}">Restaurants</a></li>
                                                     <li><a href="{{ path('app_menu_index') }}">Menus</a></li>
                                                     <li><a href="{{ path('app_repas_catalogue') }}">Catalogue Repas</a></li>
+<<<<<<< HEAD
                                                     <li><a href="{{ path('app_repas_composition_list') }}">Composition Personnalisée</a></li>
+=======
+>>>>>>> feryelPI
                                                     <li><a href="{{ path('app_ingredient_index') }}">Ingrédients</a></li>
                                                 </ul>
                                             </li>
@@ -201,6 +252,7 @@
                                     </nav>
                                 </div>
                             </div>
+<<<<<<< HEAD
                             <div class="col-xl-3 col-lg-3 d-none d-lg-block">
                                 <div class="buy_tkt">
                                     <div class="d-none d-lg-flex justify-content-end align-items-center" style="gap: 15px;">
@@ -215,6 +267,16 @@
                                             {% endif %}
                                         {% else %}
                                             <a href="{{ path('app_switch_role', {'role': 'user'}) }}" class="btn btn-sm" style="background: #3b82f6; color: #fff; padding: 8px 16px; border-radius: 6px;">Démarrer Session</a>
+=======
+
+                            <div class="col-xl-3 col-lg-3 d-none d-lg-block">
+                                <div class="buy_tkt">
+                                    <div class="d-none d-lg-flex justify-content-end align-items-center" style="gap: 15px;">
+                                        {% if app.session.get('role') == 'admin' %}
+                                            <a href="{{ path('app_switch_role', {'role': 'user'}) }}" class="btn btn-sm" style="background: #10b981; color: #fff; padding: 8px 16px; border-radius: 6px;"><i class="fa fa-exchange"></i> User Mode</a>
+                                        {% else %}
+                                            <a href="{{ path('app_switch_role', {'role': 'admin'}) }}" class="btn btn-sm" style="background: #f59e0b; color: #fff; padding: 8px 16px; border-radius: 6px;"><i class="fa fa-exchange"></i> Admin Mode</a>
+>>>>>>> feryelPI
                                         {% endif %}
                                     </div>
                                 </div>
@@ -228,15 +290,21 @@
             </div>
         </div>
     </header>
+<<<<<<< HEAD
     <!-- header-end -->
 
     <!-- bradcam_area -->
+=======
+
+    {% block hero %}
+>>>>>>> feryelPI
     <div class="bradcam_area">
         <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay">
             <div class="container">
                 <div class="row align-items-center justify-content-center">
                     <div class="col-xl-12">
                         <div class="bradcam_text text-center">
+<<<<<<< HEAD
                             <div class="shape_1 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".2s">
                                 <img src="{{ asset('img/shape/shape_1.svg') }}" alt="">
                             </div>
@@ -244,12 +312,16 @@
                                 <img src="{{ asset('img/shape/shape_2.svg') }}" alt="">
                             </div>
                             <h3 class="wow fadeInRight" data-wow-duration="1s" data-wow-delay=".3s">{% block page_title %}Tableau de Bord{% endblock %}</h3>
+=======
+                            <h3 class="wow fadeInRight" data-wow-duration="1s" data-wow-delay=".3s">{% block page_title %}LAMMA Platform{% endblock %}</h3>
+>>>>>>> feryelPI
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+<<<<<<< HEAD
     <!-- bradcam_area end -->
 
     <!-- performar_area_start -->
@@ -268,10 +340,21 @@
     <!-- performar_area_end -->
 
     <!-- footer_start  -->
+=======
+    {% endblock %}
+
+    <div class="performar_area black_bg">
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+
+>>>>>>> feryelPI
     <footer class="footer">
         <div class="footer_top">
             <div class="container">
                 <div class="row justify-content-center">
+<<<<<<< HEAD
                     <div class="col-lg-6 col-md-8">
                         <div class="footer_widget">
                             <div class="address_details text-center">
@@ -280,6 +363,12 @@
                                 <p class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".5s">Synchronisation intelligente des participations, du matériel et des offres de restauration.</p>
                                 <a href="#" class="boxed-btn3 wow fadeInUp" data-wow-duration="1s" data-wow-delay=".6s">Nous Contacter</a>
                             </div>
+=======
+                    <div class="col-lg-6 col-md-8 text-center">
+                        <div class="footer_widget">
+                            <h4 class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s" style="color: #ff005a;">LAMMA Expedition</h4>
+                            <p class="wow fadeInUp" data-wow-duration="1s" data-wow-delay=".5s">Gestion intelligente des événements et logistique.</p>
+>>>>>>> feryelPI
                         </div>
                     </div>
                 </div>
@@ -289,7 +378,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xl-12">
+<<<<<<< HEAD
                         <p class="copy_right text-center wow fadeInDown" data-wow-duration="1s" data-wow-delay=".5s">
+=======
+                        <p class="copy_right text-center">
+>>>>>>> feryelPI
                             Copyright &copy;<script>document.write(new Date().getFullYear());</script> Tous droits réservés | Projet LAMMA
                         </p>
                     </div>
@@ -297,14 +390,20 @@
             </div>
         </div>
     </footer>
+<<<<<<< HEAD
     <!-- footer_end  -->
 
     <!-- JS here -->
     <script src="{{ asset('js/vendor/modernizr-3.5.0.min.js') }}"></script>
+=======
+
+    <!-- JS here -->
+>>>>>>> feryelPI
     <script src="{{ asset('js/vendor/jquery-1.12.4.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/owl.carousel.min.js') }}"></script>
+<<<<<<< HEAD
     <script src="{{ asset('js/isotope.pkgd.min.js') }}"></script>
     <script src="{{ asset('js/ajax-form.js') }}"></script>
     <script src="{{ asset('js/waypoints.min.js') }}"></script>
@@ -370,4 +469,14 @@
     <script src="{{ asset('js/chatbot.js') }}"></script>
 </body>
 
+=======
+    <script src="{{ asset('js/jquery.slicknav.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+
+    {% block javascripts %}{% endblock %}
+
+    <!-- AI CHATBOT (Team Feature) -->
+    <script src="{{ asset('js/chatbot.js') }}"></script>
+</body>
+>>>>>>> feryelPI
 </html>

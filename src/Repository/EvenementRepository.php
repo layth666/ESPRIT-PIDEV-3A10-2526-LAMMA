@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 namespace App\Repository;
 
@@ -38,6 +39,22 @@ class EvenementRepository
     public function findBy(array $criteria): array
     {
         return $this->em->getRepository($this->entityClass)->findBy($criteria);
+=======
+namespace App\Repository;
+
+use App\Entity\Evenement;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<Evenement>
+ */
+class EvenementRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Evenement::class);
+>>>>>>> feryelPI
     }
 
     /**
@@ -45,9 +62,15 @@ class EvenementRepository
      */
     public function save(Evenement $entity, bool $flush = true): void
     {
+<<<<<<< HEAD
         $this->em->persist($entity);
         if ($flush) {
             $this->em->flush();
+=======
+        $this->getEntityManager()->persist($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+>>>>>>> feryelPI
         }
     }
 
@@ -56,9 +79,18 @@ class EvenementRepository
      */
     public function remove(Evenement $entity, bool $flush = true): void
     {
+<<<<<<< HEAD
         $this->em->remove($entity);
         if ($flush) {
             $this->em->flush();
         }
     }
 }
+=======
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+}
+>>>>>>> feryelPI

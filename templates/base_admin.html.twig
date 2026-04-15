@@ -9,7 +9,11 @@
             left: 0;
             top: 0;
             height: 100vh;
+<<<<<<< HEAD
             background: var(--scout-navy);
+=======
+            background: #0b0b0b;
+>>>>>>> feryelPI
             z-index: 1001;
         }
 
@@ -17,6 +21,7 @@
             margin-left: 280px;
             min-height: 100vh;
             position: relative;
+<<<<<<< HEAD
             background: var(--bg-blue-gradient);
         }
 
@@ -24,11 +29,24 @@
             background: #fff;
             padding: 15px 30px;
             border-bottom: 1px solid #e8e8e8;
+=======
+            background: #000;
+        }
+
+        .admin-toolbar {
+            background: #111;
+            padding: 15px 30px;
+            border-bottom: 1px solid #333;
+>>>>>>> feryelPI
             margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+<<<<<<< HEAD
             box-shadow: 0 4px 10px rgba(0,29,56,0.03);
+=======
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+>>>>>>> feryelPI
         }
 
         .content-area-master {
@@ -54,6 +72,7 @@
         <!-- Strategic Toolbar -->
         <div class="admin-toolbar">
             <div>
+<<<<<<< HEAD
                 <h4 style="margin: 0; font-family: 'Anton', sans-serif; color: var(--scout-navy); text-transform: uppercase;">
                     {% block admin_title %}Master Operations Console{% endblock %}
                 </h4>
@@ -65,9 +84,63 @@
             </div>
         </div>
 
+=======
+                <h4 style="margin: 0; font-family: 'Anton', sans-serif; color: #ff3c36; text-transform: uppercase;">
+                    {% block admin_title %}Console d'Administration{% endblock %}
+                </h4>
+                <div style="font-size: 0.75rem; color: #888; font-weight: 700;">PROJET LAMMA - Gestion Événements</div>
+            </div>
+        </div>
+
+        <!-- Flash Messages Logic -->
+        <div class="container-fluid px-4">
+            {% set ask_prog_id = null %}
+            {% for message in app.flashes('ask_add_prog') %}
+                {% set ask_prog_id = message %}
+            {% endfor %}
+
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : (label == 'notice' ? 'info' : label) }} alert-dismissible fade show mt-3 shadow-sm" role="alert">
+                        <i class="fas fa-info-circle me-1"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+>>>>>>> feryelPI
         <!-- Scrollable Mission Content Area -->
         <div class="content-area-master">
             {% block admin_content %}{% endblock %}
         </div>
     </div>
 {% endblock %}
+<<<<<<< HEAD
+=======
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% if ask_prog_id is not null %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Swal.fire({
+                    title: 'Événement ajouté !',
+                    text: "Souhaitez-vous ajouter un programme maintenant ?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff3c36',
+                    confirmButtonText: 'Oui',
+                    cancelButtonText: 'Non',
+                    background: '#111',
+                    color: '#fff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ path('app_programme_new') }}?event_id={{ ask_prog_id }}";
+                    }
+                });
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+>>>>>>> feryelPI

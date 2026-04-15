@@ -4,4 +4,8 @@ twig:
 
 when@test:
     twig:
+<<<<<<< HEAD
         strict_variables: true
+=======
+        strict_variables: true
+>>>>>>> feryelPI
