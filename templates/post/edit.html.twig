@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+     <link rel="stylesheet" href="{{ asset('css/word-predictor.css') }}">
+     {{ include('partials/word_predictor.html.twig') }}
     <style>
         .error-message { color: #dc3545; font-size: 14px; margin-top: 5px; }
         .alert-error { background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #f5c6cb; }
@@ -122,6 +124,7 @@
 <script src="{{ asset('js/vendor/jquery-1.12.4.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap.min.css') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/word-predictor.js') }}"></script>
 
 </body>
 </html>

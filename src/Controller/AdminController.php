@@ -11,39 +11,61 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 class AdminController extends AbstractController
 {
-    #[Route('/admin', name: 'admin_dashboard')]
-    public function dashboard(PostRepository $postRepository, CommentRepository $commentRepository): Response
-    {
-        $totalPosts = count($postRepository->findAll());
-        $totalComments = count($commentRepository->findAll());
-        $latestPosts = $postRepository->findBy([], ['createdAt' => 'DESC'], 5);
-        $latestComments = $commentRepository->findBy([], ['createdAt' => 'DESC'], 5);
-        
-        // Get posts with most comments
-        $allPosts = $postRepository->findAll();
-        $postsWithCommentCount = [];
-        foreach ($allPosts as $post) {
-            $postsWithCommentCount[] = [
-                'post' => $post,
-                'comment_count' => count($post->getComments())
-            ];
-        }
-        usort($postsWithCommentCount, function($a, $b) {
-            return $b['comment_count'] <=> $a['comment_count'];
-        });
-        $topPosts = array_slice($postsWithCommentCount, 0, 5);
-        
-        return $this->render('admin/dashboard.html.twig', [
-            'total_posts' => $totalPosts,
-            'total_comments' => $totalComments,
-            'latest_posts' => $latestPosts,
-            'latest_comments' => $latestComments,
-            'top_posts' => $topPosts,
-        ]);
+#[Route('/admin', name: 'admin_dashboard')]
+public function dashboard(PostRepository $postRepository, CommentRepository $commentRepository): Response
+{
+    $totalPosts = count($postRepository->findAll());
+    $totalComments = count($commentRepository->findAll());
+    $latestPosts = $postRepository->findBy([], ['createdAt' => 'DESC'], 5);
+    $latestComments = $commentRepository->findBy([], ['createdAt' => 'DESC'], 5);
+    
+    // Get posts with most comments
+    $allPosts = $postRepository->findAll();
+    $postsWithCommentCount = [];
+    foreach ($allPosts as $post) {
+        $postsWithCommentCount[] = [
+            'post' => $post,
+            'comment_count' => count($post->getComments())
+        ];
     }
+    usort($postsWithCommentCount, function($a, $b) {
+        return $b['comment_count'] <=> $a['comment_count'];
+    });
+    $topPosts = array_slice($postsWithCommentCount, 0, 5);
+    
+    // Prepare data for chart (last 6 months)
+    $months = [];
+    $postCounts = [];
+    
+    for ($i = 5; $i >= 0; $i--) {
+        $month = (new \DateTime())->modify("-$i months")->format('M Y');
+        $months[] = $month;
+        $count = 0;
+        foreach ($allPosts as $post) {
+            if ($post->getCreatedAt() && $post->getCreatedAt()->format('M Y') === $month) {
+                $count++;
+            }
+        }
+        $postCounts[] = $count;
+    }
+    
+    return $this->render('admin/dashboard.html.twig', [
+        'total_posts' => $totalPosts,
+        'total_comments' => $totalComments,
+        'latest_posts' => $latestPosts,
+        'latest_comments' => $latestComments,
+        'top_posts' => $topPosts,
+        'chart_months' => json_encode($months),
+        'chart_data' => json_encode($postCounts),
+        'total_posts_json' => $totalPosts,
+        'total_comments_json' => $totalComments,
+    ]);
+}
 
     #[Route('/admin/posts', name: 'admin_posts')]
     public function managePosts(PostRepository $postRepository): Response
@@ -90,14 +112,16 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/statistics', name: 'admin_stats')]
-    public function statistics(PostRepository $postRepository, CommentRepository $commentRepository): Response
+    public function statistics(PostRepository $postRepository, CommentRepository $commentRepository, ChartBuilderInterface $chartBuilder): Response
     {
         // Posts per month
         $allPosts = $postRepository->findAll();
         $postsPerMonth = [];
+        $postsPerMonthArray = [];
+        
         foreach ($allPosts as $post) {
             if ($post->getCreatedAt()) {
-                $month = $post->getCreatedAt()->format('Y-m');
+                $month = $post->getCreatedAt()->format('M Y');
                 if (!isset($postsPerMonth[$month])) {
                     $postsPerMonth[$month] = 0;
                 }
@@ -108,15 +132,62 @@ class AdminController extends AbstractController
         // Comments per month
         $allComments = $commentRepository->findAll();
         $commentsPerMonth = [];
+        $commentsPerMonthArray = [];
+        
         foreach ($allComments as $comment) {
             if ($comment->getCreatedAt()) {
-                $month = $comment->getCreatedAt()->format('Y-m');
+                $month = $comment->getCreatedAt()->format('M Y');
                 if (!isset($commentsPerMonth[$month])) {
                     $commentsPerMonth[$month] = 0;
                 }
                 $commentsPerMonth[$month]++;
             }
         }
+        
+        // Get last 6 months for chart
+        $months = [];
+        $postData = [];
+        $commentData = [];
+        
+        for ($i = 5; $i >= 0; $i--) {
+            $month = (new \DateTime())->modify("-$i months")->format('M Y');
+            $months[] = $month;
+            $postData[] = $postsPerMonth[$month] ?? 0;
+            $commentData[] = $commentsPerMonth[$month] ?? 0;
+        }
+        
+        // Create line chart for trends
+        $trendChart = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $trendChart->setData([
+            'labels' => $months,
+            'datasets' => [
+                [
+                    'label' => 'Posts',
+                    'backgroundColor' => '#f09000',
+                    'borderColor' => '#f09000',
+                    'data' => $postData,
+                    'tension' => 0.1,
+                ],
+                [
+                    'label' => 'Comments',
+                    'backgroundColor' => '#1a2f45',
+                    'borderColor' => '#1a2f45',
+                    'data' => $commentData,
+                    'tension' => 0.1,
+                ],
+            ],
+        ]);
+        
+        $trendChart->setOptions([
+            'responsive' => true,
+            'maintainAspectRatio' => false,
+            'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => 'Content Trends (Last 6 Months)',
+                ],
+            ],
+        ]);
         
         // Most active posts
         $activePosts = [];
@@ -137,6 +208,7 @@ class AdminController extends AbstractController
             'active_posts' => $activePosts,
             'total_posts' => count($allPosts),
             'total_comments' => count($allComments),
+            'trend_chart' => $trendChart,
         ]);
     }
 }

@@ -39,6 +39,7 @@
                                 <nav>
                                     <ul id="navigation">
                                         <li><a href="/post">Posts</a></li>
+                                        <li><a href="{{ path('admin_dashboard') }}">Admin</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -192,7 +193,7 @@
 
                             <div class="add-comment mt-3">
                                 <form method="post" action="{{ path('app_comment_add', {'id': post.id}) }}" style="display:flex;gap:10px;align-items:center;">
-                                    <input type="text" name="content" placeholder="Write a comment..." style="flex:1;padding:8px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;">
+                                    <textarea name="content" placeholder="Write a comment..." style="flex:1;padding:8px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;resize:vertical;" rows="2"></textarea>
                                     <button type="submit" class="boxed-btn3" style="padding:8px 20px;">Comment</button>
                                 </form>
                             </div>
@@ -225,6 +226,9 @@
 <script src="{{ asset('js/vendor/jquery-1.12.4.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
+
+<!-- Word Predictor - Include AFTER jQuery but BEFORE custom scripts -->
+{{ include('partials/word_predictor.html.twig') }}
 
 <script>
 // Auto-hide flash messages
