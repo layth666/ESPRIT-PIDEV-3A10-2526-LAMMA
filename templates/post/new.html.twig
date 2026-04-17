@@ -1,0 +1,170 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <title>New Post</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/word-predictor.css') }}">
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    {{ include('partials/word_predictor.html.twig') }}
+    <style>
+        .ai-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .ai-badge i {
+            font-size: 12px;
+        }
+        .suggestion-hint {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .suggestion-hint kbd {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-area">
+        <div id="sticky-header" class="main-header-area">
+            <div class="container">
+                <div class="header_bottom_border">
+                    <div class="row align-items-center">
+                        <div class="col-xl-3 col-lg-3">
+                            <div class="logo">
+                                <a href="/post"><img src="{{ asset('img/logo.png') }}" alt="logo"></a>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6">
+                            <div class="main-menu d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><a href="/post">Posts</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="bradcam_area">
+    <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xl-12">
+                    <div class="bradcam_text text-center">
+                        <h3>Create New Post</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="blog_area section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div style="background:white;padding:30px;border-radius:6px;">
+
+                    <!-- AI Badge -->
+                    <div class="ai-badge">
+                        <i class="fa fa-magic"></i> AI Word Predictor Active
+                    </div>
+
+                    <!-- Display flash messages -->
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% endfor %}
+
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    <div class="form-group mb-3">
+                        <label style="font-weight:bold;color:#1a2f45;">Title</label>
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control', 'style': 'border-radius:4px;padding:10px;', 'placeholder': 'Enter post title'}}) }}
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label style="font-weight:bold;color:#1a2f45;">Content</label>
+                        {{ form_widget(form.content, {'attr': {
+                            'class': 'form-control', 
+                            'rows': 8, 
+                            'style': 'border-radius:4px;padding:10px;', 
+                            'placeholder': 'Write your post content here...',
+                            'data-predict': 'true',
+                            'id': 'post_content'
+                        }}) }}
+                        
+                        <!-- Suggestion hints -->
+                        <div class="suggestion-hint">
+                            <span><i class="fa fa-lightbulb-o"></i> <strong>AI Predictor:</strong> Type a word and suggestions will appear</span>
+                            <span><kbd>Tab</kbd> Accept suggestion</span>
+                            <span><kbd>Esc</kbd> Close suggestions</span>
+                            <span><kbd>Click</kbd> Select suggestion</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="boxed-btn3">Publish Post</button>
+                    <a href="{{ path('app_post_index') }}" style="margin-left:15px;color:#888;">Cancel</a>
+
+                    {{ form_end(form) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="copy-right_text">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <p class="copy_right text-center">Copyright &copy; 2026 All rights reserved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="{{ asset('js/vendor/jquery-1.12.4.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/word-predictor.js') }}"></script>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#post_content'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+</body>
+</html>

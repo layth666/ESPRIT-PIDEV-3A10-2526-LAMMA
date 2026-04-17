@@ -1,0 +1,1490 @@
+<?php
+
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Extension\CoreExtension;
+use Twig\Extension\SandboxExtension;
+use Twig\Markup;
+use Twig\Sandbox\SecurityError;
+use Twig\Sandbox\SecurityNotAllowedTagError;
+use Twig\Sandbox\SecurityNotAllowedFilterError;
+use Twig\Sandbox\SecurityNotAllowedFunctionError;
+use Twig\Source;
+use Twig\Template;
+use Twig\TemplateWrapper;
+
+/* users/index.html.twig */
+class __TwigTemplate_9d130cb4d672bfcb2a1523cbe48d8970 extends Template
+{
+    private Source $source;
+    /**
+     * @var array<string, Template>
+     */
+    private array $macros = [];
+
+    public function __construct(Environment $env)
+    {
+        parent::__construct($env);
+
+        $this->source = $this->getSourceContext();
+
+        $this->blocks = [
+            'title' => [$this, 'block_title'],
+            'page_title' => [$this, 'block_page_title'],
+            'breadcrumb' => [$this, 'block_breadcrumb'],
+            'extra_styles' => [$this, 'block_extra_styles'],
+            'content' => [$this, 'block_content'],
+            'extra_scripts' => [$this, 'block_extra_scripts'],
+        ];
+    }
+
+    protected function doGetParent(array $context): bool|string|Template|TemplateWrapper
+    {
+        // line 2
+        return "admin/base_admin.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "template", "users/index.html.twig"));
+
+        $this->parent = $this->load("admin/base_admin.html.twig", 2);
+        yield from $this->parent->unwrap()->yield($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+    }
+
+    // line 3
+    /**
+     * @return iterable<null|scalar|\Stringable>
+     */
+    public function block_title(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "title"));
+
+        yield "User Management";
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        yield from [];
+    }
+
+    // line 4
+    /**
+     * @return iterable<null|scalar|\Stringable>
+     */
+    public function block_page_title(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "page_title"));
+
+        yield "User Management";
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        yield from [];
+    }
+
+    // line 5
+    /**
+     * @return iterable<null|scalar|\Stringable>
+     */
+    public function block_breadcrumb(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "breadcrumb"));
+
+        yield "Trail Team · Members currently out in the wild";
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        yield from [];
+    }
+
+    // line 7
+    /**
+     * @return iterable<null|scalar|\Stringable>
+     */
+    public function block_extra_styles(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "extra_styles"));
+
+        // line 8
+        yield "  /* ══ STATS ══ */
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+  .stat-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden;transition:border-color .25s,transform .2s;}
+  .stat-card:hover{border-color:rgba(255,255,255,.15);transform:translateY(-2px);}
+  .stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 0% 100%,var(--ac) 0%,transparent 65%);opacity:.08;pointer-events:none;}
+  .stat-card.total{--ac:#2ecfb8;}.stat-card.users{--ac:#f5c842;}.stat-card.admins{--ac:#e8392c;}
+  .stat-icon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;}
+  .stat-card.total .stat-icon{background:rgba(46,207,184,.12);color:var(--teal);}
+  .stat-card.users .stat-icon{background:rgba(245,200,66,.12);color:var(--yellow);}
+  .stat-card.admins .stat-icon{background:rgba(232,57,44,.12);color:var(--red);}
+  .stat-icon svg{width:22px;height:22px;}
+  .stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;line-height:1;letter-spacing:.04em;}
+  .stat-label{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+
+  /* ══ TOOLBAR ══ */
+  .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+  .toolbar-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.06em;flex:1;}
+  .search-wrap{position:relative;}
+  .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);pointer-events:none;}
+  .search-input{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 14px 9px 36px;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--white);outline:none;width:220px;transition:border-color .2s,box-shadow .2s;}
+  .search-input::placeholder{color:rgba(255,255,255,.2);}
+  .search-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(46,207,184,.1);}
+  .filter-group{display:flex;gap:6px;}
+  .filter-btn{padding:8px 16px;border-radius:8px;font-size:.8rem;font-weight:600;letter-spacing:.04em;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+  .filter-btn:hover{border-color:rgba(255,255,255,.2);color:var(--soft);}
+  .filter-btn.active{background:var(--red);border-color:var(--red);color:var(--white);}
+  .new-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;background:var(--red);border:none;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;}
+  .new-btn:hover{background:#c93228;transform:translateY(-1px);box-shadow:0 8px 20px rgba(232,57,44,.3);}
+  .new-btn svg{width:15px;height:15px;}
+
+  /* ══ USER GRID ══ */
+  .user-grid{ display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;
+  overflow:visible;}
+
+  /* KEY FIX: card must NOT be position:relative so the fixed dropdown
+     doesn't get clipped or offset by any ancestor transform/overflow */
+  .user-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 18px 16px;
+    cursor:pointer;
+    transition:border-color .25s,transform .2s,box-shadow .2s;
+    animation:fadeUp .35s ease both;
+    position:relative;
+    overflow:visible;
+}
+  .user-card:hover{border-color:rgba(255,255,255,.15);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.35);z-index:10;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .user-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;position:relative;}
+  .user-avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--white);}
+  .user-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+  .user-card-info{flex:1;min-width:0;}
+  .user-card-name{font-size:.95rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .user-card-role{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-top:3px;}
+  .role-user{background:rgba(245,200,66,.12);color:var(--yellow);}
+  .role-admin{background:rgba(232,57,44,.12);color:var(--red);}
+  .card-menu-btn{width:30px;height:30px;border-radius:8px;background:none;border:1px solid transparent;display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:background .2s,border-color .2s,color .2s;flex-shrink:0;}
+  .card-menu-btn:hover{background:var(--card2);border-color:var(--line);color:var(--white);}
+  .card-menu-btn svg{width:16px;height:16px;}
+  .user-card-email{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;}
+  .user-card-email svg{width:13px;height:13px;flex-shrink:0;}
+  .user-card.banned{opacity:.5;}
+  .user-card.banned .user-card-name::after{content:' · BANNED';font-size:.65rem;color:var(--red);font-weight:700;letter-spacing:.08em;}
+
+  /* ══ DROPDOWN — uses fixed positioning set by JS, always floats above grid ══ */
+  .dropdown-menu{
+    position:absolute;
+    top:40px;
+    right:10px;
+    background:var(--card2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:6px;
+    min-width:170px;
+    z-index:9999;
+    box-shadow:0 16px 48px rgba(0,0,0,.6);
+    display:none;
+}
+  .dropdown-menu.open{display:block;}
+  @keyframes dropIn{from{opacity:0;transform:scale(.92) translateY(-6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:.83rem;font-weight:500;color:var(--soft);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;transition:background .15s,color .15s;text-decoration:none;}
+  .dropdown-item:hover{background:rgba(255,255,255,.06);color:var(--white);}
+  .dropdown-item.danger{color:#ff8a80;}
+  .dropdown-item.danger:hover{background:rgba(232,57,44,.1);color:#ff5252;}
+  .dropdown-item.promote{color:var(--teal);}
+  .dropdown-item.promote:hover{background:rgba(46,207,184,.08);}
+  .dropdown-item svg{width:14px;height:14px;flex-shrink:0;}
+  .dropdown-sep{height:1px;background:var(--line);margin:4px 0;}
+
+  /* ══ DRAWER ══ */
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .drawer-backdrop.open{opacity:1;pointer-events:all;}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:360px;background:var(--card);border-left:1px solid var(--line);z-index:101;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-24px 0 60px rgba(0,0,0,.5);}
+  .drawer.open{transform:translateX(0);}
+  .drawer-header{padding:24px 24px 0;display:flex;justify-content:flex-end;}
+  .drawer-close{width:32px;height:32px;border-radius:8px;background:var(--card2);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:background .2s,color .2s;}
+  .drawer-close:hover{background:rgba(255,255,255,.08);color:var(--white);}
+  .drawer-close svg{width:15px;height:15px;}
+  .drawer-profile{display:flex;flex-direction:column;align-items:center;padding:24px 24px 20px;text-align:center;border-bottom:1px solid var(--line);}
+  .drawer-avatar{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--white);margin-bottom:14px;border:3px solid var(--line);}
+  .drawer-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+  .drawer-name{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.05em;margin-bottom:4px;}
+  .drawer-email{font-size:.82rem;color:var(--muted);}
+  .drawer-role-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;margin-top:10px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+  .drawer-body{flex:1;overflow-y:auto;padding:20px 24px;}
+  .drawer-body::-webkit-scrollbar{width:3px;}
+  .drawer-body::-webkit-scrollbar-thumb{background:var(--line);}
+  .drawer-section{margin-bottom:24px;}
+  .drawer-section-title{font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .drawer-section-title::after{content:'';flex:1;height:1px;background:var(--line);}
+  .drawer-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .drawer-row:last-child{border-bottom:none;}
+  .drawer-row-icon{width:32px;height:32px;border-radius:8px;background:var(--surface);display:grid;place-items:center;color:var(--muted);flex-shrink:0;}
+  .drawer-row-icon svg{width:15px;height:15px;}
+  .drawer-row-label{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .drawer-row-value{font-size:.9rem;font-weight:500;color:var(--white);margin-top:1px;}
+
+  /* ══ EMPTY STATE ══ */
+  .empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);}
+  .empty-state svg{width:48px;height:48px;margin-bottom:16px;opacity:.3;}
+  .empty-state p{font-size:.9rem;}
+
+  /* ══ TOAST ══ */
+  .toast-stack{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;flex-direction:column;gap:8px;}
+  .toast{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 18px;font-size:.85rem;color:var(--white);font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:10px;}
+  @keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
+  .toast.success{border-color:rgba(46,207,184,.3);}
+  .toast.error{border-color:rgba(232,57,44,.3);}
+  .toast-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .toast.success .toast-dot{background:var(--teal);}
+  .toast.error .toast-dot{background:var(--red);}
+
+  /* ══ ADD MEMBER MODAL ══ */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+  .modal-overlay.open{opacity:1;pointer-events:all;}
+  .modal-box{background:var(--card);border:1px solid var(--line);border-radius:18px;width:100%;max-width:540px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(28px) scale(.96);transition:transform .32s cubic-bezier(.34,1.56,.64,1);box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(46,207,184,.06);}
+  .modal-overlay.open .modal-box{transform:translateY(0) scale(1);}
+  .modal-head{padding:24px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+  .modal-head h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.06em;margin-bottom:3px;}
+  .modal-head p{font-size:.78rem;color:var(--muted);}
+  .modal-x{width:32px;height:32px;border-radius:8px;background:var(--card2);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--muted);flex-shrink:0;margin-left:16px;transition:background .2s,color .2s;}
+  .modal-x:hover{background:rgba(255,255,255,.08);color:var(--white);}
+  .modal-x svg{width:15px;height:15px;}
+  .modal-av-row{display:flex;align-items:center;gap:16px;padding:20px 24px 0;flex-shrink:0;}
+  .modal-av-wrap{position:relative;flex-shrink:0;}
+  .modal-av-img{width:64px;height:64px;border-radius:50%;object-fit:cover;display:block;background:var(--surface);border:2px solid var(--line);transition:border-color .25s;}
+  .modal-av-wrap:hover .modal-av-img{border-color:var(--teal);}
+  .modal-av-edit{position:absolute;bottom:0;right:0;width:22px;height:22px;border-radius:50%;background:var(--red);border:2px solid var(--card);display:grid;place-items:center;cursor:pointer;}
+  .modal-av-edit svg{width:10px;height:10px;}
+  .modal-av-info h4{font-size:.88rem;font-weight:600;margin-bottom:2px;}
+  .modal-av-info p{font-size:.72rem;color:var(--muted);}
+  .modal-av-trigger{font-size:.72rem;font-weight:600;color:var(--teal);background:none;border:none;cursor:pointer;padding:0;margin-top:4px;display:block;}
+  .modal-scroll{flex:1;overflow-y:auto;padding:18px 24px 0;}
+  .modal-scroll::-webkit-scrollbar{width:3px;}
+  .modal-scroll::-webkit-scrollbar-thumb{background:var(--line);}
+  .m-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .m-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .m-field label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+  .m-err{font-size:.7rem;color:#ff8a80;margin-top:2px;display:none;}
+  .m-field.has-err .m-err{display:block;}
+  .m-field.has-err .m-inp,.m-field.has-err .m-sel{border-color:#e8392c !important;box-shadow:0 0 0 2px rgba(232,57,44,.15) !important;}
+  .m-wrap{position:relative;}
+  .m-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);display:flex;}
+  .m-ico svg{width:14px;height:14px;}
+  .m-inp,.m-sel{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:11px 12px 11px 36px;font-family:'DM Sans',sans-serif;font-size:.87rem;color:var(--white);outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s,background .2s;}
+  .m-inp::placeholder{color:rgba(255,255,255,.2);}
+  .m-inp:focus,.m-sel:focus{border-color:var(--teal);background:rgba(46,207,184,.05);box-shadow:0 0 0 3px rgba(46,207,184,.1);}
+  .m-sel option{background:#0f0f11;}
+  .m-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);display:flex;transition:color .2s;}
+  .m-eye:hover{color:var(--white);}
+  .m-eye svg{width:15px;height:15px;}
+  .m-sep{display:flex;align-items:center;gap:10px;margin:2px 0 14px;}
+  .m-sep span{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);white-space:nowrap;}
+  .m-sep::before,.m-sep::after{content:'';flex:1;height:1px;background:var(--line);}
+  .m-sbar{height:2px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:6px;}
+  .m-sfill{height:100%;width:0;border-radius:2px;transition:width .4s,background .4s;}
+  .m-slbl{font-size:.65rem;color:var(--muted);margin-top:3px;}
+  .modal-or{display:flex;align-items:center;gap:12px;margin:4px 0 14px;}
+  .modal-or span{font-size:.68rem;color:var(--muted);white-space:nowrap;}
+  .modal-or::before,.modal-or::after{content:'';flex:1;height:1px;background:var(--line);}
+  .btn-google{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:11px;background:var(--surface);border:1px solid var(--line);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--soft);cursor:pointer;transition:border-color .2s,background .2s,color .2s;text-decoration:none;margin-bottom:4px;}
+  .btn-google:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--white);}
+  .modal-foot{padding:18px 24px 22px;display:flex;align-items:center;gap:10px;justify-content:flex-end;border-top:1px solid var(--line);flex-shrink:0;}
+  .m-cancel{padding:10px 20px;border-radius:8px;background:transparent;border:1px solid var(--line);color:var(--soft);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s;}
+  .m-cancel:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2);}
+  .m-submit{padding:10px 24px;border-radius:8px;background:var(--red);border:none;color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;display:flex;align-items:center;gap:8px;}
+  .m-submit:hover{background:#c93228;transform:translateY(-1px);box-shadow:0 8px 20px rgba(232,57,44,.3);}
+  .m-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+  .m-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+  .m-submit.loading .m-spinner{display:block;}
+  .m-submit.loading .m-btxt{display:none;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+";
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        yield from [];
+    }
+
+    // line 205
+    /**
+     * @return iterable<null|scalar|\Stringable>
+     */
+    public function block_content(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "content"));
+
+        // line 206
+        $context["total_users"] = Twig\Extension\CoreExtension::length($this->env->getCharset(), (isset($context["users"]) || array_key_exists("users", $context) ? $context["users"] : (function () { throw new RuntimeError('Variable "users" does not exist.', 206, $this->source); })()));
+        // line 207
+        $context["admin_users"] = Twig\Extension\CoreExtension::length($this->env->getCharset(), Twig\Extension\CoreExtension::filter($this->env, (isset($context["users"]) || array_key_exists("users", $context) ? $context["users"] : (function () { throw new RuntimeError('Variable "users" does not exist.', 207, $this->source); })()), function ($__u__) use ($context, $macros) { $context["u"] = $__u__; return (CoreExtension::getAttribute($this->env, $this->source, (isset($context["u"]) || array_key_exists("u", $context) ? $context["u"] : (function () { throw new RuntimeError('Variable "u" does not exist.', 207, $this->source); })()), "role", [], "any", false, false, false, 207) == "ADMIN"); }));
+        // line 208
+        $context["regular_users"] = ((isset($context["total_users"]) || array_key_exists("total_users", $context) ? $context["total_users"] : (function () { throw new RuntimeError('Variable "total_users" does not exist.', 208, $this->source); })()) - (isset($context["admin_users"]) || array_key_exists("admin_users", $context) ? $context["admin_users"] : (function () { throw new RuntimeError('Variable "admin_users" does not exist.', 208, $this->source); })()));
+        // line 209
+        yield "
+<div class=\"stats-row\">
+  <div class=\"stat-card total\">
+    <div class=\"stat-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg></div>
+    <div><div class=\"stat-num\" id=\"statTotal\">";
+        // line 213
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape((isset($context["total_users"]) || array_key_exists("total_users", $context) ? $context["total_users"] : (function () { throw new RuntimeError('Variable "total_users" does not exist.', 213, $this->source); })()), "html", null, true);
+        yield "</div><div class=\"stat-label\">Total Members</div></div>
+  </div>
+  <div class=\"stat-card users\">
+    <div class=\"stat-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg></div>
+    <div><div class=\"stat-num\">";
+        // line 217
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape((isset($context["regular_users"]) || array_key_exists("regular_users", $context) ? $context["regular_users"] : (function () { throw new RuntimeError('Variable "regular_users" does not exist.', 217, $this->source); })()), "html", null, true);
+        yield "</div><div class=\"stat-label\">Regular Users</div></div>
+  </div>
+  <div class=\"stat-card admins\">
+    <div class=\"stat-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg></div>
+    <div><div class=\"stat-num\">";
+        // line 221
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape((isset($context["admin_users"]) || array_key_exists("admin_users", $context) ? $context["admin_users"] : (function () { throw new RuntimeError('Variable "admin_users" does not exist.', 221, $this->source); })()), "html", null, true);
+        yield "</div><div class=\"stat-label\">Administrators</div></div>
+  </div>
+</div>
+
+<div class=\"toolbar\">
+  <div class=\"toolbar-title\">Trail Team</div>
+  <div class=\"search-wrap\">
+    <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/></svg>
+    <input type=\"text\" class=\"search-input\" id=\"searchInput\" placeholder=\"Search by name or email…\"/>
+  </div>
+  <div class=\"filter-group\">
+    <button class=\"filter-btn active\" data-filter=\"all\">All Users</button>
+    <button class=\"filter-btn\" data-filter=\"az\">A–Z</button>
+    <button class=\"filter-btn\" data-filter=\"user\">Users</button>
+    <button class=\"filter-btn\" data-filter=\"admin\">Admins</button>
+  </div>
+  <button type=\"button\" class=\"new-btn\" onclick=\"openModal()\">
+    <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><line x1=\"12\" y1=\"5\" x2=\"12\" y2=\"19\"/><line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"/></svg>
+    New Member
+  </button>
+</div>
+
+<div class=\"user-grid\" id=\"userGrid\">
+  ";
+        // line 244
+        $context['_parent'] = $context;
+        $context['_seq'] = CoreExtension::ensureTraversable((isset($context["users"]) || array_key_exists("users", $context) ? $context["users"] : (function () { throw new RuntimeError('Variable "users" does not exist.', 244, $this->source); })()));
+        $context['_iterated'] = false;
+        $context['loop'] = [
+          'parent' => $context['_parent'],
+          'index0' => 0,
+          'index'  => 1,
+          'first'  => true,
+        ];
+        if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof \Countable)) {
+            $length = count($context['_seq']);
+            $context['loop']['revindex0'] = $length - 1;
+            $context['loop']['revindex'] = $length;
+            $context['loop']['length'] = $length;
+            $context['loop']['last'] = 1 === $length;
+        }
+        foreach ($context['_seq'] as $context["_key"] => $context["user"]) {
+            // line 245
+            yield "    ";
+            $context["colors"] = ["#e8392c", "#2ecfb8", "#f5c842", "#7c6dfa", "#fa6d8b", "#4db8ff"];
+            // line 246
+            yield "    ";
+            $context["color"] = CoreExtension::getAttribute($this->env, $this->source, (isset($context["colors"]) || array_key_exists("colors", $context) ? $context["colors"] : (function () { throw new RuntimeError('Variable "colors" does not exist.', 246, $this->source); })()), (CoreExtension::getAttribute($this->env, $this->source, $context["loop"], "index0", [], "any", false, false, false, 246) % 6), [], "array", false, false, false, 246);
+            // line 247
+            yield "    <div class=\"user-card ";
+            if ((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 247) == "BANNED")) {
+                yield "banned";
+            }
+            if ((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 247) == (isset($context["current_user_id"]) || array_key_exists("current_user_id", $context) ? $context["current_user_id"] : (function () { throw new RuntimeError('Variable "current_user_id" does not exist.', 247, $this->source); })()))) {
+                yield " is-me";
+            }
+            yield "\"
+         data-name=\"";
+            // line 248
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(Twig\Extension\CoreExtension::lower($this->env->getCharset(), CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 248)), "html", null, true);
+            yield "\" data-email=\"";
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(Twig\Extension\CoreExtension::lower($this->env->getCharset(), CoreExtension::getAttribute($this->env, $this->source, $context["user"], "email", [], "any", false, false, false, 248)), "html", null, true);
+            yield "\" data-role=\"";
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(Twig\Extension\CoreExtension::lower($this->env->getCharset(), CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 248)), "html", null, true);
+            yield "\"
+         onclick=\"openDrawer(";
+            // line 249
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 249), "html", null, true);
+            yield ",event)\">
+      <div class=\"user-card-top\">
+        <div class=\"user-avatar\" style=\"background:";
+            // line 251
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape((isset($context["color"]) || array_key_exists("color", $context) ? $context["color"] : (function () { throw new RuntimeError('Variable "color" does not exist.', 251, $this->source); })()), "html", null, true);
+            yield ";\">
+          ";
+            // line 252
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["user"], "image", [], "any", false, false, false, 252)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                yield "<img src=\"";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl(("uploads/images/" . CoreExtension::getAttribute($this->env, $this->source, $context["user"], "image", [], "any", false, false, false, 252))), "html", null, true);
+                yield "\" alt=\"";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 252), "html", null, true);
+                yield "\"/>";
+            } else {
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(Twig\Extension\CoreExtension::upper($this->env->getCharset(), Twig\Extension\CoreExtension::slice($this->env->getCharset(), CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 252), 0, 1)), "html", null, true);
+            }
+            // line 253
+            yield "        </div>
+        <div class=\"user-card-info\">
+          <div class=\"user-card-name\">";
+            // line 255
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 255), "html", null, true);
+            yield "</div>
+          <span class=\"user-card-role ";
+            // line 256
+            yield (((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 256) == "ADMIN")) ? ("role-admin") : ("role-user"));
+            yield "\">
+            ";
+            // line 257
+            if ((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 257) == "ADMIN")) {
+                yield "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" width=\"10\" height=\"10\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>";
+            }
+            // line 258
+            yield "            ";
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 258), "html", null, true);
+            yield "
+          </span>
+        </div>
+        ";
+            // line 261
+            if ((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 261) != (isset($context["current_user_id"]) || array_key_exists("current_user_id", $context) ? $context["current_user_id"] : (function () { throw new RuntimeError('Variable "current_user_id" does not exist.', 261, $this->source); })()))) {
+                // line 262
+                yield "          ";
+                // line 263
+                yield "          <button class=\"card-menu-btn\" onclick=\"toggleMenu(event,";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 263), "html", null, true);
+                yield ")\" data-menu=\"";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 263), "html", null, true);
+                yield "\">
+            <svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"12\" cy=\"5\" r=\"1.5\"/><circle cx=\"12\" cy=\"12\" r=\"1.5\"/><circle cx=\"12\" cy=\"19\" r=\"1.5\"/></svg>
+          </button>
+          <div class=\"dropdown-menu\" id=\"menu-";
+                // line 266
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 266), "html", null, true);
+                yield "\">
+            ";
+                // line 267
+                if (((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 267) != "ADMIN") && (CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 267) != "BANNED"))) {
+                    // line 268
+                    yield "              <a href=\"";
+                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_users_promote", ["id" => CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 268)]), "html", null, true);
+                    yield "\" class=\"dropdown-item promote\" onclick=\"return confirmAction(event,'Promote ";
+                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 268), "html", null, true);
+                    yield " to Admin?')\">
+                <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>Promote to Admin
+              </a>
+            ";
+                } elseif ((CoreExtension::getAttribute($this->env, $this->source,                 // line 271
+$context["user"], "role", [], "any", false, false, false, 271) == "ADMIN")) {
+                    // line 272
+                    yield "              <a href=\"";
+                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_users_demote", ["id" => CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 272)]), "html", null, true);
+                    yield "\" class=\"dropdown-item\" onclick=\"return confirmAction(event,'Demote ";
+                    yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 272), "html", null, true);
+                    yield " to User?')\">
+                <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg>Demote to User
+              </a>
+            ";
+                }
+                // line 276
+                yield "            ";
+                $context["banLabel"] = (((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 276) == "BANNED")) ? ("Unban") : ("Ban"));
+                // line 277
+                yield "            <a href=\"";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_users_ban", ["id" => CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 277)]), "html", null, true);
+                yield "\" class=\"dropdown-item\" onclick=\"return confirmAction(event,'";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape((isset($context["banLabel"]) || array_key_exists("banLabel", $context) ? $context["banLabel"] : (function () { throw new RuntimeError('Variable "banLabel" does not exist.', 277, $this->source); })()), "html", null, true);
+                yield " ";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 277), "html", null, true);
+                yield "?')\">
+              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"4.93\" y1=\"4.93\" x2=\"19.07\" y2=\"19.07\"/></svg>
+              ";
+                // line 279
+                yield (((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 279) == "BANNED")) ? ("Unban User") : ("Ban User"));
+                yield "
+            </a>
+            <div class=\"dropdown-sep\"></div>
+            <form method=\"POST\" action=\"";
+                // line 282
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_users_delete", ["id" => CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 282)]), "html", null, true);
+                yield "\" style=\"margin:0\" onsubmit=\"return confirmAction(event,'Delete ";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 282), "html", null, true);
+                yield "? This cannot be undone.')\">
+              <input type=\"hidden\" name=\"_token\" value=\"";
+                // line 283
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Symfony\Component\Form\FormRenderer')->renderCsrfToken(("delete" . CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 283))), "html", null, true);
+                yield "\"/>
+              <button type=\"submit\" class=\"dropdown-item danger\">
+                <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><polyline points=\"3 6 5 6 21 6\"/><path d=\"M19 6l-1 14H6L5 6\"/><path d=\"M10 11v6\"/><path d=\"M14 11v6\"/><path d=\"M9 6V4h6v2\"/></svg>Delete User
+              </button>
+            </form>
+          </div>
+        ";
+            } else {
+                // line 290
+                yield "          <span style=\"font-size:.65rem;font-weight:700;letter-spacing:.08em;color:var(--teal);background:rgba(46,207,184,.1);border:1px solid rgba(46,207,184,.25);border-radius:20px;padding:3px 9px;flex-shrink:0;\">YOU</span>
+        ";
+            }
+            // line 292
+            yield "      </div>
+      <div class=\"user-card-email\">
+        <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/></svg>
+        ";
+            // line 295
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "email", [], "any", false, false, false, 295), "html", null, true);
+            yield "
+      </div>
+      <div style=\"display:none\" class=\"user-data\"
+           data-id=\"";
+            // line 298
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "id", [], "any", false, false, false, 298), "html", null, true);
+            yield "\" data-name=\"";
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "name", [], "any", false, false, false, 298), "html", null, true);
+            yield "\" data-email=\"";
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "email", [], "any", false, false, false, 298), "html", null, true);
+            yield "\"
+           data-role=\"";
+            // line 299
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "role", [], "any", false, false, false, 299), "html", null, true);
+            yield "\" data-phone=\"";
+            yield (((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "phone", [], "any", true, true, false, 299) &&  !(null === CoreExtension::getAttribute($this->env, $this->source, $context["user"], "phone", [], "any", false, false, false, 299)))) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "phone", [], "any", false, false, false, 299), "html", null, true)) : ("—"));
+            yield "\"
+           data-motorized=\"";
+            // line 300
+            yield (((CoreExtension::getAttribute($this->env, $this->source, $context["user"], "motorized", [], "any", true, true, false, 300) &&  !(null === CoreExtension::getAttribute($this->env, $this->source, $context["user"], "motorized", [], "any", false, false, false, 300)))) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["user"], "motorized", [], "any", false, false, false, 300), "html", null, true)) : ("—"));
+            yield "\"
+           data-image=\"";
+            // line 301
+            yield (((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["user"], "image", [], "any", false, false, false, 301)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl(("uploads/images/" . CoreExtension::getAttribute($this->env, $this->source, $context["user"], "image", [], "any", false, false, false, 301))), "html", null, true)) : (""));
+            yield "\"
+           data-color=\"";
+            // line 302
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape((isset($context["color"]) || array_key_exists("color", $context) ? $context["color"] : (function () { throw new RuntimeError('Variable "color" does not exist.', 302, $this->source); })()), "html", null, true);
+            yield "\"></div>
+    </div>
+  ";
+            $context['_iterated'] = true;
+            ++$context['loop']['index0'];
+            ++$context['loop']['index'];
+            $context['loop']['first'] = false;
+            if (isset($context['loop']['revindex0'], $context['loop']['revindex'])) {
+                --$context['loop']['revindex0'];
+                --$context['loop']['revindex'];
+                $context['loop']['last'] = 0 === $context['loop']['revindex0'];
+            }
+        }
+        // line 304
+        if (!$context['_iterated']) {
+            // line 305
+            yield "    <div class=\"empty-state\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/></svg><p>No users found.</p></div>
+  ";
+        }
+        $_parent = $context['_parent'];
+        unset($context['_seq'], $context['_key'], $context['user'], $context['_parent'], $context['_iterated'], $context['loop']);
+        $context = array_intersect_key($context, $_parent) + $_parent;
+        // line 307
+        yield "</div>
+
+";
+        // line 310
+        yield "<div class=\"drawer-backdrop\" id=\"drawerBackdrop\" onclick=\"closeDrawer()\"></div>
+<div class=\"drawer\" id=\"userDrawer\">
+  <div class=\"drawer-header\"><button class=\"drawer-close\" onclick=\"closeDrawer()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg></button></div>
+  <div class=\"drawer-profile\">
+    <div class=\"drawer-avatar\" id=\"drawerAvatar\">?</div>
+    <div class=\"drawer-name\" id=\"drawerName\">—</div>
+    <div class=\"drawer-email\" id=\"drawerEmail\">—</div>
+    <span class=\"drawer-role-badge\" id=\"drawerRoleBadge\">—</span>
+  </div>
+  <div class=\"drawer-body\">
+    <div class=\"drawer-section\">
+      <div class=\"drawer-section-title\">Contact</div>
+      <div class=\"drawer-row\"><div class=\"drawer-row-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/></svg></div><div><div class=\"drawer-row-label\">Email</div><div class=\"drawer-row-value\" id=\"drawerEmailVal\">—</div></div></div>
+      <div class=\"drawer-row\"><div class=\"drawer-row-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z\"/></svg></div><div><div class=\"drawer-row-label\">Phone</div><div class=\"drawer-row-value\" id=\"drawerPhone\">—</div></div></div>
+    </div>
+    <div class=\"drawer-section\">
+      <div class=\"drawer-section-title\">Profile</div>
+      <div class=\"drawer-row\"><div class=\"drawer-row-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg></div><div><div class=\"drawer-row-label\">Role</div><div class=\"drawer-row-value\" id=\"drawerRole\">—</div></div></div>
+      <div class=\"drawer-row\"><div class=\"drawer-row-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"1\" y=\"3\" width=\"15\" height=\"13\" rx=\"2\"/><polygon points=\"16 8 20 8 23 11 23 16 16 16 16 8\"/><circle cx=\"5.5\" cy=\"18.5\" r=\"2.5\"/><circle cx=\"18.5\" cy=\"18.5\" r=\"2.5\"/></svg></div><div><div class=\"drawer-row-label\">Motorized</div><div class=\"drawer-row-value\" id=\"drawerMotorized\">—</div></div></div>
+    </div>
+  </div>
+</div>
+
+";
+        // line 334
+        yield "<div class=\"modal-overlay\" id=\"addModal\" onclick=\"handleModalBg(event)\">
+  <div class=\"modal-box\">
+    <div class=\"modal-head\">
+      <div><h2>New Member</h2><p>Add a new user to the LAMMA platform</p></div>
+      <button class=\"modal-x\" onclick=\"closeModal()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg></button>
+    </div>
+    <div class=\"modal-av-row\">
+      <div class=\"modal-av-wrap\">
+        <img id=\"mAvPrev\" class=\"modal-av-img\"
+          src=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f0f11'/%3E%3Ccircle cx='32' cy='25' r='12' fill='%23222'/%3E%3Cellipse cx='32' cy='54' rx='20' ry='14' fill='%23222'/%3E%3C/svg%3E\" alt=\"Preview\"/>
+        <label for=\"mImgInput\" class=\"modal-av-edit\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"17 8 12 3 7 8\"/><line x1=\"12\" y1=\"3\" x2=\"12\" y2=\"15\"/></svg></label>
+        <input type=\"file\" id=\"mImgInput\" accept=\"image/*\" style=\"display:none\"/>
+      </div>
+      <div class=\"modal-av-info\"><h4>Profile Photo</h4><p>PNG, JPG or WEBP · Max 2 MB</p><button type=\"button\" class=\"modal-av-trigger\" onclick=\"document.getElementById('mImgInput').click()\">Upload photo →</button></div>
+    </div>
+    <div class=\"modal-scroll\">
+      <div class=\"m-row\">
+        <div class=\"m-field\" id=\"mf-name\"><label>Full Name</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg></span><input type=\"text\" id=\"m-name\" class=\"m-inp\" placeholder=\"Jane Doe\"/></div><div class=\"m-err\" id=\"err-name\"></div></div>
+        <div class=\"m-field\" id=\"mf-email\"><label>Email Address</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/></svg></span><input type=\"email\" id=\"m-email\" class=\"m-inp\" placeholder=\"jane@example.com\"/></div><div class=\"m-err\" id=\"err-email\"></div></div>
+      </div>
+      <div class=\"m-row\">
+        <div class=\"m-field\" id=\"mf-phone\"><label>Phone <span style=\"font-size:.6rem;color:var(--muted);font-weight:400;\">(optional)</span></label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z\"/></svg></span><input type=\"tel\" id=\"m-phone\" class=\"m-inp\" placeholder=\"12345678\" maxlength=\"8\"/></div><div class=\"m-err\" id=\"err-phone\"></div></div>
+        <div class=\"m-field\"><label>Motorized</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"1\" y=\"3\" width=\"15\" height=\"13\" rx=\"2\"/><polygon points=\"16 8 20 8 23 11 23 16 16 16 16 8\"/><circle cx=\"5.5\" cy=\"18.5\" r=\"2.5\"/><circle cx=\"18.5\" cy=\"18.5\" r=\"2.5\"/></svg></span><select id=\"m-motorized\" class=\"m-sel\" style=\"padding-left:36px;\"><option value=\"\">Select…</option><option value=\"YES\">Yes</option><option value=\"NO\">No</option></select></div></div>
+      </div>
+      <div class=\"m-sep\"><span>Security</span></div>
+      <div class=\"m-row\">
+        <div class=\"m-field\" id=\"mf-password\"><label>Password</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg></span><input type=\"password\" id=\"m-password\" class=\"m-inp\" placeholder=\"Min. 6 chars\" oninput=\"mStrength(this.value)\" style=\"padding-right:36px;\"/><button type=\"button\" class=\"m-eye\" onclick=\"mToggle('m-password','m-epwd')\"><svg id=\"m-epwd\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" width=\"15\" height=\"15\"><path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg></button></div><div class=\"m-sbar\"><div class=\"m-sfill\" id=\"m-sfill\"></div></div><div class=\"m-slbl\" id=\"m-slbl\">Enter a password</div><div class=\"m-err\" id=\"err-password\"></div></div>
+        <div class=\"m-field\" id=\"mf-confirm\"><label>Confirm Password</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg></span><input type=\"password\" id=\"m-confirm\" class=\"m-inp\" placeholder=\"Repeat password\" style=\"padding-right:36px;\"/><button type=\"button\" class=\"m-eye\" onclick=\"mToggle('m-confirm','m-econf')\"><svg id=\"m-econf\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" width=\"15\" height=\"15\"><path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg></button></div><div class=\"m-err\" id=\"err-confirm\"></div></div>
+      </div>
+      <div class=\"modal-or\"><span>or register with</span></div>
+      ";
+        // line 365
+        yield "      <a href=\"/connect/google\" class=\"btn-google\">
+        <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\"><path fill=\"#4285F4\" d=\"M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z\"/><path fill=\"#34A853\" d=\"M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z\"/><path fill=\"#FBBC05\" d=\"M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z\"/><path fill=\"#EA4335\" d=\"M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z\"/></svg>
+        Continue with Google
+      </a>
+    </div>
+    <div class=\"modal-foot\">
+      <button type=\"button\" class=\"m-cancel\" onclick=\"closeModal()\">Cancel</button>
+      <button type=\"button\" class=\"m-submit\" id=\"mSubmitBtn\" onclick=\"submitNewMember()\"><div class=\"m-spinner\"></div><span class=\"m-btxt\">CREATE MEMBER</span></button>
+    </div>
+  </div>
+</div>
+
+<div class=\"toast-stack\" id=\"toastStack\"></div>
+";
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        yield from [];
+    }
+
+    // line 380
+    /**
+     * @return iterable<null|scalar|\Stringable>
+     */
+    public function block_extra_scripts(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "extra_scripts"));
+
+        // line 381
+        $context['_parent'] = $context;
+        $context['_seq'] = CoreExtension::ensureTraversable(CoreExtension::getAttribute($this->env, $this->source, (isset($context["app"]) || array_key_exists("app", $context) ? $context["app"] : (function () { throw new RuntimeError('Variable "app" does not exist.', 381, $this->source); })()), "flashes", [], "any", false, false, false, 381));
+        foreach ($context['_seq'] as $context["type"] => $context["messages"]) {
+            $context['_parent'] = $context;
+            $context['_seq'] = CoreExtension::ensureTraversable($context["messages"]);
+            foreach ($context['_seq'] as $context["_key"] => $context["msg"]) {
+                yield "<script>document.addEventListener('DOMContentLoaded',()=>showToast(";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(json_encode($context["msg"]), "html", null, true);
+                yield ",'";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($context["type"], "html", null, true);
+                yield "'));</script>";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_key'], $context['msg'], $context['_parent']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+        }
+        $_parent = $context['_parent'];
+        unset($context['_seq'], $context['type'], $context['messages'], $context['_parent']);
+        $context = array_intersect_key($context, $_parent) + $_parent;
+        // line 382
+        yield "<script>
+const CREATE_URL = '";
+        // line 383
+        yield $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_users_create");
+        yield "';
+
+/* ══ DROPDOWN — fixed positioning so it never goes under cards ══════════════ */
+function toggleMenu(e, id) {
+  e.stopPropagation();
+
+  const menu = document.getElementById('menu-' + id);
+
+  document.querySelectorAll('.dropdown-menu').forEach(m => {
+    if (m !== menu) {
+      m.classList.remove('open');
+    }
+  });
+
+  menu.classList.toggle('open');
+}
+
+document.addEventListener('click', function () {
+  document.querySelectorAll('.dropdown-menu').forEach(m => {
+    m.classList.remove('open');
+  });
+});
+
+/* ══ DRAWER ═════════════════════════════════════════════════════════════════ */
+function openDrawer(id, e) {
+  if (e.target.closest('.card-menu-btn') || e.target.closest('.dropdown-menu')) return;
+  const d = document.querySelector(`.user-card [data-id=\"\${id}\"]`);
+  if (!d) return;
+  const {name,email,role,phone,motorized,image,color} = d.dataset;
+  const av = document.getElementById('drawerAvatar');
+  if (image) {
+    av.innerHTML = `<img src=\"\${image}\" alt=\"\${name}\" style=\"width:100%;height:100%;border-radius:50%;object-fit:cover;\">`;
+    av.style.background = 'transparent'; av.style.border = '3px solid ' + color;
+  } else {
+    av.textContent = (name||'?')[0].toUpperCase();
+    av.style.background = color; av.style.border = '3px solid ' + color + '44';
+  }
+  document.getElementById('drawerName').textContent      = name || '—';
+  document.getElementById('drawerEmail').textContent     = email || '—';
+  document.getElementById('drawerEmailVal').textContent  = email || '—';
+  document.getElementById('drawerPhone').textContent     = phone || '—';
+  document.getElementById('drawerRole').textContent      = role || '—';
+  document.getElementById('drawerMotorized').textContent = motorized || '—';
+  const b = document.getElementById('drawerRoleBadge');
+  b.textContent = role; b.className = 'drawer-role-badge ' + (role === 'ADMIN' ? 'role-admin' : 'role-user');
+  document.getElementById('drawerBackdrop').classList.add('open');
+  document.getElementById('userDrawer').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawerBackdrop').classList.remove('open');
+  document.getElementById('userDrawer').classList.remove('open');
+}
+
+/* ══ ADD MEMBER MODAL ═══════════════════════════════════════════════════════ */
+function openModal() { resetModal(); document.getElementById('addModal').classList.add('open'); }
+function closeModal() { document.getElementById('addModal').classList.remove('open'); }
+function handleModalBg(e) { if (e.target === document.getElementById('addModal')) closeModal(); }
+
+function resetModal() {
+  ['m-name','m-email','m-phone','m-password','m-confirm'].forEach(id => { const el=document.getElementById(id); if(el)el.value=''; });
+  document.getElementById('m-motorized').value = '';
+  document.getElementById('mImgInput').value = '';
+  document.getElementById('mAvPrev').src = \"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f0f11'/%3E%3Ccircle cx='32' cy='25' r='12' fill='%23222'/%3E%3Cellipse cx='32' cy='54' rx='20' ry='14' fill='%23222'/%3E%3C/svg%3E\";
+  ['mf-name','mf-email','mf-phone','mf-password','mf-confirm'].forEach(id => document.getElementById(id)?.classList.remove('has-err'));
+  ['err-name','err-email','err-phone','err-password','err-confirm'].forEach(id => { const el=document.getElementById(id); if(el)el.textContent=''; });
+  document.getElementById('m-sfill').style.width = '0';
+  document.getElementById('m-slbl').textContent = 'Enter a password';
+  const btn = document.getElementById('mSubmitBtn'); btn.classList.remove('loading'); btn.disabled = false;
+}
+
+document.getElementById('mImgInput').addEventListener('change', function() {
+  if (!this.files[0]) return;
+  const r = new FileReader();
+  r.onload = e => document.getElementById('mAvPrev').src = e.target.result;
+  r.readAsDataURL(this.files[0]);
+});
+
+function mToggle(iId, eId) {
+  const i = document.getElementById(iId), e = document.getElementById(eId);
+  i.type = i.type === 'password' ? 'text' : 'password';
+  e.innerHTML = i.type === 'text'
+    ? `<path d=\"M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24\"/><line x1=\"1\" y1=\"1\" x2=\"23\" y2=\"23\"/>`
+    : `<path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>`;
+}
+
+function mStrength(v) {
+  const f = document.getElementById('m-sfill'), l = document.getElementById('m-slbl');
+  let s=0; if(v.length>=6)s++; if(/[A-Z]/.test(v))s++; if(/[0-9]/.test(v))s++; if(/[\\W_]/.test(v))s++;
+  const ls = [{w:'0%',c:'transparent',t:'Enter a password'},{w:'25%',c:'#e8392c',t:'Weak'},{w:'50%',c:'#f5a623',t:'Fair'},{w:'75%',c:'#f5c842',t:'Good'},{w:'100%',c:'#2ecfb8',t:'Strong ✓'}];
+  const lv = ls[v.length===0?0:s];
+  f.style.width=lv.w; f.style.background=lv.c;
+  l.textContent=v.length===0?'Enter a password':lv.t; l.style.color=v.length===0?'var(--muted)':lv.c;
+}
+
+function setErr(fId, errId, msg) {
+  const f=document.getElementById('mf-'+fId), er=document.getElementById('err-'+errId);
+  if(msg){f?.classList.add('has-err');if(er)er.textContent=msg;}
+  else{f?.classList.remove('has-err');if(er)er.textContent='';}
+}
+
+async function submitNewMember() {
+  const btn = document.getElementById('mSubmitBtn');
+  btn.classList.add('loading'); btn.disabled=true;
+  ['name','email','phone','password','confirm'].forEach(f => setErr(f,f,''));
+
+  const fd = new FormData();
+  fd.append('registration_form[name]',      document.getElementById('m-name').value);
+  fd.append('registration_form[email]',     document.getElementById('m-email').value);
+  fd.append('registration_form[phone]',     document.getElementById('m-phone').value);
+  fd.append('registration_form[motorized]', document.getElementById('m-motorized').value);
+  fd.append('registration_form[password]',  document.getElementById('m-password').value);
+  fd.append('confirm_password',             document.getElementById('m-confirm').value);
+  const img = document.getElementById('mImgInput').files[0];
+  if (img) fd.append('registration_form[imageFile]', img);
+
+  try {
+    const res  = await fetch(CREATE_URL, {method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}});
+    const data = await res.json();
+    if (data.success) {
+      closeModal();
+      showToast(data.user.name + ' added successfully!', 'success');
+      addCard(data.user);
+      const t = document.getElementById('statTotal');
+      if (t) t.textContent = parseInt(t.textContent||'0') + 1;
+    } else {
+      const errs = data.errors||{};
+      if(errs.name)     setErr('name','name',errs.name[0]);
+      if(errs.email)    setErr('email','email',errs.email[0]);
+      if(errs.phone)    setErr('phone','phone',errs.phone[0]);
+      if(errs.password) setErr('password','password',errs.password[0]);
+      if(errs._form)    showToast(errs._form[0],'error');
+    }
+  } catch(err) { showToast('Something went wrong. Please try again.','error'); }
+
+  btn.classList.remove('loading'); btn.disabled=false;
+}
+
+function addCard(u) {
+  const cs=['#e8392c','#2ecfb8','#f5c842','#7c6dfa','#fa6d8b','#4db8ff'], c=cs[u.id%6];
+  const av=u.image?`<img src=\"/uploads/images/\${u.image}\" style=\"width:100%;height:100%;border-radius:50%;object-fit:cover;\"/>`:(u.name||'?')[0].toUpperCase();
+  const card=document.createElement('div');
+  card.className='user-card'; card.dataset.name=(u.name||'').toLowerCase(); card.dataset.email=(u.email||'').toLowerCase(); card.dataset.role='user';
+  card.setAttribute('onclick',`openDrawer(\${u.id},event)`);
+  card.innerHTML=`<div class=\"user-card-top\"><div class=\"user-avatar\" style=\"background:\${c};\">\${av}</div><div class=\"user-card-info\"><div class=\"user-card-name\">\${u.name}</div><span class=\"user-card-role role-user\">USER</span></div></div><div class=\"user-card-email\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" width=\"13\" height=\"13\"><path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/></svg>\${u.email}</div><div style=\"display:none\" class=\"user-data\" data-id=\"\${u.id}\" data-name=\"\${u.name}\" data-email=\"\${u.email}\" data-role=\"\${u.role}\" data-phone=\"\${u.phone||'—'}\" data-motorized=\"\${u.motorized||'—'}\" data-image=\"\" data-color=\"\${c}\"></div>`;
+  document.getElementById('userGrid').prepend(card);
+}
+
+/* ══ SEARCH + FILTER ════════════════════════════════════════════════════════ */
+function confirmAction(e,msg){if(!confirm(msg)){e.preventDefault();return false;}return true;}
+let currentFilter='all',searchVal='';
+document.getElementById('searchInput').addEventListener('input',function(){searchVal=this.value.toLowerCase().trim();applyFilters();});
+document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',function(){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentFilter=this.dataset.filter;applyFilters();}));
+function applyFilters(){
+  const cards=Array.from(document.querySelectorAll('.user-card'));
+  let vis=cards.filter(card=>{
+    const n=card.dataset.name||'',em=card.dataset.email||'',r=card.dataset.role||'';
+    const mS=!searchVal||n.includes(searchVal)||em.includes(searchVal);
+    const mR=currentFilter==='all'?true:currentFilter==='user'?r==='user':currentFilter==='admin'?r==='admin':true;
+    const show=mS&&mR; card.style.display=show?'':'none'; return show;
+  });
+  if(currentFilter==='az'){vis.sort((a,b)=>(a.dataset.name||'').localeCompare(b.dataset.name||''));const g=document.getElementById('userGrid');vis.forEach(c=>g.appendChild(c));}
+  const emp=document.querySelector('.empty-state'); if(emp)emp.style.display=vis.length===0?'block':'none';
+}
+
+/* ══ TOAST ══════════════════════════════════════════════════════════════════ */
+function showToast(msg,type='success'){
+  const s=document.getElementById('toastStack'),t=document.createElement('div');
+  t.className=`toast \${type}`; t.innerHTML=`<div class=\"toast-dot\"></div>\${msg}`;
+  s.appendChild(t); setTimeout(()=>t.remove(),4000);
+}
+
+/* ══ ESCAPE KEY ═════════════════════════════════════════════════════════════ */
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDrawer();}});
+</script>
+";
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        yield from [];
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getTemplateName(): string
+    {
+        return "users/index.html.twig";
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function isTraitable(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getDebugInfo(): array
+    {
+        return array (  723 => 383,  720 => 382,  700 => 381,  690 => 380,  669 => 365,  637 => 334,  612 => 310,  608 => 307,  601 => 305,  599 => 304,  584 => 302,  580 => 301,  576 => 300,  570 => 299,  562 => 298,  556 => 295,  551 => 292,  547 => 290,  537 => 283,  531 => 282,  525 => 279,  515 => 277,  512 => 276,  502 => 272,  500 => 271,  491 => 268,  489 => 267,  485 => 266,  476 => 263,  474 => 262,  472 => 261,  465 => 258,  461 => 257,  457 => 256,  453 => 255,  449 => 253,  439 => 252,  435 => 251,  430 => 249,  422 => 248,  412 => 247,  409 => 246,  406 => 245,  388 => 244,  362 => 221,  355 => 217,  348 => 213,  342 => 209,  340 => 208,  338 => 207,  336 => 206,  326 => 205,  123 => 8,  113 => 7,  96 => 5,  79 => 4,  62 => 3,  45 => 2,);
+    }
+
+    public function getSourceContext(): Source
+    {
+        return new Source("{# templates/users/index.html.twig #}
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}User Management{% endblock %}
+{% block page_title %}User Management{% endblock %}
+{% block breadcrumb %}Trail Team · Members currently out in the wild{% endblock %}
+
+{% block extra_styles %}
+  /* ══ STATS ══ */
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+  .stat-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden;transition:border-color .25s,transform .2s;}
+  .stat-card:hover{border-color:rgba(255,255,255,.15);transform:translateY(-2px);}
+  .stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 0% 100%,var(--ac) 0%,transparent 65%);opacity:.08;pointer-events:none;}
+  .stat-card.total{--ac:#2ecfb8;}.stat-card.users{--ac:#f5c842;}.stat-card.admins{--ac:#e8392c;}
+  .stat-icon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;}
+  .stat-card.total .stat-icon{background:rgba(46,207,184,.12);color:var(--teal);}
+  .stat-card.users .stat-icon{background:rgba(245,200,66,.12);color:var(--yellow);}
+  .stat-card.admins .stat-icon{background:rgba(232,57,44,.12);color:var(--red);}
+  .stat-icon svg{width:22px;height:22px;}
+  .stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;line-height:1;letter-spacing:.04em;}
+  .stat-label{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+
+  /* ══ TOOLBAR ══ */
+  .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+  .toolbar-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.06em;flex:1;}
+  .search-wrap{position:relative;}
+  .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);pointer-events:none;}
+  .search-input{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 14px 9px 36px;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--white);outline:none;width:220px;transition:border-color .2s,box-shadow .2s;}
+  .search-input::placeholder{color:rgba(255,255,255,.2);}
+  .search-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(46,207,184,.1);}
+  .filter-group{display:flex;gap:6px;}
+  .filter-btn{padding:8px 16px;border-radius:8px;font-size:.8rem;font-weight:600;letter-spacing:.04em;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+  .filter-btn:hover{border-color:rgba(255,255,255,.2);color:var(--soft);}
+  .filter-btn.active{background:var(--red);border-color:var(--red);color:var(--white);}
+  .new-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;background:var(--red);border:none;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;}
+  .new-btn:hover{background:#c93228;transform:translateY(-1px);box-shadow:0 8px 20px rgba(232,57,44,.3);}
+  .new-btn svg{width:15px;height:15px;}
+
+  /* ══ USER GRID ══ */
+  .user-grid{ display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;
+  overflow:visible;}
+
+  /* KEY FIX: card must NOT be position:relative so the fixed dropdown
+     doesn't get clipped or offset by any ancestor transform/overflow */
+  .user-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 18px 16px;
+    cursor:pointer;
+    transition:border-color .25s,transform .2s,box-shadow .2s;
+    animation:fadeUp .35s ease both;
+    position:relative;
+    overflow:visible;
+}
+  .user-card:hover{border-color:rgba(255,255,255,.15);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.35);z-index:10;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .user-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;position:relative;}
+  .user-avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--white);}
+  .user-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+  .user-card-info{flex:1;min-width:0;}
+  .user-card-name{font-size:.95rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .user-card-role{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-top:3px;}
+  .role-user{background:rgba(245,200,66,.12);color:var(--yellow);}
+  .role-admin{background:rgba(232,57,44,.12);color:var(--red);}
+  .card-menu-btn{width:30px;height:30px;border-radius:8px;background:none;border:1px solid transparent;display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:background .2s,border-color .2s,color .2s;flex-shrink:0;}
+  .card-menu-btn:hover{background:var(--card2);border-color:var(--line);color:var(--white);}
+  .card-menu-btn svg{width:16px;height:16px;}
+  .user-card-email{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;}
+  .user-card-email svg{width:13px;height:13px;flex-shrink:0;}
+  .user-card.banned{opacity:.5;}
+  .user-card.banned .user-card-name::after{content:' · BANNED';font-size:.65rem;color:var(--red);font-weight:700;letter-spacing:.08em;}
+
+  /* ══ DROPDOWN — uses fixed positioning set by JS, always floats above grid ══ */
+  .dropdown-menu{
+    position:absolute;
+    top:40px;
+    right:10px;
+    background:var(--card2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:6px;
+    min-width:170px;
+    z-index:9999;
+    box-shadow:0 16px 48px rgba(0,0,0,.6);
+    display:none;
+}
+  .dropdown-menu.open{display:block;}
+  @keyframes dropIn{from{opacity:0;transform:scale(.92) translateY(-6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:.83rem;font-weight:500;color:var(--soft);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;transition:background .15s,color .15s;text-decoration:none;}
+  .dropdown-item:hover{background:rgba(255,255,255,.06);color:var(--white);}
+  .dropdown-item.danger{color:#ff8a80;}
+  .dropdown-item.danger:hover{background:rgba(232,57,44,.1);color:#ff5252;}
+  .dropdown-item.promote{color:var(--teal);}
+  .dropdown-item.promote:hover{background:rgba(46,207,184,.08);}
+  .dropdown-item svg{width:14px;height:14px;flex-shrink:0;}
+  .dropdown-sep{height:1px;background:var(--line);margin:4px 0;}
+
+  /* ══ DRAWER ══ */
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .drawer-backdrop.open{opacity:1;pointer-events:all;}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:360px;background:var(--card);border-left:1px solid var(--line);z-index:101;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-24px 0 60px rgba(0,0,0,.5);}
+  .drawer.open{transform:translateX(0);}
+  .drawer-header{padding:24px 24px 0;display:flex;justify-content:flex-end;}
+  .drawer-close{width:32px;height:32px;border-radius:8px;background:var(--card2);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:background .2s,color .2s;}
+  .drawer-close:hover{background:rgba(255,255,255,.08);color:var(--white);}
+  .drawer-close svg{width:15px;height:15px;}
+  .drawer-profile{display:flex;flex-direction:column;align-items:center;padding:24px 24px 20px;text-align:center;border-bottom:1px solid var(--line);}
+  .drawer-avatar{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--white);margin-bottom:14px;border:3px solid var(--line);}
+  .drawer-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+  .drawer-name{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.05em;margin-bottom:4px;}
+  .drawer-email{font-size:.82rem;color:var(--muted);}
+  .drawer-role-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;margin-top:10px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+  .drawer-body{flex:1;overflow-y:auto;padding:20px 24px;}
+  .drawer-body::-webkit-scrollbar{width:3px;}
+  .drawer-body::-webkit-scrollbar-thumb{background:var(--line);}
+  .drawer-section{margin-bottom:24px;}
+  .drawer-section-title{font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .drawer-section-title::after{content:'';flex:1;height:1px;background:var(--line);}
+  .drawer-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .drawer-row:last-child{border-bottom:none;}
+  .drawer-row-icon{width:32px;height:32px;border-radius:8px;background:var(--surface);display:grid;place-items:center;color:var(--muted);flex-shrink:0;}
+  .drawer-row-icon svg{width:15px;height:15px;}
+  .drawer-row-label{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .drawer-row-value{font-size:.9rem;font-weight:500;color:var(--white);margin-top:1px;}
+
+  /* ══ EMPTY STATE ══ */
+  .empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);}
+  .empty-state svg{width:48px;height:48px;margin-bottom:16px;opacity:.3;}
+  .empty-state p{font-size:.9rem;}
+
+  /* ══ TOAST ══ */
+  .toast-stack{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;flex-direction:column;gap:8px;}
+  .toast{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 18px;font-size:.85rem;color:var(--white);font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:10px;}
+  @keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
+  .toast.success{border-color:rgba(46,207,184,.3);}
+  .toast.error{border-color:rgba(232,57,44,.3);}
+  .toast-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .toast.success .toast-dot{background:var(--teal);}
+  .toast.error .toast-dot{background:var(--red);}
+
+  /* ══ ADD MEMBER MODAL ══ */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+  .modal-overlay.open{opacity:1;pointer-events:all;}
+  .modal-box{background:var(--card);border:1px solid var(--line);border-radius:18px;width:100%;max-width:540px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(28px) scale(.96);transition:transform .32s cubic-bezier(.34,1.56,.64,1);box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(46,207,184,.06);}
+  .modal-overlay.open .modal-box{transform:translateY(0) scale(1);}
+  .modal-head{padding:24px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+  .modal-head h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.06em;margin-bottom:3px;}
+  .modal-head p{font-size:.78rem;color:var(--muted);}
+  .modal-x{width:32px;height:32px;border-radius:8px;background:var(--card2);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--muted);flex-shrink:0;margin-left:16px;transition:background .2s,color .2s;}
+  .modal-x:hover{background:rgba(255,255,255,.08);color:var(--white);}
+  .modal-x svg{width:15px;height:15px;}
+  .modal-av-row{display:flex;align-items:center;gap:16px;padding:20px 24px 0;flex-shrink:0;}
+  .modal-av-wrap{position:relative;flex-shrink:0;}
+  .modal-av-img{width:64px;height:64px;border-radius:50%;object-fit:cover;display:block;background:var(--surface);border:2px solid var(--line);transition:border-color .25s;}
+  .modal-av-wrap:hover .modal-av-img{border-color:var(--teal);}
+  .modal-av-edit{position:absolute;bottom:0;right:0;width:22px;height:22px;border-radius:50%;background:var(--red);border:2px solid var(--card);display:grid;place-items:center;cursor:pointer;}
+  .modal-av-edit svg{width:10px;height:10px;}
+  .modal-av-info h4{font-size:.88rem;font-weight:600;margin-bottom:2px;}
+  .modal-av-info p{font-size:.72rem;color:var(--muted);}
+  .modal-av-trigger{font-size:.72rem;font-weight:600;color:var(--teal);background:none;border:none;cursor:pointer;padding:0;margin-top:4px;display:block;}
+  .modal-scroll{flex:1;overflow-y:auto;padding:18px 24px 0;}
+  .modal-scroll::-webkit-scrollbar{width:3px;}
+  .modal-scroll::-webkit-scrollbar-thumb{background:var(--line);}
+  .m-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .m-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .m-field label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+  .m-err{font-size:.7rem;color:#ff8a80;margin-top:2px;display:none;}
+  .m-field.has-err .m-err{display:block;}
+  .m-field.has-err .m-inp,.m-field.has-err .m-sel{border-color:#e8392c !important;box-shadow:0 0 0 2px rgba(232,57,44,.15) !important;}
+  .m-wrap{position:relative;}
+  .m-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);display:flex;}
+  .m-ico svg{width:14px;height:14px;}
+  .m-inp,.m-sel{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:11px 12px 11px 36px;font-family:'DM Sans',sans-serif;font-size:.87rem;color:var(--white);outline:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .2s,background .2s;}
+  .m-inp::placeholder{color:rgba(255,255,255,.2);}
+  .m-inp:focus,.m-sel:focus{border-color:var(--teal);background:rgba(46,207,184,.05);box-shadow:0 0 0 3px rgba(46,207,184,.1);}
+  .m-sel option{background:#0f0f11;}
+  .m-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);display:flex;transition:color .2s;}
+  .m-eye:hover{color:var(--white);}
+  .m-eye svg{width:15px;height:15px;}
+  .m-sep{display:flex;align-items:center;gap:10px;margin:2px 0 14px;}
+  .m-sep span{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);white-space:nowrap;}
+  .m-sep::before,.m-sep::after{content:'';flex:1;height:1px;background:var(--line);}
+  .m-sbar{height:2px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:6px;}
+  .m-sfill{height:100%;width:0;border-radius:2px;transition:width .4s,background .4s;}
+  .m-slbl{font-size:.65rem;color:var(--muted);margin-top:3px;}
+  .modal-or{display:flex;align-items:center;gap:12px;margin:4px 0 14px;}
+  .modal-or span{font-size:.68rem;color:var(--muted);white-space:nowrap;}
+  .modal-or::before,.modal-or::after{content:'';flex:1;height:1px;background:var(--line);}
+  .btn-google{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:11px;background:var(--surface);border:1px solid var(--line);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--soft);cursor:pointer;transition:border-color .2s,background .2s,color .2s;text-decoration:none;margin-bottom:4px;}
+  .btn-google:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--white);}
+  .modal-foot{padding:18px 24px 22px;display:flex;align-items:center;gap:10px;justify-content:flex-end;border-top:1px solid var(--line);flex-shrink:0;}
+  .m-cancel{padding:10px 20px;border-radius:8px;background:transparent;border:1px solid var(--line);color:var(--soft);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s;}
+  .m-cancel:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2);}
+  .m-submit{padding:10px 24px;border-radius:8px;background:var(--red);border:none;color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;display:flex;align-items:center;gap:8px;}
+  .m-submit:hover{background:#c93228;transform:translateY(-1px);box-shadow:0 8px 20px rgba(232,57,44,.3);}
+  .m-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+  .m-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+  .m-submit.loading .m-spinner{display:block;}
+  .m-submit.loading .m-btxt{display:none;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+{% endblock %}
+
+{% block content %}
+{% set total_users=users|length %}
+{% set admin_users=users|filter(u=>u.role=='ADMIN')|length %}
+{% set regular_users=total_users-admin_users %}
+
+<div class=\"stats-row\">
+  <div class=\"stat-card total\">
+    <div class=\"stat-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg></div>
+    <div><div class=\"stat-num\" id=\"statTotal\">{{ total_users }}</div><div class=\"stat-label\">Total Members</div></div>
+  </div>
+  <div class=\"stat-card users\">
+    <div class=\"stat-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg></div>
+    <div><div class=\"stat-num\">{{ regular_users }}</div><div class=\"stat-label\">Regular Users</div></div>
+  </div>
+  <div class=\"stat-card admins\">
+    <div class=\"stat-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg></div>
+    <div><div class=\"stat-num\">{{ admin_users }}</div><div class=\"stat-label\">Administrators</div></div>
+  </div>
+</div>
+
+<div class=\"toolbar\">
+  <div class=\"toolbar-title\">Trail Team</div>
+  <div class=\"search-wrap\">
+    <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/></svg>
+    <input type=\"text\" class=\"search-input\" id=\"searchInput\" placeholder=\"Search by name or email…\"/>
+  </div>
+  <div class=\"filter-group\">
+    <button class=\"filter-btn active\" data-filter=\"all\">All Users</button>
+    <button class=\"filter-btn\" data-filter=\"az\">A–Z</button>
+    <button class=\"filter-btn\" data-filter=\"user\">Users</button>
+    <button class=\"filter-btn\" data-filter=\"admin\">Admins</button>
+  </div>
+  <button type=\"button\" class=\"new-btn\" onclick=\"openModal()\">
+    <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><line x1=\"12\" y1=\"5\" x2=\"12\" y2=\"19\"/><line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"/></svg>
+    New Member
+  </button>
+</div>
+
+<div class=\"user-grid\" id=\"userGrid\">
+  {% for user in users %}
+    {% set colors=['#e8392c','#2ecfb8','#f5c842','#7c6dfa','#fa6d8b','#4db8ff'] %}
+    {% set color=colors[loop.index0%6] %}
+    <div class=\"user-card {% if user.role=='BANNED' %}banned{% endif %}{% if user.id==current_user_id %} is-me{% endif %}\"
+         data-name=\"{{ user.name|lower }}\" data-email=\"{{ user.email|lower }}\" data-role=\"{{ user.role|lower }}\"
+         onclick=\"openDrawer({{ user.id }},event)\">
+      <div class=\"user-card-top\">
+        <div class=\"user-avatar\" style=\"background:{{ color }};\">
+          {% if user.image %}<img src=\"{{ asset('uploads/images/'~user.image) }}\" alt=\"{{ user.name }}\"/>{% else %}{{ user.name|slice(0,1)|upper }}{% endif %}
+        </div>
+        <div class=\"user-card-info\">
+          <div class=\"user-card-name\">{{ user.name }}</div>
+          <span class=\"user-card-role {{ user.role=='ADMIN'?'role-admin':'role-user' }}\">
+            {% if user.role=='ADMIN' %}<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" width=\"10\" height=\"10\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>{% endif %}
+            {{ user.role }}
+          </span>
+        </div>
+        {% if user.id!=current_user_id %}
+          {# Button + menu are siblings inside user-card-top #}
+          <button class=\"card-menu-btn\" onclick=\"toggleMenu(event,{{ user.id }})\" data-menu=\"{{ user.id }}\">
+            <svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"12\" cy=\"5\" r=\"1.5\"/><circle cx=\"12\" cy=\"12\" r=\"1.5\"/><circle cx=\"12\" cy=\"19\" r=\"1.5\"/></svg>
+          </button>
+          <div class=\"dropdown-menu\" id=\"menu-{{ user.id }}\">
+            {% if user.role!='ADMIN' and user.role!='BANNED' %}
+              <a href=\"{{ path('app_users_promote',{id:user.id}) }}\" class=\"dropdown-item promote\" onclick=\"return confirmAction(event,'Promote {{ user.name }} to Admin?')\">
+                <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>Promote to Admin
+              </a>
+            {% elseif user.role=='ADMIN' %}
+              <a href=\"{{ path('app_users_demote',{id:user.id}) }}\" class=\"dropdown-item\" onclick=\"return confirmAction(event,'Demote {{ user.name }} to User?')\">
+                <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg>Demote to User
+              </a>
+            {% endif %}
+            {% set banLabel = user.role == 'BANNED' ? 'Unban' : 'Ban' %}
+            <a href=\"{{ path('app_users_ban',{id:user.id}) }}\" class=\"dropdown-item\" onclick=\"return confirmAction(event,'{{ banLabel }} {{ user.name }}?')\">
+              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"4.93\" y1=\"4.93\" x2=\"19.07\" y2=\"19.07\"/></svg>
+              {{ user.role=='BANNED'?'Unban User':'Ban User' }}
+            </a>
+            <div class=\"dropdown-sep\"></div>
+            <form method=\"POST\" action=\"{{ path('app_users_delete',{id:user.id}) }}\" style=\"margin:0\" onsubmit=\"return confirmAction(event,'Delete {{ user.name }}? This cannot be undone.')\">
+              <input type=\"hidden\" name=\"_token\" value=\"{{ csrf_token('delete'~user.id) }}\"/>
+              <button type=\"submit\" class=\"dropdown-item danger\">
+                <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><polyline points=\"3 6 5 6 21 6\"/><path d=\"M19 6l-1 14H6L5 6\"/><path d=\"M10 11v6\"/><path d=\"M14 11v6\"/><path d=\"M9 6V4h6v2\"/></svg>Delete User
+              </button>
+            </form>
+          </div>
+        {% else %}
+          <span style=\"font-size:.65rem;font-weight:700;letter-spacing:.08em;color:var(--teal);background:rgba(46,207,184,.1);border:1px solid rgba(46,207,184,.25);border-radius:20px;padding:3px 9px;flex-shrink:0;\">YOU</span>
+        {% endif %}
+      </div>
+      <div class=\"user-card-email\">
+        <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/></svg>
+        {{ user.email }}
+      </div>
+      <div style=\"display:none\" class=\"user-data\"
+           data-id=\"{{ user.id }}\" data-name=\"{{ user.name }}\" data-email=\"{{ user.email }}\"
+           data-role=\"{{ user.role }}\" data-phone=\"{{ user.phone??'—' }}\"
+           data-motorized=\"{{ user.motorized??'—' }}\"
+           data-image=\"{{ user.image?asset('uploads/images/'~user.image):'' }}\"
+           data-color=\"{{ color }}\"></div>
+    </div>
+  {% else %}
+    <div class=\"empty-state\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/></svg><p>No users found.</p></div>
+  {% endfor %}
+</div>
+
+{# ── DRAWER ── #}
+<div class=\"drawer-backdrop\" id=\"drawerBackdrop\" onclick=\"closeDrawer()\"></div>
+<div class=\"drawer\" id=\"userDrawer\">
+  <div class=\"drawer-header\"><button class=\"drawer-close\" onclick=\"closeDrawer()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg></button></div>
+  <div class=\"drawer-profile\">
+    <div class=\"drawer-avatar\" id=\"drawerAvatar\">?</div>
+    <div class=\"drawer-name\" id=\"drawerName\">—</div>
+    <div class=\"drawer-email\" id=\"drawerEmail\">—</div>
+    <span class=\"drawer-role-badge\" id=\"drawerRoleBadge\">—</span>
+  </div>
+  <div class=\"drawer-body\">
+    <div class=\"drawer-section\">
+      <div class=\"drawer-section-title\">Contact</div>
+      <div class=\"drawer-row\"><div class=\"drawer-row-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/></svg></div><div><div class=\"drawer-row-label\">Email</div><div class=\"drawer-row-value\" id=\"drawerEmailVal\">—</div></div></div>
+      <div class=\"drawer-row\"><div class=\"drawer-row-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z\"/></svg></div><div><div class=\"drawer-row-label\">Phone</div><div class=\"drawer-row-value\" id=\"drawerPhone\">—</div></div></div>
+    </div>
+    <div class=\"drawer-section\">
+      <div class=\"drawer-section-title\">Profile</div>
+      <div class=\"drawer-row\"><div class=\"drawer-row-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg></div><div><div class=\"drawer-row-label\">Role</div><div class=\"drawer-row-value\" id=\"drawerRole\">—</div></div></div>
+      <div class=\"drawer-row\"><div class=\"drawer-row-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"1\" y=\"3\" width=\"15\" height=\"13\" rx=\"2\"/><polygon points=\"16 8 20 8 23 11 23 16 16 16 16 8\"/><circle cx=\"5.5\" cy=\"18.5\" r=\"2.5\"/><circle cx=\"18.5\" cy=\"18.5\" r=\"2.5\"/></svg></div><div><div class=\"drawer-row-label\">Motorized</div><div class=\"drawer-row-value\" id=\"drawerMotorized\">—</div></div></div>
+    </div>
+  </div>
+</div>
+
+{# ── ADD MEMBER MODAL ── #}
+<div class=\"modal-overlay\" id=\"addModal\" onclick=\"handleModalBg(event)\">
+  <div class=\"modal-box\">
+    <div class=\"modal-head\">
+      <div><h2>New Member</h2><p>Add a new user to the LAMMA platform</p></div>
+      <button class=\"modal-x\" onclick=\"closeModal()\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg></button>
+    </div>
+    <div class=\"modal-av-row\">
+      <div class=\"modal-av-wrap\">
+        <img id=\"mAvPrev\" class=\"modal-av-img\"
+          src=\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f0f11'/%3E%3Ccircle cx='32' cy='25' r='12' fill='%23222'/%3E%3Cellipse cx='32' cy='54' rx='20' ry='14' fill='%23222'/%3E%3C/svg%3E\" alt=\"Preview\"/>
+        <label for=\"mImgInput\" class=\"modal-av-edit\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"17 8 12 3 7 8\"/><line x1=\"12\" y1=\"3\" x2=\"12\" y2=\"15\"/></svg></label>
+        <input type=\"file\" id=\"mImgInput\" accept=\"image/*\" style=\"display:none\"/>
+      </div>
+      <div class=\"modal-av-info\"><h4>Profile Photo</h4><p>PNG, JPG or WEBP · Max 2 MB</p><button type=\"button\" class=\"modal-av-trigger\" onclick=\"document.getElementById('mImgInput').click()\">Upload photo →</button></div>
+    </div>
+    <div class=\"modal-scroll\">
+      <div class=\"m-row\">
+        <div class=\"m-field\" id=\"mf-name\"><label>Full Name</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg></span><input type=\"text\" id=\"m-name\" class=\"m-inp\" placeholder=\"Jane Doe\"/></div><div class=\"m-err\" id=\"err-name\"></div></div>
+        <div class=\"m-field\" id=\"mf-email\"><label>Email Address</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/></svg></span><input type=\"email\" id=\"m-email\" class=\"m-inp\" placeholder=\"jane@example.com\"/></div><div class=\"m-err\" id=\"err-email\"></div></div>
+      </div>
+      <div class=\"m-row\">
+        <div class=\"m-field\" id=\"mf-phone\"><label>Phone <span style=\"font-size:.6rem;color:var(--muted);font-weight:400;\">(optional)</span></label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z\"/></svg></span><input type=\"tel\" id=\"m-phone\" class=\"m-inp\" placeholder=\"12345678\" maxlength=\"8\"/></div><div class=\"m-err\" id=\"err-phone\"></div></div>
+        <div class=\"m-field\"><label>Motorized</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"1\" y=\"3\" width=\"15\" height=\"13\" rx=\"2\"/><polygon points=\"16 8 20 8 23 11 23 16 16 16 16 8\"/><circle cx=\"5.5\" cy=\"18.5\" r=\"2.5\"/><circle cx=\"18.5\" cy=\"18.5\" r=\"2.5\"/></svg></span><select id=\"m-motorized\" class=\"m-sel\" style=\"padding-left:36px;\"><option value=\"\">Select…</option><option value=\"YES\">Yes</option><option value=\"NO\">No</option></select></div></div>
+      </div>
+      <div class=\"m-sep\"><span>Security</span></div>
+      <div class=\"m-row\">
+        <div class=\"m-field\" id=\"mf-password\"><label>Password</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg></span><input type=\"password\" id=\"m-password\" class=\"m-inp\" placeholder=\"Min. 6 chars\" oninput=\"mStrength(this.value)\" style=\"padding-right:36px;\"/><button type=\"button\" class=\"m-eye\" onclick=\"mToggle('m-password','m-epwd')\"><svg id=\"m-epwd\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" width=\"15\" height=\"15\"><path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg></button></div><div class=\"m-sbar\"><div class=\"m-sfill\" id=\"m-sfill\"></div></div><div class=\"m-slbl\" id=\"m-slbl\">Enter a password</div><div class=\"m-err\" id=\"err-password\"></div></div>
+        <div class=\"m-field\" id=\"mf-confirm\"><label>Confirm Password</label><div class=\"m-wrap\"><span class=\"m-ico\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg></span><input type=\"password\" id=\"m-confirm\" class=\"m-inp\" placeholder=\"Repeat password\" style=\"padding-right:36px;\"/><button type=\"button\" class=\"m-eye\" onclick=\"mToggle('m-confirm','m-econf')\"><svg id=\"m-econf\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" width=\"15\" height=\"15\"><path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg></button></div><div class=\"m-err\" id=\"err-confirm\"></div></div>
+      </div>
+      <div class=\"modal-or\"><span>or register with</span></div>
+      {# Google button — requires: composer require knpuniversity/oauth2-client-bundle league/oauth2-google #}
+      <a href=\"/connect/google\" class=\"btn-google\">
+        <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\"><path fill=\"#4285F4\" d=\"M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z\"/><path fill=\"#34A853\" d=\"M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z\"/><path fill=\"#FBBC05\" d=\"M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z\"/><path fill=\"#EA4335\" d=\"M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z\"/></svg>
+        Continue with Google
+      </a>
+    </div>
+    <div class=\"modal-foot\">
+      <button type=\"button\" class=\"m-cancel\" onclick=\"closeModal()\">Cancel</button>
+      <button type=\"button\" class=\"m-submit\" id=\"mSubmitBtn\" onclick=\"submitNewMember()\"><div class=\"m-spinner\"></div><span class=\"m-btxt\">CREATE MEMBER</span></button>
+    </div>
+  </div>
+</div>
+
+<div class=\"toast-stack\" id=\"toastStack\"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% for type,messages in app.flashes %}{% for msg in messages %}<script>document.addEventListener('DOMContentLoaded',()=>showToast({{ msg|json_encode }},'{{ type }}'));</script>{% endfor %}{% endfor %}
+<script>
+const CREATE_URL = '{{ path(\"app_users_create\") }}';
+
+/* ══ DROPDOWN — fixed positioning so it never goes under cards ══════════════ */
+function toggleMenu(e, id) {
+  e.stopPropagation();
+
+  const menu = document.getElementById('menu-' + id);
+
+  document.querySelectorAll('.dropdown-menu').forEach(m => {
+    if (m !== menu) {
+      m.classList.remove('open');
+    }
+  });
+
+  menu.classList.toggle('open');
+}
+
+document.addEventListener('click', function () {
+  document.querySelectorAll('.dropdown-menu').forEach(m => {
+    m.classList.remove('open');
+  });
+});
+
+/* ══ DRAWER ═════════════════════════════════════════════════════════════════ */
+function openDrawer(id, e) {
+  if (e.target.closest('.card-menu-btn') || e.target.closest('.dropdown-menu')) return;
+  const d = document.querySelector(`.user-card [data-id=\"\${id}\"]`);
+  if (!d) return;
+  const {name,email,role,phone,motorized,image,color} = d.dataset;
+  const av = document.getElementById('drawerAvatar');
+  if (image) {
+    av.innerHTML = `<img src=\"\${image}\" alt=\"\${name}\" style=\"width:100%;height:100%;border-radius:50%;object-fit:cover;\">`;
+    av.style.background = 'transparent'; av.style.border = '3px solid ' + color;
+  } else {
+    av.textContent = (name||'?')[0].toUpperCase();
+    av.style.background = color; av.style.border = '3px solid ' + color + '44';
+  }
+  document.getElementById('drawerName').textContent      = name || '—';
+  document.getElementById('drawerEmail').textContent     = email || '—';
+  document.getElementById('drawerEmailVal').textContent  = email || '—';
+  document.getElementById('drawerPhone').textContent     = phone || '—';
+  document.getElementById('drawerRole').textContent      = role || '—';
+  document.getElementById('drawerMotorized').textContent = motorized || '—';
+  const b = document.getElementById('drawerRoleBadge');
+  b.textContent = role; b.className = 'drawer-role-badge ' + (role === 'ADMIN' ? 'role-admin' : 'role-user');
+  document.getElementById('drawerBackdrop').classList.add('open');
+  document.getElementById('userDrawer').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawerBackdrop').classList.remove('open');
+  document.getElementById('userDrawer').classList.remove('open');
+}
+
+/* ══ ADD MEMBER MODAL ═══════════════════════════════════════════════════════ */
+function openModal() { resetModal(); document.getElementById('addModal').classList.add('open'); }
+function closeModal() { document.getElementById('addModal').classList.remove('open'); }
+function handleModalBg(e) { if (e.target === document.getElementById('addModal')) closeModal(); }
+
+function resetModal() {
+  ['m-name','m-email','m-phone','m-password','m-confirm'].forEach(id => { const el=document.getElementById(id); if(el)el.value=''; });
+  document.getElementById('m-motorized').value = '';
+  document.getElementById('mImgInput').value = '';
+  document.getElementById('mAvPrev').src = \"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f0f11'/%3E%3Ccircle cx='32' cy='25' r='12' fill='%23222'/%3E%3Cellipse cx='32' cy='54' rx='20' ry='14' fill='%23222'/%3E%3C/svg%3E\";
+  ['mf-name','mf-email','mf-phone','mf-password','mf-confirm'].forEach(id => document.getElementById(id)?.classList.remove('has-err'));
+  ['err-name','err-email','err-phone','err-password','err-confirm'].forEach(id => { const el=document.getElementById(id); if(el)el.textContent=''; });
+  document.getElementById('m-sfill').style.width = '0';
+  document.getElementById('m-slbl').textContent = 'Enter a password';
+  const btn = document.getElementById('mSubmitBtn'); btn.classList.remove('loading'); btn.disabled = false;
+}
+
+document.getElementById('mImgInput').addEventListener('change', function() {
+  if (!this.files[0]) return;
+  const r = new FileReader();
+  r.onload = e => document.getElementById('mAvPrev').src = e.target.result;
+  r.readAsDataURL(this.files[0]);
+});
+
+function mToggle(iId, eId) {
+  const i = document.getElementById(iId), e = document.getElementById(eId);
+  i.type = i.type === 'password' ? 'text' : 'password';
+  e.innerHTML = i.type === 'text'
+    ? `<path d=\"M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24\"/><line x1=\"1\" y1=\"1\" x2=\"23\" y2=\"23\"/>`
+    : `<path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>`;
+}
+
+function mStrength(v) {
+  const f = document.getElementById('m-sfill'), l = document.getElementById('m-slbl');
+  let s=0; if(v.length>=6)s++; if(/[A-Z]/.test(v))s++; if(/[0-9]/.test(v))s++; if(/[\\W_]/.test(v))s++;
+  const ls = [{w:'0%',c:'transparent',t:'Enter a password'},{w:'25%',c:'#e8392c',t:'Weak'},{w:'50%',c:'#f5a623',t:'Fair'},{w:'75%',c:'#f5c842',t:'Good'},{w:'100%',c:'#2ecfb8',t:'Strong ✓'}];
+  const lv = ls[v.length===0?0:s];
+  f.style.width=lv.w; f.style.background=lv.c;
+  l.textContent=v.length===0?'Enter a password':lv.t; l.style.color=v.length===0?'var(--muted)':lv.c;
+}
+
+function setErr(fId, errId, msg) {
+  const f=document.getElementById('mf-'+fId), er=document.getElementById('err-'+errId);
+  if(msg){f?.classList.add('has-err');if(er)er.textContent=msg;}
+  else{f?.classList.remove('has-err');if(er)er.textContent='';}
+}
+
+async function submitNewMember() {
+  const btn = document.getElementById('mSubmitBtn');
+  btn.classList.add('loading'); btn.disabled=true;
+  ['name','email','phone','password','confirm'].forEach(f => setErr(f,f,''));
+
+  const fd = new FormData();
+  fd.append('registration_form[name]',      document.getElementById('m-name').value);
+  fd.append('registration_form[email]',     document.getElementById('m-email').value);
+  fd.append('registration_form[phone]',     document.getElementById('m-phone').value);
+  fd.append('registration_form[motorized]', document.getElementById('m-motorized').value);
+  fd.append('registration_form[password]',  document.getElementById('m-password').value);
+  fd.append('confirm_password',             document.getElementById('m-confirm').value);
+  const img = document.getElementById('mImgInput').files[0];
+  if (img) fd.append('registration_form[imageFile]', img);
+
+  try {
+    const res  = await fetch(CREATE_URL, {method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}});
+    const data = await res.json();
+    if (data.success) {
+      closeModal();
+      showToast(data.user.name + ' added successfully!', 'success');
+      addCard(data.user);
+      const t = document.getElementById('statTotal');
+      if (t) t.textContent = parseInt(t.textContent||'0') + 1;
+    } else {
+      const errs = data.errors||{};
+      if(errs.name)     setErr('name','name',errs.name[0]);
+      if(errs.email)    setErr('email','email',errs.email[0]);
+      if(errs.phone)    setErr('phone','phone',errs.phone[0]);
+      if(errs.password) setErr('password','password',errs.password[0]);
+      if(errs._form)    showToast(errs._form[0],'error');
+    }
+  } catch(err) { showToast('Something went wrong. Please try again.','error'); }
+
+  btn.classList.remove('loading'); btn.disabled=false;
+}
+
+function addCard(u) {
+  const cs=['#e8392c','#2ecfb8','#f5c842','#7c6dfa','#fa6d8b','#4db8ff'], c=cs[u.id%6];
+  const av=u.image?`<img src=\"/uploads/images/\${u.image}\" style=\"width:100%;height:100%;border-radius:50%;object-fit:cover;\"/>`:(u.name||'?')[0].toUpperCase();
+  const card=document.createElement('div');
+  card.className='user-card'; card.dataset.name=(u.name||'').toLowerCase(); card.dataset.email=(u.email||'').toLowerCase(); card.dataset.role='user';
+  card.setAttribute('onclick',`openDrawer(\${u.id},event)`);
+  card.innerHTML=`<div class=\"user-card-top\"><div class=\"user-avatar\" style=\"background:\${c};\">\${av}</div><div class=\"user-card-info\"><div class=\"user-card-name\">\${u.name}</div><span class=\"user-card-role role-user\">USER</span></div></div><div class=\"user-card-email\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" width=\"13\" height=\"13\"><path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/></svg>\${u.email}</div><div style=\"display:none\" class=\"user-data\" data-id=\"\${u.id}\" data-name=\"\${u.name}\" data-email=\"\${u.email}\" data-role=\"\${u.role}\" data-phone=\"\${u.phone||'—'}\" data-motorized=\"\${u.motorized||'—'}\" data-image=\"\" data-color=\"\${c}\"></div>`;
+  document.getElementById('userGrid').prepend(card);
+}
+
+/* ══ SEARCH + FILTER ════════════════════════════════════════════════════════ */
+function confirmAction(e,msg){if(!confirm(msg)){e.preventDefault();return false;}return true;}
+let currentFilter='all',searchVal='';
+document.getElementById('searchInput').addEventListener('input',function(){searchVal=this.value.toLowerCase().trim();applyFilters();});
+document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',function(){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentFilter=this.dataset.filter;applyFilters();}));
+function applyFilters(){
+  const cards=Array.from(document.querySelectorAll('.user-card'));
+  let vis=cards.filter(card=>{
+    const n=card.dataset.name||'',em=card.dataset.email||'',r=card.dataset.role||'';
+    const mS=!searchVal||n.includes(searchVal)||em.includes(searchVal);
+    const mR=currentFilter==='all'?true:currentFilter==='user'?r==='user':currentFilter==='admin'?r==='admin':true;
+    const show=mS&&mR; card.style.display=show?'':'none'; return show;
+  });
+  if(currentFilter==='az'){vis.sort((a,b)=>(a.dataset.name||'').localeCompare(b.dataset.name||''));const g=document.getElementById('userGrid');vis.forEach(c=>g.appendChild(c));}
+  const emp=document.querySelector('.empty-state'); if(emp)emp.style.display=vis.length===0?'block':'none';
+}
+
+/* ══ TOAST ══════════════════════════════════════════════════════════════════ */
+function showToast(msg,type='success'){
+  const s=document.getElementById('toastStack'),t=document.createElement('div');
+  t.className=`toast \${type}`; t.innerHTML=`<div class=\"toast-dot\"></div>\${msg}`;
+  s.appendChild(t); setTimeout(()=>t.remove(),4000);
+}
+
+/* ══ ESCAPE KEY ═════════════════════════════════════════════════════════════ */
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDrawer();}});
+</script>
+{% endblock %}
+", "users/index.html.twig", "C:\\Users\\saifl\\OneDrive\\Desktop\\back_saif2\\user_symfony_saif\\user_saif\\templates\\users\\index.html.twig");
+    }
+}
