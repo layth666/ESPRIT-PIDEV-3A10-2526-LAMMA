@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'admin/base_admin.html.twig' %}
 
 {% block title %}Dashboard - SB Admin{% endblock %}
@@ -22,10 +23,32 @@
             <div class="card-footer d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.1); border-top: none;">
                 <span class="small text-white" style="font-weight: 600;"><i class="fa fa-map-marker-alt"></i> Tunisie, TN</span>
                 <div class="small text-white fw-bold"><i class="fas fa-satellite-dish"></i> Open-Meteo</div>
+=======
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block dashboard_active %}active{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats Cards -->
+<div class="row">
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-primary text-white mb-4">
+            <div class="card-body">
+                <h3>{{ total_posts }}</h3>
+                <div>Total Posts</div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="{{ path('admin_posts') }}">View Details</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+>>>>>>> 889c5b1 (Symfony blog project)
             </div>
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
+<<<<<<< HEAD
         <div class="card mb-4" style="background: linear-gradient(135deg, #a855f7, #ec4899); color: white; border: none; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
@@ -41,10 +64,21 @@
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.1); border-top: none;">
                 <span class="small text-white" style="font-weight: 600;">Logistique Plateforme</span>
+=======
+        <div class="card bg-success text-white mb-4">
+            <div class="card-body">
+                <h3>{{ total_comments }}</h3>
+                <div>Total Comments</div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="{{ path('admin_comments') }}">View Details</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+>>>>>>> 889c5b1 (Symfony blog project)
             </div>
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
+<<<<<<< HEAD
         <div class="card mb-4" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
@@ -60,10 +94,21 @@
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.1); border-top: none;">
                 <span class="small text-white" style="font-weight: 600;">Réseau Gastronomie</span>
+=======
+        <div class="card bg-warning text-white mb-4">
+            <div class="card-body">
+                <h3>{{ top_posts|first.comment_count|default(0) }}</h3>
+                <div>Most Comments (One Post)</div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="{{ path('admin_stats') }}">View Details</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+>>>>>>> 889c5b1 (Symfony blog project)
             </div>
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
+<<<<<<< HEAD
         <div class="card mb-4" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
@@ -105,11 +150,22 @@
             </div>
             <div class="card-body">
                 <div id="popularity_chart" style="width: 100%; height: 300px;"></div>
+=======
+        <div class="card bg-danger text-white mb-4">
+            <div class="card-body">
+                <h3>{{ latest_posts|length }}</h3>
+                <div>Recent Posts (Last 5)</div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="{{ path('admin_posts') }}">View Details</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+>>>>>>> 889c5b1 (Symfony blog project)
             </div>
         </div>
     </div>
 </div>
 
+<<<<<<< HEAD
 <div class="row">
     <div class="col-xl-12">
         <div class="card mb-4" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
@@ -119,11 +175,76 @@
             </div>
             <div class="card-body">
                 <div id="timeline_chart" style="width: 100%; height: 350px;"></div>
+=======
+<!-- Recent Posts & Top Posts -->
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Recent Posts
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Comments</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for post in latest_posts %}
+                            <tr>
+                                <td>{{ post.title|slice(0, 40) }}</td>
+                                <td>{{ post.createdAt|date('Y-m-d') }}</td>
+                                <td>{{ post.comments|length }}</td>
+                                <td>
+                                    <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-bar me-1"></i>
+                Most Commented Posts
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in top_posts %}
+                            <tr>
+                                <td>{{ item.post.title|slice(0, 50) }}</td>
+                                <td>{{ item.comment_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+>>>>>>> 889c5b1 (Symfony blog project)
             </div>
         </div>
     </div>
 </div>
 
+<<<<<<< HEAD
 {# Platform Summary Section #}
 <div class="row mt-2">
     <div class="col-12">
@@ -255,3 +376,42 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+=======
+<!-- Recent Comments -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-comments me-1"></i>
+        Recent Comments
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Comment</th>
+                        <th>Post</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comment in latest_comments %}
+                    <tr>
+                        <td>{{ comment.content|slice(0, 80) }}</td>
+                        <td>{{ comment.post.title|slice(0, 40) }}</td>
+                        <td>{{ comment.createdAt|date('Y-m-d H:i') }}</td>
+                        <td>
+                            <form method="post" action="{{ path('admin_comment_delete', {'id': comment.id}) }}" onsubmit="return confirm('Delete this comment?')" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_comment_' ~ comment.id) }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+>>>>>>> 889c5b1 (Symfony blog project)

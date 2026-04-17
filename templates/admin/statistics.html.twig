@@ -1,0 +1,134 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Statistics{% endblock %}
+{% block stats_active %}active{% endblock %}
+{% block page_title %}Statistics{% endblock %}
+{% block breadcrumb %}Analytics & Statistics{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                Posts per Month
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Number of Posts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for month, count in posts_per_month %}
+                            <tr>
+                                <td>{{ month }}</td>
+                                <td>{{ count }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2">No data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-bar me-1"></i>
+                Comments per Month
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Number of Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for month, count in comments_per_month %}
+                            <tr>
+                                <td>{{ month }}</td>
+                                <td>{{ count }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2">No data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        Most Active Posts (by number of comments)
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Post Title</th>
+                        <th>Number of Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in active_posts %}
+                    <tr>
+                        <td>{{ post.title|slice(0, 80) }}</td>
+                        <td>{{ post.comments }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2">No data available</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-info-circle me-1"></i>
+                Summary
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Posts
+                        <span class="badge bg-primary rounded-pill">{{ total_posts }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Comments
+                        <span class="badge bg-success rounded-pill">{{ total_comments }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Average Comments per Post
+                        <span class="badge bg-warning rounded-pill">{{ total_posts > 0 ? (total_comments / total_posts)|number_format(1) : 0 }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

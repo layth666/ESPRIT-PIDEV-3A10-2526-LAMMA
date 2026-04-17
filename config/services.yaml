@@ -4,10 +4,13 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+<<<<<<< HEAD
     gemini_api_key: '%env(GEMINI_API_KEY)%'
     # Where uploaded profile pictures are saved
     # Accessible in controllers as: $this->getParameter('images_directory')
     images_directory: '%kernel.project_dir%/public/uploads/images'
+=======
+>>>>>>> 889c5b1 (Symfony blog project)
 
 services:
     # default configuration for services in *this* file
@@ -24,6 +27,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+<<<<<<< HEAD
     # Controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
@@ -35,3 +39,7 @@ services:
     App\Service\GeminiService:
         arguments:
             $apiKey: '%env(GEMINI_API_KEY)%'
+=======
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+>>>>>>> 889c5b1 (Symfony blog project)
