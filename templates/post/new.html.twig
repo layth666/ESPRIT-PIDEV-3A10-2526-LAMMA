@@ -7,10 +7,42 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/word-predictor.css') }}">
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    {{ include('partials/word_predictor.html.twig') }}
     <style>
-        .error-message { color: #dc3545; font-size: 14px; margin-top: 5px; }
-        .alert-error { background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #f5c6cb; }
-        .form-group.has-error input, .form-group.has-error textarea { border-color: #dc3545; }
+        .ai-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .ai-badge i {
+            font-size: 12px;
+        }
+        .suggestion-hint {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .suggestion-hint kbd {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
@@ -62,31 +94,41 @@
             <div class="col-lg-8">
                 <div style="background:white;padding:30px;border-radius:6px;">
 
+                    <!-- AI Badge -->
+                    <div class="ai-badge">
+                        <i class="fa fa-magic"></i> AI Word Predictor Active
+                    </div>
+
                     <!-- Display flash messages -->
                     {% for message in app.flashes('error') %}
-                        <div class="alert-error">{{ message }}</div>
+                        <div class="alert alert-danger">{{ message }}</div>
                     {% endfor %}
 
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
-                    <div class="form-group mb-3 {% if form.title.vars.errors|length > 0 %}has-error{% endif %}">
+                    <div class="form-group mb-3">
                         <label style="font-weight:bold;color:#1a2f45;">Title</label>
                         {{ form_widget(form.title, {'attr': {'class': 'form-control', 'style': 'border-radius:4px;padding:10px;', 'placeholder': 'Enter post title'}}) }}
-                        {% if form.title.vars.errors|length > 0 %}
-                            <div class="error-message">
-                                {{ form_errors(form.title) }}
-                            </div>
-                        {% endif %}
                     </div>
 
-                    <div class="form-group mb-4 {% if form.content.vars.errors|length > 0 %}has-error{% endif %}">
+                    <div class="form-group mb-4">
                         <label style="font-weight:bold;color:#1a2f45;">Content</label>
-                        {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 6, 'style': 'border-radius:4px;padding:10px;', 'placeholder': 'Write your post content here...'}}) }}
-                        {% if form.content.vars.errors|length > 0 %}
-                            <div class="error-message">
-                                {{ form_errors(form.content) }}
-                            </div>
-                        {% endif %}
+                        {{ form_widget(form.content, {'attr': {
+                            'class': 'form-control', 
+                            'rows': 8, 
+                            'style': 'border-radius:4px;padding:10px;', 
+                            'placeholder': 'Write your post content here...',
+                            'data-predict': 'true',
+                            'id': 'post_content'
+                        }}) }}
+                        
+                        <!-- Suggestion hints -->
+                        <div class="suggestion-hint">
+                            <span><i class="fa fa-lightbulb-o"></i> <strong>AI Predictor:</strong> Type a word and suggestions will appear</span>
+                            <span><kbd>Tab</kbd> Accept suggestion</span>
+                            <span><kbd>Esc</kbd> Close suggestions</span>
+                            <span><kbd>Click</kbd> Select suggestion</span>
+                        </div>
                     </div>
 
                     <button type="submit" class="boxed-btn3">Publish Post</button>
@@ -115,6 +157,14 @@
 <script src="{{ asset('js/vendor/jquery-1.12.4.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/word-predictor.js') }}"></script>
 
+<script>
+    ClassicEditor
+        .create(document.querySelector('#post_content'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 </body>
 </html>

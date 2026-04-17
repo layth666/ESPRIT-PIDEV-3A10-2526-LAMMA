@@ -9,6 +9,7 @@
         "This file is @generated automatically"
     ],
 <<<<<<< HEAD
+<<<<<<< HEAD
     "content-hash": "7b5123535bd77fae38dbce0b1034542e",
     "packages": [
         {
@@ -46,6 +47,9 @@
                     "BaconQrCode\\": "src/"
 =======
     "content-hash": "15cd1a38454d72d5a3fead423bc72304",
+=======
+    "content-hash": "f5559dbe7277095e3571f10bedeaa40d",
+>>>>>>> 04482be (full)
     "packages": [
         {
             "name": "composer/semver",
@@ -3149,6 +3153,7 @@
         },
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
             "name": "sabberworm/php-css-parser",
             "version": "v9.3.0",
             "source": {
@@ -3196,6 +3201,28 @@
                 ],
                 "psr-4": {
                     "Sabberworm\\CSS\\": "src/"
+=======
+            "name": "reclic/easymde-bundle",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reclic-dev/easymde-bundle.git",
+                "reference": "90d22fbe31aba953b9814e2cee41ab0277185789"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reclic-dev/easymde-bundle/zipball/90d22fbe31aba953b9814e2cee41ab0277185789",
+                "reference": "90d22fbe31aba953b9814e2cee41ab0277185789",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/form": "^6.1"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Reclic\\EasyMDEBundle\\": "src/"
+>>>>>>> 04482be (full)
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3204,6 +3231,7 @@
             ],
             "authors": [
                 {
+<<<<<<< HEAD
                     "name": "Raphael Schweikert"
                 },
                 {
@@ -3293,6 +3321,20 @@
         {
 =======
 >>>>>>> 889c5b1 (Symfony blog project)
+=======
+                    "name": "bricebou",
+                    "email": "brice@reclic.dev"
+                }
+            ],
+            "description": "Provides Symfony with EasyMDE - Markdown Editor",
+            "support": {
+                "issues": "https://github.com/reclic-dev/easymde-bundle/issues",
+                "source": "https://github.com/reclic-dev/easymde-bundle/tree/v0.1.0"
+            },
+            "time": "2022-08-31T17:41:26+00:00"
+        },
+        {
+>>>>>>> 04482be (full)
             "name": "symfony/asset",
             "version": "v6.4.34",
             "source": {
@@ -8389,7 +8431,94 @@
         },
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+            "name": "symfony/ux-chartjs",
+            "version": "v2.35.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/ux-chartjs.git",
+                "reference": "7ff8a3409b24af7477b516a673ee7c9a63d385a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/ux-chartjs/zipball/7ff8a3409b24af7477b516a673ee7c9a63d385a1",
+                "reference": "7ff8a3409b24af7477b516a673ee7c9a63d385a1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/config": "^5.4|^6.0|^7.0|^8.0",
+                "symfony/dependency-injection": "^5.4|^6.0|^7.0|^8.0",
+                "symfony/http-kernel": "^5.4|^6.0|^7.0|^8.0",
+                "symfony/stimulus-bundle": "^2.9.1|^3.0"
+            },
+            "conflict": {
+                "symfony/flex": "<1.13"
+            },
+            "require-dev": {
+                "symfony/framework-bundle": "^5.4|^6.0|^7.0|^8.0",
+                "symfony/phpunit-bridge": "^5.4|^6.0|^7.0|^8.0",
+                "symfony/twig-bundle": "^5.4|^6.0|^7.0|^8.0",
+                "symfony/var-dumper": "^5.4|^6.0|^7.0|^8.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/ux",
+                    "name": "symfony/ux"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\UX\\Chartjs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Titouan Galopin",
+                    "email": "galopintitouan@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Chart.js integration for Symfony",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "symfony-ux"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/ux-chartjs/tree/v2.35.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-04-03T05:13:59+00:00"
+        },
+        {
+>>>>>>> 04482be (full)
             "name": "symfony/ux-turbo",
             "version": "v2.34.0",
             "source": {

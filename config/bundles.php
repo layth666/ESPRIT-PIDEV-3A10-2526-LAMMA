@@ -23,5 +23,10 @@ return [
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
+<<<<<<< HEAD
 >>>>>>> 889c5b1 (Symfony blog project)
+=======
+    Reclic\EasyMDEBundle\ReclicEasyMDEBundle::class => ['all' => true],
+    Symfony\UX\Chartjs\ChartjsBundle::class => ['all' => true],
+>>>>>>> 04482be (full)
 ];

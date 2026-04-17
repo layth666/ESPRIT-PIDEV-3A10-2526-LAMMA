@@ -31,13 +31,31 @@
 {% block page_title %}Dashboard{% endblock %}
 {% block breadcrumb %}Dashboard{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    .stats-card {
+        transition: transform 0.2s;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Stats Cards -->
 <div class="row">
     <div class="col-xl-3 col-md-6">
-        <div class="card bg-primary text-white mb-4">
+        <div class="card bg-primary text-white mb-4 stats-card">
             <div class="card-body">
-                <h3>{{ total_posts }}</h3>
+                <h2>{{ total_posts }}</h2>
                 <div>Total Posts</div>
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between">
@@ -48,6 +66,7 @@
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
+<<<<<<< HEAD
 <<<<<<< HEAD
         <div class="card mb-4" style="background: linear-gradient(135deg, #a855f7, #ec4899); color: white; border: none; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);">
             <div class="card-body">
@@ -66,8 +85,11 @@
                 <span class="small text-white" style="font-weight: 600;">Logistique Plateforme</span>
 =======
         <div class="card bg-success text-white mb-4">
+=======
+        <div class="card bg-success text-white mb-4 stats-card">
+>>>>>>> 04482be (full)
             <div class="card-body">
-                <h3>{{ total_comments }}</h3>
+                <h2>{{ total_comments }}</h2>
                 <div>Total Comments</div>
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between">
@@ -78,6 +100,7 @@
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
+<<<<<<< HEAD
 <<<<<<< HEAD
         <div class="card mb-4" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
             <div class="card-body">
@@ -96,8 +119,11 @@
                 <span class="small text-white" style="font-weight: 600;">Réseau Gastronomie</span>
 =======
         <div class="card bg-warning text-white mb-4">
+=======
+        <div class="card bg-warning text-white mb-4 stats-card">
+>>>>>>> 04482be (full)
             <div class="card-body">
-                <h3>{{ top_posts|first.comment_count|default(0) }}</h3>
+                <h2>{{ top_posts|first.comment_count|default(0) }}</h2>
                 <div>Most Comments (One Post)</div>
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between">
@@ -108,6 +134,7 @@
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
+<<<<<<< HEAD
 <<<<<<< HEAD
         <div class="card mb-4" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
             <div class="card-body">
@@ -152,9 +179,12 @@
                 <div id="popularity_chart" style="width: 100%; height: 300px;"></div>
 =======
         <div class="card bg-danger text-white mb-4">
+=======
+        <div class="card bg-danger text-white mb-4 stats-card">
+>>>>>>> 04482be (full)
             <div class="card-body">
-                <h3>{{ latest_posts|length }}</h3>
-                <div>Recent Posts (Last 5)</div>
+                <h2>{{ latest_posts|length }}</h2>
+                <div>Recent Posts</div>
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between">
                 <a class="small text-white stretched-link" href="{{ path('admin_posts') }}">View Details</a>
@@ -165,6 +195,7 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <div class="row">
     <div class="col-xl-12">
@@ -177,6 +208,39 @@
                 <div id="timeline_chart" style="width: 100%; height: 350px;"></div>
 =======
 <!-- Recent Posts & Top Posts -->
+=======
+<!-- Charts -->
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-bar me-1"></i>
+                Posts per Month (Last 6 Months)
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="postsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-pie me-1"></i>
+                Content Overview
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Posts -->
+>>>>>>> 04482be (full)
 <div class="row">
     <div class="col-xl-6">
         <div class="card mb-4">
@@ -198,7 +262,7 @@
                         <tbody>
                             {% for post in latest_posts %}
                             <tr>
-                                <td>{{ post.title|slice(0, 40) }}</td>
+                                <td>{{ post.title|slice(0, 40) }}...</td>
                                 <td>{{ post.createdAt|date('Y-m-d') }}</td>
                                 <td>{{ post.comments|length }}</td>
                                 <td>
@@ -231,7 +295,7 @@
                         <tbody>
                             {% for item in top_posts %}
                             <tr>
-                                <td>{{ item.post.title|slice(0, 50) }}</td>
+                                <td>{{ item.post.title|slice(0, 50) }}...</td>
                                 <td>{{ item.comment_count }}</td>
                             </tr>
                             {% endfor %}
@@ -397,8 +461,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <tbody>
                     {% for comment in latest_comments %}
                     <tr>
-                        <td>{{ comment.content|slice(0, 80) }}</td>
-                        <td>{{ comment.post.title|slice(0, 40) }}</td>
+                        <td>{{ comment.content|slice(0, 80) }}...</td>
+                        <td>{{ comment.post.title|slice(0, 40) }}...</td>
                         <td>{{ comment.createdAt|date('Y-m-d H:i') }}</td>
                         <td>
                             <form method="post" action="{{ path('admin_comment_delete', {'id': comment.id}) }}" onsubmit="return confirm('Delete this comment?')" style="display:inline;">
@@ -414,4 +478,60 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 {% endblock %}
+<<<<<<< HEAD
 >>>>>>> 889c5b1 (Symfony blog project)
+=======
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Bar Chart
+    const months = {{ chart_months|raw }};
+    const postsData = {{ chart_data|raw }};
+    
+    const ctx = document.getElementById('postsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Posts Created',
+                data: postsData,
+                backgroundColor: '#f09000',
+                borderColor: '#f09000',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+    
+    // Pie Chart
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Posts', 'Comments'],
+            datasets: [{
+                data: [{{ total_posts }}, {{ total_comments }}],
+                backgroundColor: ['#f09000', '#1a2f45']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+});
+</script>
+{% endblock %}
+>>>>>>> 04482be (full)

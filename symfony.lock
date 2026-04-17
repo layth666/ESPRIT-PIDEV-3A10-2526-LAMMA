@@ -79,6 +79,9 @@
             "./bin/phpunit"
         ]
     },
+    "reclic/easymde-bundle": {
+        "version": "v0.1.0"
+    },
     "symfony/asset-mapper": {
         "version": "6.4",
         "recipe": {
@@ -288,7 +291,13 @@
         ]
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+    "symfony/ux-chartjs": {
+        "version": "v2.35.0"
+    },
+>>>>>>> 04482be (full)
     "symfony/ux-turbo": {
         "version": "2.34",
         "recipe": {
