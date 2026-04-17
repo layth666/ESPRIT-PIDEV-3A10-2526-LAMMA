@@ -32,6 +32,18 @@ class SponsorMailerService
                         <h1 style='color: #e8c74a; margin: 0;'>LAMMA Events</h1>
                     </div>
                     <div style='background: #f9f9f9; padding: 40px;'>
+                        <!-- Nouveau message de bienvenue avec infos du sponsor -->
+                        <div style='background: #e8f4fd; border-left: 4px solid #e8c74a; padding: 20px; margin-bottom: 30px;'>
+                            <h3 style='color: #2c3e50; margin-top: 0; margin-bottom: 10px;'>
+                                🎉 Bienvenue {$sponsor->getNom()} !
+                            </h3>
+                            <p style='margin: 0; color: #34495e; font-size: 14px;'>
+                                <strong>Email enregistré :</strong> {$sponsor->getEmail()}<br>
+                                <strong>Instructions :</strong> Pour finaliser votre inscription en tant que sponsor, 
+                                veuillez confirmer votre adresse email en cliquant sur le lien de vérification ci-dessous.
+                            </p>
+                        </div>
+
                         <h2 style='color: #333;'>Bonjour {$sponsor->getNom()},</h2>
                         <p style='color: #666; font-size: 16px;'>
                             Votre compte sponsor a été créé sur LAMMA Events. 

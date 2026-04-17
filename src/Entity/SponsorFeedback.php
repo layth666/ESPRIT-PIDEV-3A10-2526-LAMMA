@@ -34,6 +34,18 @@ class SponsorFeedback
     #[ORM\JoinColumn(nullable: false)]
     private ?Sponsor $sponsor = null;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $sentimentScore = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $sentimentLabel = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $sentimentConfidence = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $analyzedAt = null;
+
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
@@ -59,4 +71,16 @@ class SponsorFeedback
 
     public function getSponsor(): ?Sponsor { return $this->sponsor; }
     public function setSponsor(?Sponsor $sponsor): static { $this->sponsor = $sponsor; return $this; }
+
+    public function getSentimentScore(): ?float { return $this->sentimentScore; }
+    public function setSentimentScore(?float $sentimentScore): static { $this->sentimentScore = $sentimentScore; return $this; }
+
+    public function getSentimentLabel(): ?string { return $this->sentimentLabel; }
+    public function setSentimentLabel(?string $sentimentLabel): static { $this->sentimentLabel = $sentimentLabel; return $this; }
+
+    public function getSentimentConfidence(): ?float { return $this->sentimentConfidence; }
+    public function setSentimentConfidence(?float $sentimentConfidence): static { $this->sentimentConfidence = $sentimentConfidence; return $this; }
+
+    public function getAnalyzedAt(): ?\DateTime { return $this->analyzedAt; }
+    public function setAnalyzedAt(?\DateTime $analyzedAt): static { $this->analyzedAt = $analyzedAt; return $this; }
 }

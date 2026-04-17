@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\SponsorFeedback;
 use App\Repository\SponsorRepository;
 use App\Repository\EventSponsorRepository;
 use App\Repository\SponsorFeedbackRepository;
+use App\Service\SentimentAnalysisService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -87,15 +91,140 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/sponsor-feedback', name: 'admin_sponsor_feedback')]
-    public function sponsorFeedback(SponsorFeedbackRepository $repo): Response
+    public function sponsorFeedback(SponsorFeedbackRepository $repo, SentimentAnalysisService $sentimentService): Response
     {
         $entries = $repo->createQueryBuilder('f')
             ->orderBy('f.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
 
+        // Calculer le score de satisfaction global
+        $analyzedEntries = array_filter($entries, fn($entry) => $entry->getSentimentScore() !== null);
+        $globalScore = 0.0;
+        $globalSatisfactionPercentage = 0;
+
+        if (!empty($analyzedEntries)) {
+            $totalScore = 0.0;
+            foreach ($analyzedEntries as $entry) {
+                $totalScore += $entry->getSentimentScore();
+            }
+            $globalScore = $totalScore / count($analyzedEntries);
+            $globalSatisfactionPercentage = $sentimentService->getSatisfactionPercentage($globalScore);
+        }
+
         return $this->render('admin/sponsor_feedback_admin.html.twig', [
             'entries' => $entries,
+            'sentiment_service' => $sentimentService,
+            'global_score' => $globalScore,
+            'global_satisfaction' => $globalSatisfactionPercentage,
+            'analyzed_count' => count($analyzedEntries),
         ]);
+    }
+
+    #[Route('/sponsor-feedback/{id}', name: 'admin_delete_feedback', methods: ['POST'])]
+    public function deleteFeedback(SponsorFeedback $feedback, EntityManagerInterface $em, Request $request): Response
+    {
+        // Vérifier le token CSRF pour la sécurité
+        if (!$this->isCsrfTokenValid('delete' . $feedback->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token CSRF invalide');
+            return $this->redirectToRoute('admin_sponsor_feedback');
+        }
+
+        $em->remove($feedback);
+        $em->flush();
+
+        $this->addFlash('success', 'Feedback/Report supprimé avec succès');
+
+        return $this->redirectToRoute('admin_sponsor_feedback');
+    }
+
+    #[Route('/sponsor-feedback/analyze/{id}', name: 'admin_analyze_feedback', methods: ['POST'])]
+    public function analyzeFeedback(
+        SponsorFeedback $feedback,
+        SentimentAnalysisService $sentimentService,
+        EntityManagerInterface $em,
+        Request $request
+    ): Response {
+        // Vérifier le token CSRF pour la sécurité
+        if (!$this->isCsrfTokenValid('analyze' . $feedback->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token CSRF invalide');
+            return $this->redirectToRoute('admin_sponsor_feedback');
+        }
+
+        try {
+            // Analyser le sentiment du contenu
+            $result = $sentimentService->analyze($feedback->getContenu());
+
+            // Mettre à jour l'entité avec les résultats
+            $feedback->setSentimentScore($result['score']);
+            $feedback->setSentimentLabel($result['label']);
+            $feedback->setSentimentConfidence($result['confidence'] ?? 0.0);
+            $feedback->setAnalyzedAt(new \DateTime());
+
+            $em->flush();
+
+            $this->addFlash('success', sprintf(
+                'Analyse terminée : %s (%d%% de confiance)',
+                ucfirst($result['label']),
+                round(($result['confidence'] ?? 0) * 100)
+            ));
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erreur lors de l\'analyse : ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('admin_sponsor_feedback');
+    }
+
+    #[Route('/sponsor-feedback/analyze-batch', name: 'admin_analyze_batch_feedback', methods: ['POST'])]
+    public function analyzeBatchFeedback(
+        SponsorFeedbackRepository $repo,
+        SentimentAnalysisService $sentimentService,
+        EntityManagerInterface $em,
+        Request $request
+    ): Response {
+        // Vérifier le token CSRF
+        if (!$this->isCsrfTokenValid('analyze_batch', $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token CSRF invalide');
+            return $this->redirectToRoute('admin_sponsor_feedback');
+        }
+
+        try {
+            // Récupérer tous les feedbacks non analysés
+            $feedbacks = $repo->createQueryBuilder('f')
+                ->where('f.sentimentScore IS NULL')
+                ->getQuery()
+                ->getResult();
+
+            $analyzed = 0;
+            foreach ($feedbacks as $feedback) {
+                try {
+                    $result = $sentimentService->analyze($feedback->getContenu());
+
+                    $feedback->setSentimentScore($result['score']);
+                    $feedback->setSentimentLabel($result['label']);
+                    $feedback->setSentimentConfidence($result['confidence'] ?? 0.0);
+                    $feedback->setAnalyzedAt(new \DateTime());
+
+                    $analyzed++;
+
+                    // Petit délai pour éviter de surcharger l'API
+                    usleep(200000); // 0.2 seconde
+
+                } catch (\Exception $e) {
+                    // Continuer avec les autres feedbacks même si un échoue
+                    continue;
+                }
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', sprintf('%d feedbacks analysés avec succès', $analyzed));
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erreur lors de l\'analyse en batch : ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('admin_sponsor_feedback');
     }
 }
