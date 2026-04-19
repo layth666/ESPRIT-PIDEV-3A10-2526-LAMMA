@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel utilisateur — LAMMA{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="h3">Nouvel utilisateur</h1>
+    {{ form(form) }}
+    <a href="{{ path('app_user_index') }}" class="btn btn-secondary mt-3">Retour</a>
+</div>
+{% endblock %}

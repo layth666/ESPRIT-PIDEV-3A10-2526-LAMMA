@@ -1,537 +1,129 @@
-<<<<<<< HEAD
 {% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}Dashboard - SB Admin{% endblock %}
-{% block admin_title %}Dashboard{% endblock %}
+{% block title %}Tableau de bord — LAMMA{% endblock %}
 
 {% block admin_content %}
-<div class="row">
-    <div class="col-xl-3 col-md-6">
-        <div class="card mb-4" style="background: linear-gradient(135deg, #3b82f6, #06b6d4); color: white; border: none; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-white-50 small text-uppercase fw-bold">Météo Tunis</div>
-                        <div class="fw-bold fs-3" id="weather-temp" style="font-family: 'Anton', sans-serif; letter-spacing: 1px;"><i class="fas fa-spinner fa-spin text-white-50"></i></div>
-                        <div class="small fw-bold" id="weather-desc" style="color: rgba(255, 255, 255, 0.8);">Chargement...</div>
-                    </div>
-                    <div>
-                        <i class="fas fa-cloud-sun fa-3x" id="weather-icon" style="opacity: 0.6;"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.1); border-top: none;">
-                <span class="small text-white" style="font-weight: 600;"><i class="fa fa-map-marker-alt"></i> Tunisie, TN</span>
-                <div class="small text-white fw-bold"><i class="fas fa-satellite-dish"></i> Open-Meteo</div>
-=======
-{% extends 'admin/base.html.twig' %}
-
-{% block title %}Dashboard{% endblock %}
-{% block dashboard_active %}active{% endblock %}
-{% block page_title %}Dashboard{% endblock %}
-{% block breadcrumb %}Dashboard{% endblock %}
-
-{% block stylesheets %}
-{{ parent() }}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-    .chart-container {
-        position: relative;
-        height: 300px;
-        width: 100%;
-    }
-    .stats-card {
-        transition: transform 0.2s;
-    }
-    .stats-card:hover {
-        transform: translateY(-5px);
-    }
-</style>
-{% endblock %}
-
-{% block content %}
-<!-- Stats Cards -->
-<div class="row">
-    <div class="col-xl-3 col-md-6">
-        <div class="card bg-primary text-white mb-4 stats-card">
-            <div class="card-body">
-                <h2>{{ total_posts }}</h2>
-                <div>Total Posts</div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between">
-                <a class="small text-white stretched-link" href="{{ path('admin_posts') }}">View Details</a>
-                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
->>>>>>> 889c5b1 (Symfony blog project)
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <div class="card mb-4" style="background: linear-gradient(135deg, #a855f7, #ec4899); color: white; border: none; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-white-50 small text-uppercase fw-bold">Participants</div>
-                        <div class="fw-bold fs-3" style="font-family: 'Anton', sans-serif; letter-spacing: 1px;">{{ totalParticipants }}</div>
-                        <div class="small fw-bold" style="color: rgba(255, 255, 255, 0.8);">Confirmés</div>
-                    </div>
-                    <div>
-                        <i class="fas fa-users fa-3x" style="opacity: 0.5;"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.1); border-top: none;">
-                <span class="small text-white" style="font-weight: 600;">Logistique Plateforme</span>
-=======
-        <div class="card bg-success text-white mb-4">
-=======
-        <div class="card bg-success text-white mb-4 stats-card">
->>>>>>> 04482be (full)
-            <div class="card-body">
-                <h2>{{ total_comments }}</h2>
-                <div>Total Comments</div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between">
-                <a class="small text-white stretched-link" href="{{ path('admin_comments') }}">View Details</a>
-                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
->>>>>>> 889c5b1 (Symfony blog project)
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <div class="card mb-4" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-white-50 small text-uppercase fw-bold">Restaurants</div>
-                        <div class="fw-bold fs-3" style="font-family: 'Anton', sans-serif; letter-spacing: 1px;">{{ totalRestaurants }}</div>
-                        <div class="small fw-bold" style="color: rgba(255, 255, 255, 0.8);">Partenaires</div>
-                    </div>
-                    <div>
-                        <i class="fas fa-utensils fa-3x" style="opacity: 0.5;"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.1); border-top: none;">
-                <span class="small text-white" style="font-weight: 600;">Réseau Gastronomie</span>
-=======
-        <div class="card bg-warning text-white mb-4">
-=======
-        <div class="card bg-warning text-white mb-4 stats-card">
->>>>>>> 04482be (full)
-            <div class="card-body">
-                <h2>{{ top_posts|first.comment_count|default(0) }}</h2>
-                <div>Most Comments (One Post)</div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between">
-                <a class="small text-white stretched-link" href="{{ path('admin_stats') }}">View Details</a>
-                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
->>>>>>> 889c5b1 (Symfony blog project)
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <div class="card mb-4" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-white-50 small text-uppercase fw-bold">Revenu Total</div>
-                        <div class="fw-bold fs-3" style="font-family: 'Anton', sans-serif; letter-spacing: 1px;">{{ totalRevenue|number_format(2, ',', ' ') }}€</div>
-                        <div class="small fw-bold" style="color: rgba(255, 255, 255, 0.8);">Cumulé</div>
-                    </div>
-                    <div>
-                        <i class="fas fa-wallet fa-3x" style="opacity: 0.5;"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between" style="background: rgba(0,0,0,0.1); border-top: none;">
-                <span class="small text-white" style="font-weight: 600;">Performances LAMMA</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-{# Statistiques Métier Section (Google Charts) #}
-<div class="row mt-4">
-    <div class="col-xl-6">
-        <div class="card mb-4" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <div class="card-header bg-white py-3">
-                <i class="fas fa-chart-pie me-1" style="color: #ff005a;"></i>
-                <span class="fw-bold" style="font-family: 'Anton', sans-serif; letter-spacing: 0.5px;">RÉPARTITION DES REVENUS</span>
-            </div>
-            <div class="card-body">
-                <div id="revenue_chart" style="width: 100%; height: 300px;"></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6">
-        <div class="card mb-4" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <div class="card-header bg-white py-3">
-                <i class="fas fa-chart-bar me-1" style="color: #f97316;"></i>
-                <span class="fw-bold" style="font-family: 'Anton', sans-serif; letter-spacing: 0.5px;">TOP 5 ÉTABLISSEMENTS (FAVORIS)</span>
-            </div>
-            <div class="card-body">
-                <div id="popularity_chart" style="width: 100%; height: 300px;"></div>
-=======
-        <div class="card bg-danger text-white mb-4">
-=======
-        <div class="card bg-danger text-white mb-4 stats-card">
->>>>>>> 04482be (full)
-            <div class="card-body">
-                <h2>{{ latest_posts|length }}</h2>
-                <div>Recent Posts</div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between">
-                <a class="small text-white stretched-link" href="{{ path('admin_posts') }}">View Details</a>
-                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
->>>>>>> 889c5b1 (Symfony blog project)
-            </div>
-        </div>
-    </div>
-</div>
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card mb-4" style="border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <div class="card-header bg-white py-3">
-                <i class="fas fa-chart-area me-1" style="color: #3b82f6;"></i>
-                <span class="fw-bold" style="font-family: 'Anton', sans-serif; letter-spacing: 0.5px;">ÉVOLUTION DES PARTICIPATIONS</span>
-            </div>
-            <div class="card-body">
-                <div id="timeline_chart" style="width: 100%; height: 350px;"></div>
-=======
-<!-- Recent Posts & Top Posts -->
-=======
-<!-- Charts -->
-<div class="row">
-    <div class="col-xl-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-chart-bar me-1"></i>
-                Posts per Month (Last 6 Months)
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="postsChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-chart-pie me-1"></i>
-                Content Overview
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Recent Posts -->
->>>>>>> 04482be (full)
-<div class="row">
-    <div class="col-xl-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-table me-1"></i>
-                Recent Posts
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Date</th>
-                                <th>Comments</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for post in latest_posts %}
-                            <tr>
-                                <td>{{ post.title|slice(0, 40) }}...</td>
-                                <td>{{ post.createdAt|date('Y-m-d') }}</td>
-                                <td>{{ post.comments|length }}</td>
-                                <td>
-                                    <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-sm btn-warning">Edit</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-xl-6">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-chart-bar me-1"></i>
-                Most Commented Posts
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Comments</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in top_posts %}
-                            <tr>
-                                <td>{{ item.post.title|slice(0, 50) }}...</td>
-                                <td>{{ item.comment_count }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
->>>>>>> 889c5b1 (Symfony blog project)
-            </div>
-        </div>
-    </div>
-</div>
-
-<<<<<<< HEAD
-{# Platform Summary Section #}
-<div class="row mt-2">
-    <div class="col-12">
-        <div class="card mb-4" style="border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
-            <div class="card-body py-4 text-center">
-                <i class="fas fa-rocket fa-2x mb-3" style="color: #6366f1; opacity: 0.8;"></i>
-                <h3 style="font-family: 'Anton', sans-serif; color: #1e293b; text-transform: uppercase; letter-spacing: 1px; font-size: 1.5rem;">Bienvenue sur Scout IA</h3>
-                <p class="text-muted" style="max-width: 600px; margin: 0 auto; font-weight: 500; font-size: 0.9rem;">Votre centre de commandement unifié pour gérer les événements, la gastronomie et la logistique de la communauté Scout.</p>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block javascripts %}
-{# Google Charts Loader #}
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-<script src="{{ asset('sbadmin/js/datatables-simple-demo.js') }}"></script>
-
-<script type="text/javascript">
-    google.charts.load('current', {'packages':['corechart', 'bar']});
-    google.charts.setOnLoadCallback(drawCharts);
-
-    function drawCharts() {
-        // --- 1. REVENUE PIE CHART ---
-        var revenueData = google.visualization.arrayToDataTable([
-            ['Type', 'Revenu'],
-            {% for item in revenueStats %}
-                ['{{ item.label }}', {{ item.total }}],
-            {% else %}
-                ['Aucune donnée', 0]
-            {% endfor %}
-        ]);
-
-        var revenueOptions = {
-            pieHole: 0.4,
-            colors: ['#ff005a', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],
-            chartArea: {width: '90%', height: '80%'},
-            legend: {position: 'bottom'},
-            backgroundColor: 'transparent'
-        };
-
-        var revenueChart = new google.visualization.PieChart(document.getElementById('revenue_chart'));
-        revenueChart.draw(revenueData, revenueOptions);
-
-        // --- 2. POPULARITY BAR CHART ---
-        var popularityData = google.visualization.arrayToDataTable([
-            ['Établissement', 'Nombre de Favoris', { role: 'style' }],
-            {% set colors = ['#f97316', '#fb923c', '#fdba74', '#fed7aa', '#ffedd5'] %}
-            {% for item in popularityStats %}
-                ['{{ item.label }}', {{ item.total }}, '{{ colors[loop.index0] }}'],
-            {% else %}
-                ['Aucun', 0, '#ccc']
-            {% endfor %}
-        ]);
-
-        var popularityOptions = {
-            legend: { position: "none" },
-            chartArea: {width: '70%', height: '80%'},
-            hAxis: { minValue: 0 },
-            backgroundColor: 'transparent'
-        };
-
-        var popularityChart = new google.visualization.BarChart(document.getElementById('popularity_chart'));
-        popularityChart.draw(popularityData, popularityOptions);
-
-        // --- 3. TIMELINE AREA CHART ---
-        var timelineData = google.visualization.arrayToDataTable([
-            ['Mois', 'Participations'],
-            {% for item in participationTimeline %}
-                ['{{ item.month }}', {{ item.total }}],
-            {% else %}
-                ['N/A', 0]
-            {% endfor %}
-        ]);
-
-        var timelineOptions = {
-            hAxis: {title: 'Mois',  titleTextStyle: {color: '#333'}},
-            vAxis: {minValue: 0},
-            colors: ['#3b82f6'],
-            areaOpacity: 0.2,
-            chartArea: {width: '85%', height: '70%'},
-            legend: {position: 'none'},
-            backgroundColor: 'transparent'
-        };
-
-        var timelineChart = new google.visualization.AreaChart(document.getElementById('timeline_chart'));
-        timelineChart.draw(timelineData, timelineOptions);
-    }
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Coordonnées pour Tunis: 36.8065° N, 10.1815° E
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=36.8065&longitude=10.1815&current_weather=true')
-        .then(response => response.json())
-        .then(data => {
-            const weather = data.current_weather;
-            const temp = weather.temperature;
-            const code = weather.weathercode;
-            const isDay = weather.is_day;
-            
-            document.getElementById('weather-temp').innerHTML = temp + ' °C';
-            
-            let desc = "Inconnu";
-            let icon = "fa-cloud";
-            
-            // WMO Weather interpretation codes
-            if (code === 0) { desc = "Ciel clair"; icon = isDay ? "fa-sun" : "fa-moon"; }
-            else if (code === 1 || code === 2 || code === 3) { desc = "Peu nuageux"; icon = isDay ? "fa-cloud-sun" : "fa-cloud-moon"; }
-            else if (code === 45 || code === 48) { desc = "Brouillard"; icon = "fa-smog"; }
-            else if (code >= 51 && code <= 57) { desc = "Bruine"; icon = "fa-cloud-rain"; }
-            else if (code >= 61 && code <= 67) { desc = "Pluie"; icon = "fa-cloud-showers-heavy"; }
-            else if (code >= 71 && code <= 77) { desc = "Neige"; icon = "fa-snowflake"; }
-            else if (code >= 80 && code <= 82) { desc = "Averses"; icon = "fa-cloud-rain"; }
-            else if (code >= 85 && code <= 86) { desc = "Averses de neige"; icon = "fa-snowflake"; }
-            else if (code >= 95 && code <= 99) { desc = "Orage"; icon = "fa-bolt"; }
-            
-            document.getElementById('weather-desc').innerText = desc;
-            document.getElementById('weather-icon').className = 'fas ' + icon + ' fa-3x';
-        })
-        .catch(error => {
-            document.getElementById('weather-temp').innerHTML = '-- °C';
-            document.getElementById('weather-desc').innerText = 'Erreur API';
-            document.getElementById('weather-icon').className = 'fas fa-exclamation-triangle fa-3x';
-        });
-});
-</script>
-{% endblock %}
-=======
-<!-- Recent Comments -->
-<div class="card mb-4">
-    <div class="card-header">
-        <i class="fas fa-comments me-1"></i>
-        Recent Comments
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Comment</th>
-                        <th>Post</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for comment in latest_comments %}
-                    <tr>
-                        <td>{{ comment.content|slice(0, 80) }}...</td>
-                        <td>{{ comment.post.title|slice(0, 40) }}...</td>
-                        <td>{{ comment.createdAt|date('Y-m-d H:i') }}</td>
-                        <td>
-                            <form method="post" action="{{ path('admin_comment_delete', {'id': comment.id}) }}" onsubmit="return confirm('Delete this comment?')" style="display:inline;">
-                                <input type="hidden" name="_token" value="{{ csrf_token('admin_delete_comment_' ~ comment.id) }}">
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+    <form method="get" action="{{ path('app_admin') }}" class="card shadow-sm mb-4" id="admin-toolbar"
+         data-search-url="{{ path('app_admin_search') }}"
+         data-admin-url="{{ path('app_admin') }}">
+         <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3 p-3">
+            <div class="d-flex flex-wrap align-items-center gap-2 w-100">
+                <label class="small text-muted fw-bold d-none d-md-inline" for="admin-q"><i class="fa fa-search me-1"></i> Filtrer les équipements</label>
+                <input type="search" id="admin-q" name="q" value="{{ q|default('') }}" autocomplete="off"
+                       class="form-control form-control-sm" placeholder="Recherche…" style="min-width:220px;">
+                <select id="admin-categorie" name="categorie" class="form-select form-select-sm" style="max-width:220px;">
+                    {% for c in categories %}
+                        <option value="{{ c }}" {% if c == current_categorie %}selected{% endif %}>{{ c }}</option>
                     {% endfor %}
+                </select>
+                <button type="submit" class="d-none">Rechercher</button>
+            </div>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <span class="badge bg-primary rounded-pill px-3 py-2 shadow-sm" id="admin-count" style="font-size: 0.9rem;">
+                    {{ total }} résultat(s)
+                </span>
+            </div>
+        </div>
+    </form>
+
+    <div class="row g-4 mb-4">
+        <div class="col-xl-4 col-md-6">
+            <div class="card bg-primary text-white shadow h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+                    <div class="display-4 fw-bold mb-2">{{ total }}</div>
+                    <div class="text-white-50 text-uppercase fw-semibold" style="letter-spacing: 1px;">
+                        <i class="fa fa-boxes me-2"></i>Total Équipements
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card bg-success text-white shadow h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+                    <div class="display-4 fw-bold mb-2">{{ livrable_count }}</div>
+                    <div class="text-white-50 text-uppercase fw-semibold" style="letter-spacing: 1px;">
+                        <i class="fa fa-truck me-2"></i>Équipements Livrables
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card bg-warning text-white shadow h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+                    <div class="display-4 fw-bold mb-2">{{ delivery_count }}</div>
+                    <div class="text-white-50 text-uppercase fw-semibold" style="letter-spacing: 1px;">
+                        <i class="fa fa-clock me-2"></i>Livraisons Actives
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <i class="fa fa-table me-1"></i>
+            Liste des équipements
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">#</th>
+                            <th>Nom</th>
+                            <th>Type</th>
+                            <th>Catégorie</th>
+                            <th>Statut</th>
+                            <th>Livrable</th>
+                            <th>Propriétaire</th>
+                            <th>Acheteur</th>
+                            <th>Livraison</th>
+                            <th class="text-end pe-3">Actions</th>
+                        </tr>
+                </thead>
+                <tbody id="admin-table-body">
+                    {% include 'admin/_equipement_rows.html.twig' %}
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
-</div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <i class="fa fa-handshake me-1"></i>
+            Historique des Ventes / Transactions
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Date</th>
+                            <th>Équipement</th>
+                            <th>Vendeur</th>
+                            <th>Acheteur</th>
+                            <th>Prix</th>
+                            <th class="text-end pe-3">Token Stripe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                            <tr>
+                                <td class="ps-3">{{ t.createdAt ? t.createdAt|date('d/m/Y H:i') : '-' }}</td>
+                                <td><span class="badge bg-info">{{ t.equipement.nom }}</span></td>
+                                <td>{{ t.seller.userid }}</td>
+                                <td>{{ t.buyer.userid }}</td>
+                                <td><span class="fw-bold text-success">{{ t.price }} TND</span></td>
+                                <td class="text-end pe-3"><small class="text-muted">{{ t.stripeToken|default('-')|slice(0, 15) }}...</small></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">Aucune transaction enregistrée.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
-<<<<<<< HEAD
->>>>>>> 889c5b1 (Symfony blog project)
-=======
-
-{% block javascripts %}
-{{ parent() }}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Bar Chart
-    const months = {{ chart_months|raw }};
-    const postsData = {{ chart_data|raw }};
-    
-    const ctx = document.getElementById('postsChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: months,
-            datasets: [{
-                label: 'Posts Created',
-                data: postsData,
-                backgroundColor: '#f09000',
-                borderColor: '#f09000',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { stepSize: 1 }
-                }
-            }
-        }
-    });
-    
-    // Pie Chart
-    const pieCtx = document.getElementById('pieChart').getContext('2d');
-    new Chart(pieCtx, {
-        type: 'pie',
-        data: {
-            labels: ['Posts', 'Comments'],
-            datasets: [{
-                data: [{{ total_posts }}, {{ total_comments }}],
-                backgroundColor: ['#f09000', '#1a2f45']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-});
-</script>
-{% endblock %}
->>>>>>> 04482be (full)

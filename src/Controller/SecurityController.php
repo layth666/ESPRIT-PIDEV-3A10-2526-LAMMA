@@ -1,65 +1,33 @@
 <?php
-// src/Controller/SecurityController.php
 
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    // ── HOME — redirects to right place based on role ─────────────────────────
-    #[Route('/', name: 'app_home')]
-    public function home(): Response
-    {
-        if ($this->getUser() && $this->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('app_users_index');
-        }
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_profile');
-        }
-        return $this->redirectToRoute('app_login');
-    }
-
-    // ── LOGIN ─────────────────────────────────────────────────────────────────
-    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
+    #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // Already logged-in admin → dashboard
-        if ($this->getUser() && $this->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('app_users_index');
-        }
-        // Already logged-in user → profile
         if ($this->getUser()) {
-            return $this->redirectToRoute('app_profile');
+            return $this->redirectToRoute('app_boutique');
         }
 
+        $error = $authenticationUtils->getLastAuthenticationError();
+        $lastUsername = $authenticationUtils->getLastUsername();
+
         return $this->render('security/login.html.twig', [
-            'last_username' => $authenticationUtils->getLastUsername(),
-            'error'         => $authenticationUtils->getLastAuthenticationError(),
+            'last_username' => $lastUsername,
+            'error' => $error,
         ]);
     }
 
-    // ── LOGOUT ────────────────────────────────────────────────────────────────
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
-        throw new \LogicException('Intercepted by Symfony firewall.');
-    }
-
-    // ── BANNED ────────────────────────────────────────────────────────────────
-    #[Route('/banned', name: 'app_banned')]
-    public function banned(): Response
-    {
-        return $this->render('security/banned.html.twig');
-    }
-
-    // ── ACCESS DENIED ─────────────────────────────────────────────────────────
-    #[Route('/access-denied', name: 'app_access_denied')]
-    public function accessDenied(): Response
-    {
-        return $this->render('security/access_denied.html.twig');
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

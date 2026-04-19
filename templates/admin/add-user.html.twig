@@ -1,0 +1,29 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Ajouter utilisateur — LAMMA{% endblock %}
+
+{% block admin_content %}
+    <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="mb-2">Ajouter un utilisateur</h2>
+            <p class="text-white-50 mb-0">Créer un nouvel utilisateur pour l’administration de LAMMA.</p>
+        </div>
+        <a href="#" onclick="history.back(); return false;" class="btn btn-outline-light btn-sm">← Retour</a>
+    </div>
+
+    <div class="admin-card p-4" style="max-width: 540px;">
+        <form method="post" action="#" class="row g-3">
+            <div class="col-12">
+                <label class="form-label text-white" for="user_email">Email</label>
+                <input type="email" class="form-control bg-dark text-white border-secondary" id="user_email" name="email" placeholder="email@exemple.com" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label text-white" for="user_name">Nom</label>
+                <input type="text" class="form-control bg-dark text-white border-secondary" id="user_name" name="name" placeholder="Nom complet">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-lamma">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

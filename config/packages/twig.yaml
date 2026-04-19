@@ -1,6 +1,12 @@
 twig:
     file_name_pattern: '*.twig'
-
+    globals:
+        open_meteo_apiUrl: '%env(OPEN_METEO_API_URL)%'
+        nominatim_apiUrl: '%env(NOMINATIM_API_URL)%'
+        qr_server_apiUrl: '%env(QR_SERVER_API_URL)%'
+        stripe_public_key: '%env(STRIPE_PUBLIC_KEY)%'
+        osrm_apiUrl: '%env(OSRM_API_URL)%'
+        osrm_apiKey: '%env(OSRM_API_KEY)%'
 when@test:
     twig:
         strict_variables: true

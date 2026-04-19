@@ -1,0 +1,440 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ equipement.nom }} — LAMMA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .equipment-detail {
+            min-height: calc(100vh - 80px);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 2rem 0;
+        }
+        .detail-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: none;
+            overflow: hidden;
+        }
+        .detail-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 2rem;
+            display: none;
+        }
+        .detail-wrapper {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        .detail-sidebar {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        .detail-sidebar h1 {
+            color: #1e293b;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            word-break: break-word;
+        }
+        .detail-sidebar .detail-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .detail-sidebar .detail-meta span {
+            display: inline-block;
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+            border: 1px solid #fed7aa;
+        }
+        .detail-sidebar .detail-meta .price {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            border: none;
+        }
+        .detail-main-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        .info-section {
+            margin-bottom: 2rem;
+        }
+        .info-section h3 {
+            color: #1e293b;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .info-section h3::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #f97316;
+            margin-right: 0.75rem;
+            border-radius: 2px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .info-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #f97316;
+        }
+        .info-item strong {
+            color: #374151;
+            font-weight: 600;
+        }
+        .info-item span {
+            color: #6b7280;
+        }
+        .description-section {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid #f97316;
+        }
+        .description-section p {
+            color: #374151;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .attributes-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+        .attribute-item {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+        .attribute-item strong {
+            color: #374151;
+            font-weight: 600;
+        }
+        .attribute-item span {
+            color: #6b7280;
+        }
+        .delivery-info {
+            background: #ecfdf5;
+            border: 1px solid #d1fae5;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .delivery-info ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        .delivery-info li {
+            color: #065f46;
+            margin-bottom: 0.25rem;
+        }
+        .delivery-info strong {
+            color: #047857;
+        }
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+            color: white;
+        }
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary-custom:hover {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+            color: white;
+        }
+        .btn-success-custom {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-success-custom:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            color: white;
+        }
+        .btn-danger-custom {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-danger-custom:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            color: white;
+        }
+        .alert-custom {
+            padding: 1rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+        }
+        .alert-info-custom {
+            background: #eff6ff;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+        .alert-warning-custom {
+            background: #fffbeb;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+        .breadcrumb-custom .breadcrumb-item a {
+            color: #f97316;
+            text-decoration: none;
+        }
+        .breadcrumb-custom .breadcrumb-item.active {
+            color: #6b7280;
+        }
+        @media (max-width: 768px) {
+            .detail-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .detail-sidebar {
+                position: static;
+                margin-bottom: 1.5rem;
+            }
+            .detail-header {
+                padding: 1.5rem;
+            }
+            .detail-header h1 {
+                font-size: 2rem;
+            }
+            .detail-main-content {
+                padding: 1.5rem;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .action-buttons a,
+            .action-buttons button {
+                text-align: center;
+                justify-content: center;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="equipment-detail">
+    <div class="container-fluid px-5">
+        <nav aria-label="breadcrumb" class="breadcrumb-custom">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_boutique') }}">Boutique</a></li>
+                <li class="breadcrumb-item active">Détails</li>
+            </ol>
+        </nav>
+
+        <div class="detail-wrapper">
+            <!-- Sidebar -->
+            <aside class="detail-sidebar">
+                <h1>{{ equipement.nom }}</h1>
+                <div class="detail-meta">
+                    <span>{{ equipement.categorie ?? '—' }}</span>
+                    <span>{{ equipement.type ?? '—' }}</span>
+                    <span class="price">{{ equipement.prix|number_format(2, ',', ' ') }} TND</span>
+                    <span style="background: {% if equipement.statut == 'disponible' %}#d1fae5{% elseif equipement.statut == 'reserve' %}#fef3c7{% else %}#fee2e2{% endif %}; color: {% if equipement.statut == 'disponible' %}#065f46{% elseif equipement.statut == 'reserve' %}#92400e{% else %}#991b1b{% endif %}; border: 1px solid {% if equipement.statut == 'disponible' %}#a7f3d0{% elseif equipement.statut == 'reserve' %}#fde68a{% else %}#fecaca{% endif %};">{{ equipement.statut }}</span>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 1.5rem 0;">
+
+                <div class="info-section" style="margin-bottom: 1.5rem;">
+                    {% if equipement.ville %}
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: #374151;"><i class="fa fa-map-marker me-2" style="color: #f97316;"></i>Ville</strong>
+                        <p style="color: #6b7280; margin-top: 0.25rem;">{{ equipement.ville }}</p>
+                    </div>
+                    {% endif %}
+                    {% if equipement.mail %}
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: #374151;"><i class="fa fa-envelope me-2" style="color: #f97316;"></i>Contact</strong>
+                        <p style="color: #6b7280; margin-top: 0.25rem;">{{ equipement.mail }}</p>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <strong style="color: #374151;"><i class="fa fa-eye me-2" style="color: #f97316;"></i>Vues</strong>
+                        <p style="color: #6b7280; margin-top: 0.25rem;">{{ views_count }} utilisateurs</p>
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 1.5rem 0;">
+
+                <div class="action-buttons" style="flex-direction: column; gap: 0.5rem;">
+                    {% if can_manage %}
+                        <a href="{{ path('app_boutique_edit', {id: equipement.id}) }}" class="btn-primary-custom" style="width: 100%; justify-content: center;">
+                            <i class="fa fa-edit"></i>Modifier
+                        </a>
+                        {% if equipement.delivery %}
+                            <a href="{{ path('app_boutique_delivery', {id: equipement.id}) }}" class="btn-success-custom" style="width: 100%; justify-content: center;">
+                                <i class="fa fa-truck"></i>Livraison
+                            </a>
+                        {% endif %}
+                        <form method="post" action="{{ path('app_boutique_delete', {id: equipement.id}) }}" style="display:block; width: 100%;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_equipement_' ~ equipement.id) }}">
+                            <button type="submit" class="btn-danger-custom" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet équipement ?')" style="width: 100%; justify-content: center;">
+                                <i class="fa fa-trash"></i>Supprimer
+                            </button>
+                        </form>
+                    {% elseif can_order %}
+                        <form method="post" action="{{ path('app_boutique_order', {id: equipement.id}) }}" style="display:block; width: 100%;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('order_equipement_' ~ equipement.id) }}">
+                            <button type="submit" class="btn-primary-custom" style="width: 100%; justify-content: center;">
+                                <i class="fa fa-shopping-cart"></i>Commander
+                            </button>
+                        </form>
+                    {% elseif current_user %}
+                        <div class="alert alert-info-custom alert-custom" style="margin: 0;">
+                            <i class="fa fa-info-circle me-2"></i>Commande en cours
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info-custom alert-custom" style="margin: 0;">
+                            <i class="fa fa-sign-in me-2"></i>Se connecter pour commander
+                        </div>
+                    {% endif %}
+                    <a href="{{ path('app_boutique') }}" class="btn-secondary-custom" style="width: 100%; justify-content: center;">
+                        <i class="fa fa-arrow-left"></i>Retour
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="detail-main-content">
+                {% if equipement.delivery and equipement.delivery.statut == 'livree' %}
+                    <div class="alert alert-info-custom alert-custom">
+                        <i class="fa fa-info-circle me-2"></i>Cet équipement est livré et n'est plus disponible à la commande.
+                    </div>
+                {% elseif not equipement.livrable %}
+                    <div class="alert alert-warning-custom alert-custom">
+                        <i class="fa fa-exclamation-triangle me-2"></i>Cet équipement n'est pas livrable.
+                    </div>
+                {% endif %}
+
+                {% if equipement.description %}
+                <div class="info-section">
+                    <h3><i class="fa fa-file-text"></i>Description</h3>
+                    <div class="description-section">
+                        <p>{{ equipement.description|nl2br }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if equipement.caracteristiques %}
+                <div class="info-section">
+                    <h3><i class="fa fa-cogs"></i>Caractéristiques</h3>
+                    <div class="description-section">
+                        <p>{{ equipement.caracteristiques }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if equipement.attributs|length > 0 %}
+                <div class="info-section">
+                    <h3><i class="fa fa-list"></i>Attributs</h3>
+                    <div class="attributes-list">
+                        {% for a in equipement.attributs %}
+                            {% if a.nomAttribut|lower != 'mail' %}
+                                <div class="attribute-item">
+                                    <strong>{{ a.nomAttribut }} :</strong>
+                                    <span>{{ a.valeur }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if equipement.delivery %}
+                <div class="info-section">
+                    <h3><i class="fa fa-truck"></i>Informations de livraison</h3>
+                    <div class="delivery-info">
+                        <ul>
+                            <li><strong>Statut :</strong> {{ equipement.delivery.statut|replace({'en_attente': 'En attente', 'confirmee': 'Confirmée', 'preparation': 'En préparation', 'expediee': 'Expédiée', 'en_cours': 'En cours', 'livree': 'Livrée', 'annulee': 'Annulée'}) }}</li>
+                            {% if equipement.delivery.estimation %}<li><strong>Estimation :</strong> {{ equipement.delivery.estimation|date('d/m/Y H:i') }}</li>{% endif %}
+                            {% if equipement.delivery.dateLivraison %}<li><strong>Date de livraison :</strong> {{ equipement.delivery.dateLivraison|date('d/m/Y H:i') }}</li>{% endif %}
+                            {% if equipement.delivery.rue %}<li><strong>Rue :</strong> {{ equipement.delivery.rue }}</li>{% endif %}
+                            {% if equipement.delivery.ville %}<li><strong>Ville :</strong> {{ equipement.delivery.ville }}</li>{% endif %}
+                            {% if equipement.delivery.codePostal %}<li><strong>Code postal :</strong> {{ equipement.delivery.codePostal }}</li>{% endif %}
+                            {% if equipement.delivery.pays %}<li><strong>Pays :</strong> {{ equipement.delivery.pays }}</li>{% endif %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+</div>
+{% endblock %}

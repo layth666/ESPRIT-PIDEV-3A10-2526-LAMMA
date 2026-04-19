@@ -1,0 +1,220 @@
+{% if not is_pdf|default(false) %}
+    {% extends 'base.html.twig' %}
+{% endif %}
+
+{% block title %}Bordereau : {{ equipement.nom }}{% endblock %}
+
+{% block stylesheets %}
+{% if not is_pdf|default(false) %}
+    {{ parent() }}
+{% endif %}
+<style>
+    body {
+        background-color: #ffffff;
+        font-family: 'Helvetica', 'Arial', sans-serif;
+        color: #333;
+    }
+    .recap-container {
+        width: 100%;
+        max-width: 700px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    .recap-header {
+        background-color: #1e3c72;
+        color: #ffffff;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 4px solid #F97316;
+    }
+    .recap-header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+    .recap-header p {
+        margin: 5px 0 0;
+        font-size: 14px;
+        color: #e0e0e0;
+    }
+    .recap-section {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+    .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+    }
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .data-table td {
+        padding: 8px 0;
+        font-size: 14px;
+    }
+    .data-label {
+        font-weight: bold;
+        color: #666;
+        width: 40%;
+    }
+    .data-value {
+        text-align: right;
+        font-weight: bold;
+        color: #000;
+    }
+    .badge-status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: 1px solid #aaa;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+{% if is_pdf|default(false) %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bordereau PDF</title>
+    {{ block('stylesheets') }}
+</head>
+<body>
+{% endif %}
+<div class="container px-3">
+    <div class="recap-container">
+        
+        <!-- HEADER -->
+        <div class="recap-header">
+            <h1>Bordereau Récapitulatif</h1>
+            <p>Scanné le {{ 'now'|date('d/m/Y à H:i') }}</p>
+        </div>
+
+        <!-- EQUIPEMENT -->
+        <div class="recap-section">
+            <h3 class="section-title">📦 Équipement</h3>
+            <div class="data-row">
+                <span class="data-label">Référence / ID</span>
+                <span class="data-value">#{{ equipement.id }}</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Nom</span>
+                <span class="data-value">{{ equipement.nom }}</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Statut</span>
+                <span class="data-value">
+                    {% if equipement.statut == 'VENDU' %}
+                        <span class="badge-status badge-success">VENDU</span>
+                    {% else %}
+                        <span class="badge-status badge-info">{{ equipement.statut }}</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Propriétaire Initial</span>
+                <span class="data-value">{{ equipement.owner ? equipement.owner.userid : '-' }}</span>
+            </div>
+        </div>
+
+        <!-- TRANSACTION / PAIEMENT -->
+        <div class="recap-section">
+            <h3 class="section-title">💳 Paiement</h3>
+            {% if transaction %}
+                <div class="data-row">
+                    <span class="data-label">Statut du Paiement</span>
+                    <span class="data-value"><span class="badge-status badge-success">Payé via Stripe</span></span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Date Transaction</span>
+                    <span class="data-value">{{ transaction.createdAt|date('d/m/Y H:i') }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Montant Réglé</span>
+                    <span class="data-value text-success fs-5">{{ transaction.price }} TND</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Acheteur</span>
+                    <span class="data-value">{{ transaction.buyer.userid }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Token de Suivi</span>
+                    <span class="data-value" style="font-family: monospace; font-size:0.8rem; word-break: break-all; max-width: 200px;">
+                        {{ transaction.stripeToken|slice(0, 15) }}...
+                    </span>
+                </div>
+            {% else %}
+                <div class="text-center py-3 text-muted">
+                    <i class="fa fa-exclamation-circle text-warning fs-3 mb-2"></i><br>
+                    Aucun paiement enregistré pour cet équipement.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- LIVRAISON -->
+        <div class="recap-section">
+            <h3 class="section-title">🚚 Livraison</h3>
+            {% if delivery %}
+                <div class="data-row">
+                    <span class="data-label">Statut d'Expédition</span>
+                    <span class="data-value">
+                        <span class="badge-status 
+                            {% if delivery.statut == 'livree' %}badge-success
+                            {% elseif delivery.statut in ['preparation', 'expediee', 'en_cours'] %}badge-info
+                            {% else %}badge-warning{% endif %}">
+                            {{ delivery.statut|replace({'en_attente': 'En attente', 'confirmee': 'Confirmée', 'preparation': 'Préparation', 'expediee': 'Expédiée', 'en_cours': 'En cours', 'livree': 'Livrée', 'annulee': 'Annulée'}) }}
+                        </span>
+                    </span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Acheteur Destinataire</span>
+                    <span class="data-value">{{ delivery.acheteur ? delivery.acheteur.userid : '-' }}</span>
+                </div>
+                {% set addressParts = [] %}
+                {% if delivery.rue %}{% set addressParts = addressParts|merge([delivery.rue]) %}{% endif %}
+                {% if delivery.ville %}{% set addressParts = addressParts|merge([delivery.ville]) %}{% endif %}
+                {% if delivery.codePostal %}{% set addressParts = addressParts|merge([delivery.codePostal]) %}{% endif %}
+                <div class="data-row">
+                    <span class="data-label">Adresse Complète</span>
+                    <span class="data-value text-end" style="max-width: 250px;">
+                        {{ addressParts ? addressParts|join(', ') : 'Adresse non complétée' }}
+                    </span>
+                </div>
+                <div class="data-row mt-2">
+                    <span class="data-label">Date Estimée (IA)</span>
+                    <span class="data-value">{{ delivery.estimation ? delivery.estimation|date('d/m/Y') : '-' }}</span>
+                </div>
+            {% else %}
+                <div class="text-center py-3 text-muted">
+                    <i class="fa fa-info-circle fs-3 mb-2"></i><br>
+                    Pas de demande de livraison associée.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="recap-footer">
+            Bordereau Officiel · LAMMA
+        </div>
+
+        {% if not is_pdf|default(false) %}
+            <div class="text-center mt-4 pb-4">
+                <a href="{{ path('app_qrcode_recap_pdf', {id: equipement.id}) }}" class="btn btn-outline-primary shadow-sm" style="border-radius: 50px; padding: 0.5rem 1.5rem; font-weight: 600;">
+                    <i class="fa fa-download me-2"></i>Télécharger le bordereau (PDF)
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% if is_pdf|default(false) %}
+</body>
+</html>
+{% endif %}
+{% endblock %}

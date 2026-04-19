@@ -1,0 +1,472 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique Équipements Camping — LAMMA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .lamma-boutique { background: #0f172a; min-height: 70vh; color: #e5e7eb; padding: 1.5rem 0 3rem; }
+        .lamma-boutique .card-eq {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            min-width: 200px;
+            max-width: 260px;
+            border: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer;
+        }
+        .lamma-boutique .card-eq a, .lamma-boutique .card-eq button { cursor: pointer; }
+        .lamma-boutique .card-eq h3 { color: #fff; font-size: 1rem; font-weight: 700; margin: 0 0 .35rem; }
+        .lamma-boutique .price { color: #F97316; font-weight: 700; font-size: 1.05rem; }
+        .lamma-boutique .meta { color: #94a3b8; font-size: .85rem; }
+        .lamma-boutique .toolbar { gap: .5rem; flex-wrap: wrap; }
+        .lamma-boutique input, .lamma-boutique select {
+            background: rgba(15,23,42,0.9); border: 1px solid rgba(255,255,255,0.12);
+            color: #e5e7eb; border-radius: 8px; padding: .4rem .75rem;
+        }
+        .lamma-boutique .weather-pill {
+            background: rgba(15,23,42,0.9); border-radius: 14px; padding: .35rem .75rem;
+            font-size: .8rem; font-weight: 600; cursor: pointer;
+        }
+        .lamma-boutique .count-pill {
+            background: rgba(249,115,22,0.12); color: #F97316; font-weight: 800;
+            border-radius: 12px; padding: .35rem .85rem; font-size: .85rem;
+        }
+        .lamma-boutique select.form-select {
+            background-color: rgba(15,23,42,0.95);
+            color: #e5e7eb;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .lamma-boutique .nav-tabs {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .lamma-boutique .nav-tabs .nav-link {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #e5e7eb;
+        }
+        .lamma-boutique .nav-tabs .nav-link.active {
+            background: #F97316;
+            border-color: #F97316;
+            color: #111827;
+        }
+        .lamma-boutique .nav-tabs .nav-link:hover {
+            background: rgba(249,115,22,0.2);
+            border-color: rgba(249,115,22,0.5);
+            color: #e5e7eb;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="lamma-boutique">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span style="font-size:1.25rem">🛒</span>
+                <div>
+                    <h1 class="h4 mb-0 text-white">Boutique Équipements Camping</h1>
+                    <p class="small text-muted mb-0">Tentes, matelas, lunettes, sacs de couchage — LAMMA</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <div class="weather-pill text-white" id="lamma-weather" title="Cliquez pour les prévisions 14 jours (Tunis)">🌤 Météo: chargement…</div>
+                <span class="small text-success">● En stock</span>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs mb-3" id="boutique-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="boutique-tab" data-bs-toggle="tab" data-bs-target="#boutique" type="button" role="tab" aria-controls="boutique" aria-selected="true">Boutique</button>
+            </li>
+            {% if current_user %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="deliveries-tab" data-bs-toggle="tab" data-bs-target="#deliveries" type="button" role="tab" aria-controls="deliveries" aria-selected="false">Mes livraisons</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="add-tab" data-bs-toggle="tab" data-bs-target="#add" type="button" role="tab" aria-controls="add" aria-selected="false">Ajouter équipement</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="false" style="display:none;">Détails</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="delivery-tab" data-bs-toggle="tab" data-bs-target="#delivery" type="button" role="tab" aria-controls="delivery" aria-selected="false" style="display:none;">Livraison</button>
+            </li>
+            {% endif %}
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="boutique-tab-content">
+            <div class="tab-pane fade show active" id="boutique" role="tabpanel" aria-labelledby="boutique-tab">
+
+        <div class="d-flex flex-wrap align-items-center toolbar mb-3" id="boutique-toolbar"
+             data-search-url="{{ path('app_boutique_search') }}"
+             data-boutique-url="{{ path('app_boutique') }}">
+            <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
+                <label class="small mb-0 text-white-50 d-none d-md-inline" for="boutique-q">Recherche</label>
+                <input type="search" id="boutique-q" name="q" value="{{ q }}" autocomplete="off"
+                       placeholder="🔍 Tapez pour filtrer en direct…" style="min-width:260px;"
+                       title="Filtrage à chaque frappe — plusieurs mots : tous doivent correspondre">
+                <select id="boutique-categorie" name="categorie" class="form-select form-select-sm" style="max-width:220px;" aria-label="Catégorie" data-boutique-native-select>
+                    {% for c in categories %}
+                        <option value="{{ c }}" {% if c == current_categorie %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <span class="count-pill" id="boutique-count">{{ equipements|length }} équipement(s)</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <form method="post" action="{{ path('app_boutique_set_user') }}" class="d-flex align-items-center gap-2">
+                <input type="hidden" name="_token" value="{{ csrf_token('set_current_user') }}">
+                <label class="text-white-50 mb-0">Utilisateur :</label>
+                <select name="user_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="0">Aucun</option>
+                    {% for user in users ?? [] %}
+                        <option value="{{ user.id }}" {% if current_user and current_user.id == user.id %}selected{% endif %}>{{ user.userid }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <div class="card mb-3" style="background:rgba(255,255,255,0.05);border:none;">
+            <div class="card-body py-2">
+                <form method="post" action="{{ path('app_boutique_user') }}" class="row g-2 align-items-center">
+                    <input type="hidden" name="_token" value="{{ csrf_token('boutique_user') }}">
+                    <div class="col-auto"><label class="small mb-0 text-white-50" for="user_id">UserId (comptage des vues)</label></div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control form-control-sm" id="user_id" name="user_id" placeholder="email ou login">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-outline-light">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+
+        <div class="d-flex flex-wrap" style="gap:1rem;" id="boutique-cards">
+            {% include 'boutique/_cards.html.twig' with { empty_message: 'Aucun équipement. Ajoutez-en un avec « + Ajouter ».' } %}
+        </div>
+            </div> <!-- end boutique tab -->
+
+            {% if current_user %}
+            <div class="tab-pane fade" id="deliveries" role="tabpanel" aria-labelledby="deliveries-tab">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h2 class="h4 mb-0 text-white">Mes livraisons</h2>
+                    <a href="{{ path('app_boutique') }}" class="btn btn-secondary">Retour à la boutique</a>
+                </div>
+                <div class="row">
+                    {% for livraison in livraisons %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card" style="background: #111827; border-color: rgba(255,255,255,0.08);">
+                                <div class="card-body">
+                                    <h5 class="card-title text-white">{{ livraison.equipement.nom }}</h5>
+                                    <p class="card-text text-white-50">
+                                        Statut : {{ livraison.statut|replace({'en_attente': 'En attente', 'confirmee': 'Confirmée', 'preparation': 'En préparation', 'expediee': 'Expédiée', 'en_cours': 'En cours', 'livree': 'Livrée', 'annulee': 'Annulée'}) }}<br>
+                                        {% if livraison.estimation %}Estimation : {{ livraison.estimation|date('d/m/Y H:i') }}<br>{% endif %}
+                                        {% if livraison.dateLivraison %}Livré le : {{ livraison.dateLivraison|date('d/m/Y H:i') }}<br>{% endif %}
+                                        {% if livraison.rue %}Adresse : {{ livraison.rue }}, {{ livraison.ville }} {{ livraison.codePostal }} {{ livraison.pays }}{% endif %}
+                                    </p>
+                                    <a href="{{ path('app_boutique_delivery', {id: livraison.equipement.id}) }}" class="btn btn-sm btn-primary delivery-link" data-delivery-url="{{ path('app_boutique_delivery', {id: livraison.equipement.id}) }}">Détails livraison</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            <p class="text-muted">Aucune livraison.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div> <!-- end deliveries tab -->
+
+            <div class="tab-pane fade" id="add" role="tabpanel" aria-labelledby="add-tab">
+                {% if form %}
+                    {% form_theme form 'bootstrap_5_layout.html.twig' %}
+                    <h2 class="h4 mb-3 text-white">{{ 'Ajouter un équipement' }}</h2>
+                    {{ form_start(form, {'attr': {'class': 'lamma-equipement-form'}}) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.nom) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.categorie) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.type) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.prix) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.statut) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.livrable) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(form.ville) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.mail) }}
+                            </div>
+                        </div>
+                        {{ form_row(form.description) }}
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                            <a href="{{ path('app_boutique') }}" class="btn btn-secondary ms-2">Annuler</a>
+                        </div>
+                    {{ form_end(form) }}
+                {% else %}
+                    <p class="text-muted">Veuillez vous connecter pour ajouter un équipement.</p>
+                {% endif %}
+            </div> <!-- end add tab -->
+
+            <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
+                <div id="details-content">
+                    <p class="text-muted">Sélectionnez un équipement pour voir les détails.</p>
+                </div>
+            </div> <!-- end details tab -->
+
+            <div class="tab-pane fade" id="delivery" role="tabpanel" aria-labelledby="delivery-tab">
+                <div id="delivery-content">
+                    <p class="text-muted">Sélectionnez un équipement pour voir la livraison.</p>
+                </div>
+            </div> <!-- end delivery tab -->
+            {% endif %}
+        </div> <!-- end tab-content -->
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    (function () {
+        // Handle delivery links in "Mes livraisons"
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delivery-link')) {
+                e.preventDefault();
+                const deliveryUrl = e.target.dataset.deliveryUrl;
+                fetch(deliveryUrl)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const bodyContent = doc.querySelector('.lamma-delivery-detail .container');
+                        if (bodyContent) {
+                            document.getElementById('delivery-content').innerHTML = bodyContent.innerHTML;
+                            document.getElementById('delivery-tab').style.display = 'block';
+                            const tab = new bootstrap.Tab(document.getElementById('delivery-tab'));
+                            tab.show();
+                        }
+                    })
+                    .catch(err => console.error('Error loading delivery:', err));
+            }
+        });
+
+        // Handle equipment card clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('equipement-link') || e.target.closest('.card-eq')) {
+                e.preventDefault();
+                const card = e.target.closest('.card-eq');
+                const detailUrl = card.dataset.detailUrl;
+                const deliveryUrl = card.dataset.deliveryUrl;
+
+                // Load details
+                fetch(detailUrl)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const bodyContent = doc.querySelector('.lamma-detail .container');
+                        if (bodyContent) {
+                            document.getElementById('details-content').innerHTML = bodyContent.innerHTML;
+                            document.getElementById('details-tab').style.display = 'block';
+                            const tab = new bootstrap.Tab(document.getElementById('details-tab'));
+                            tab.show();
+                        }
+                    })
+                    .catch(err => console.error('Error loading details:', err));
+
+                // Load delivery
+                fetch(deliveryUrl)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const bodyContent = doc.querySelector('.lamma-delivery-detail .container');
+                        if (bodyContent) {
+                            document.getElementById('delivery-content').innerHTML = bodyContent.innerHTML;
+                            document.getElementById('delivery-tab').style.display = 'block';
+                        }
+                    })
+                    .catch(err => console.error('Error loading delivery:', err));
+            }
+        });
+
+        // Initialize search functionality
+        function initSearch() {
+            const toolbar = document.getElementById('boutique-toolbar');
+            const qInput = document.getElementById('boutique-q');
+            const catSel = document.getElementById('boutique-categorie');
+            const cardsEl = document.getElementById('boutique-cards');
+            const countEl = document.getElementById('boutique-count');
+
+            if (!toolbar || !qInput || !catSel || !cardsEl || !countEl) {
+                console.log('Search elements not found, retrying...');
+                setTimeout(initSearch, 100);
+                return;
+            }
+
+            const searchUrl = toolbar.getAttribute('data-search-url');
+            let searchTimer = null;
+
+            function doSearch() {
+                const q = (qInput.value || '').trim();
+                const cat = catSel.value || '';
+                const params = new URLSearchParams();
+                if (q) params.set('q', q);
+                params.set('categorie', cat);
+                const url = searchUrl + '?' + params.toString();
+
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        cardsEl.innerHTML = data.html;
+                        countEl.textContent = data.count + ' équipement(s)';
+                        bindCardNav();
+                        console.log('Search completed:', data.count, 'results');
+                    })
+                    .catch(err => {
+                        console.error('Search error:', err);
+                    });
+            }
+
+            function scheduleSearch() {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(doSearch, 200);
+            }
+
+            qInput.addEventListener('input', scheduleSearch);
+            qInput.addEventListener('search', scheduleSearch);
+            catSel.addEventListener('change', doSearch);
+
+            // Mark as initialized to prevent double initialization
+            qInput.setAttribute('data-initialized', 'true');
+
+            console.log('Search initialized successfully');
+        }
+
+        // Bind card navigation
+        function bindCardNav() {
+            var container = document.getElementById('boutique-cards');
+            if (!container) return;
+            container.querySelectorAll('.card-eq').forEach(function (card) {
+                card.style.cursor = 'pointer';
+            });
+        }
+
+        // Initialize search when boutique tab is shown
+        const boutiqueTab = document.getElementById('boutique-tab');
+        if (boutiqueTab) {
+            boutiqueTab.addEventListener('shown.bs.tab', function (e) {
+                initSearch();
+            });
+        }
+
+        // Initialize search if boutique tab is active on page load or after DOM ready
+        function initializeOnReady() {
+            const boutiquePane = document.getElementById('boutique');
+            if (boutiquePane && (boutiquePane.classList.contains('active') || boutiquePane.classList.contains('show'))) {
+                initSearch();
+            } else {
+                // If not active yet, wait for it or initialize anyway for safety
+                setTimeout(() => {
+                    if (!document.querySelector('#boutique-q[data-initialized]')) {
+                        initSearch();
+                    }
+                }, 500);
+            }
+        }
+
+        // Initialize immediately or wait for DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeOnReady);
+        } else {
+            initializeOnReady();
+        }
+
+        bindCardNav();
+
+        // Weather code
+        const LAT = 36.80, LON = 10.18;
+        const urlCurrent = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON
+            + '&hourly=temperature_2m&current=rain,precipitation,wind_speed_10m,temperature_2m&timezone=auto';
+        const urlDaily = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON
+            + '&daily=temperature_2m_max,temperature_2m_min,weathercode&forecast_days=14&timezone=auto';
+        const el = document.getElementById('lamma-weather');
+
+        if (el) {
+            fetch(urlCurrent).then(r => r.ok ? r.text() : Promise.reject()).then(t => {
+                const s = parseCurrent(t);
+                el.textContent = s || 'Météo: indisponible';
+            }).catch(() => { el.textContent = 'Météo: indisponible'; });
+            el.addEventListener('click', function () {
+                fetch(urlDaily).then(r => r.ok ? r.text() : Promise.reject()).then(t => {
+                    const i = t.indexOf('"daily"');
+                    if (i < 0) { alert('Prévisions indisponibles.'); return; }
+                    alert('Tunis — 14 jours (aperçu brut JSON disponible dans la console).');
+                    console.log(t.substring(i, i + 800));
+                }).catch(() => alert('Prévisions indisponibles.'));
+            });
+        }
+
+        function parseCurrent(json) {
+            const idx = json.indexOf('"current"');
+            if (idx < 0) return null;
+            const st = json.indexOf('{', idx);
+            const en = json.indexOf('}', st);
+            if (st < 0 || en < 0) return null;
+            const cur = json.substring(st + 1, en);
+            const t = extractDouble(cur, '"temperature_2m"');
+            const w = extractDouble(cur, '"wind_speed_10m"');
+            const r = extractDouble(cur, '"rain"');
+            let out = 'Météo: ';
+            if (t != null) out += t.toFixed(1) + '°C';
+            if (w != null) out += (out.length > 8 ? ' · ' : '') + 'Vent ' + Math.round(w) + ' km/h';
+            if (r != null) out += (out.length > 8 ? ' · ' : '') + 'Pluie ' + r.toFixed(1) + ' mm';
+            return out.length > 8 ? out : null;
+        }
+
+        function extractDouble(json, key) {
+            const i = json.indexOf(key);
+            if (i < 0) return null;
+            const c = json.indexOf(':', i);
+            if (c < 0) return null;
+            let e = c + 1;
+            while (e < json.length && /\s/.test(json[e])) e++;
+            let s = e;
+            while (s < json.length && '0123456789+-.eE'.indexOf(json[s]) >= 0) s++;
+            const n = json.substring(e, s);
+            return n === '' ? null : parseFloat(n);
+        }
+    })();
+    </script>
+{% endblock %}

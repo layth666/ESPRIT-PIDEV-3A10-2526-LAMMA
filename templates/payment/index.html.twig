@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2>Effectuer un paiement</h2>
+    
+    <div class="card mt-4 shadow" style="max-width: 500px">
+        <div class="card-body">
+            <form id="payment-form">
+                <div id="card-element" class="form-control mb-3">
+                    <!-- A Stripe Element will be inserted here. -->
+                </div>
+
+                <!-- Used to display form errors. -->
+                <div id="card-errors" role="alert" class="text-danger mb-3"></div>
+
+                <button id="submit-btn" class="btn btn-primary w-100">Payer maintenant</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const stripePublicKey = '{{ stripe_public_key }}';
+        
+        if (!stripePublicKey) {
+            console.error("Clé publique Stripe introuvable.");
+            return;
+        }
+
+        // Créer une instance de Stripe
+        var stripe = Stripe(stripePublicKey);
+
+        // Créer une instance des Elements
+        var elements = stripe.elements();
+
+        // Style personnalisé pour les éléments
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+
+        // Créer une instance de l'élément carte
+        var card = elements.create('card', {style: style});
+
+        // Ajouter une instance de l'élément carte dans la div `card-element`
+        card.mount('#card-element');
+
+        // Gérer les erreurs de validation de la carte en temps réel
+        card.on('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    console.log('Token généré : ', result.token);
+                    
+                    const processUrl = "{{ path('app_payment_process', {id: equipement.id}) }}";
+                    
+                    // On fait une requête AJAX pour envoyer "result.token.id" au backend
+                    fetch(processUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'stripeToken=' + encodeURIComponent(result.token.id)
+                    }).then(res => res.json()).then(data => {
+                        if(data.success) {
+                            window.location.href = "{{ path('app_my_deliveries') }}";
+                        } else {
+                            alert("Erreur: " + data.error);
+                        }
+                    }).catch(error => {
+                        console.error('Erreur :', error);
+                        alert("Erreur réseau");
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

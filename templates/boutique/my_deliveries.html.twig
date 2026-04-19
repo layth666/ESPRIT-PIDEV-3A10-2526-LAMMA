@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes livraisons — LAMMA{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ path('app_boutique') }}">Boutique</a></li>
+            <li class="breadcrumb-item active">Mes livraisons</li>
+        </ol>
+    </nav>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0">Mes livraisons</h1>
+        <a href="{{ path('app_boutique') }}" class="btn btn-secondary">Retour à la boutique</a>
+    </div>
+    <div class="row">
+        {% for livraison in livraisons %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                            {{ livraison.equipement.nom }}
+                            {% if livraison.equipement.statut == 'VENDU' %}
+                                <span class="badge bg-success" style="font-size: 0.8rem;"><i class="fa fa-money-bill-wave me-1"></i>Payé</span>
+                            {% endif %}
+                        </h5>
+                        <p class="card-text">
+                            Statut : {{ livraison.statut|replace({'en_attente': 'En attente', 'confirmee': 'Confirmée', 'preparation': 'En préparation', 'expediee': 'Expédiée', 'en_cours': 'En cours', 'livree': 'Livrée', 'annulee': 'Annulée'}) }}<br>
+                            {% if livraison.estimation %}Estimation : {{ livraison.estimation|date('d/m/Y H:i') }}<br>{% endif %}
+                            {% if livraison.dateLivraison %}Livré le : {{ livraison.dateLivraison|date('d/m/Y H:i') }}<br>{% endif %}
+                            {% if livraison.rue %}Adresse : {{ livraison.rue }}, {{ livraison.ville }} {{ livraison.codePostal }} {{ livraison.pays }}{% endif %}
+                        </p>
+                        <a href="{{ path('app_boutique_delivery', {id: livraison.equipement.id}) }}" class="btn btn-sm btn-primary">Détails livraison</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p class="text-muted">Aucune livraison.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
