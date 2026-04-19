@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Equipement;
+use App\Entity\Equipements;
 use App\Entity\EquipementVue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,7 +17,7 @@ class EquipementVueRepository extends ServiceEntityRepository
         parent::__construct($registry, EquipementVue::class);
     }
 
-    public function countForEquipement(Equipement $equipement): int
+    public function countForEquipement(Equipements $equipement): int
     {
         return (int) $this->createQueryBuilder('v')
             ->select('COUNT(v.id)')
@@ -27,7 +27,7 @@ class EquipementVueRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findOneByEquipementAndUser(Equipement $equipement, string $userId): ?EquipementVue
+    public function findOneByEquipementAndUser(Equipements $equipement, string $userId): ?EquipementVue
     {
         return $this->findOneBy(['equipement' => $equipement, 'userId' => $userId]);
     }

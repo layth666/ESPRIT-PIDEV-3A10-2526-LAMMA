@@ -1,0 +1,252 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prévisions Météorologiques - 14 Jours{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    body {
+        background-color: #f4f7f6;
+    }
+    .weather-dashboard {
+        border-radius: 24px;
+        background: linear-gradient(145deg, #ffffff, #e6e9e9);
+        box-shadow: 20px 20px 60px #d0d2d1, -20px -20px 60px #ffffff;
+        padding: 30px;
+        overflow: hidden;
+        position: relative;
+    }
+    .weather-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    .weather-title {
+        font-weight: 800;
+        font-size: 2.2rem;
+        background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+    }
+    .current-condition {
+        display: flex;
+        align-items: baseline;
+        gap: 15px;
+    }
+    .temperature-display {
+        font-size: 4rem;
+        font-weight: 900;
+        color: #1e3c72;
+        line-height: 1;
+    }
+    .observations {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    .obs-card {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.8);
+        padding: 15px 25px;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+    .obs-card:hover {
+        transform: translateY(-5px);
+    }
+    .obs-title {
+        font-size: 0.9rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+    }
+    .obs-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-top: 5px;
+    }
+    .chart-container {
+        position: relative;
+        height: 400px;
+        width: 100%;
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 4px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 4px solid #2a5298;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <div class="weather-dashboard">
+        <div class="weather-header">
+            <h2 class="weather-title">Prévisions Métrologiques <br><small id="location-name" style="font-size: 1.2rem; color:#6c757d; font-weight: 500; -webkit-text-fill-color: initial;">Tunis (14 Jours)</small></h2>
+            <div class="current-condition">
+                <div id="current-temp" class="temperature-display">--°C</div>
+                <div class="text-muted" style="font-weight: 600;">Maintenant</div>
+            </div>
+        </div>
+
+        <div class="observations">
+            <div class="obs-card">
+                <span class="obs-title">🌅 Lever du soleil</span>
+                <span class="obs-value" id="sunrise-val">--:--</span>
+            </div>
+            <div class="obs-card">
+                <span class="obs-title">🌇 Coucher du soleil</span>
+                <span class="obs-value" id="sunset-val">--:--</span>
+            </div>
+            <div class="obs-card">
+                <span class="obs-title">📅 Prochains Jours</span>
+                <span class="obs-value">14</span>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div id="loading" class="loader"></div>
+            <div id="weather-chart"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const defaultApiUrl = '{{ api_url|raw }}';
+        let chartInstance = null;
+
+        async function fetchWeatherData(apiUrl) {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                const hourlyTime = data.hourly.time;
+                const hourlyTemp = data.hourly.temperature_2m;
+                const dailySunrise = data.daily.sunrise;
+                const dailySunset = data.daily.sunset;
+
+                const now = new Date();
+                let currentIndex = 0;
+                let minDiff = Infinity;
+                
+                hourlyTime.forEach((timeStr, index) => {
+                    const timeDate = new Date(timeStr);
+                    const diff = Math.abs(now - timeDate);
+                    if(diff < minDiff) {
+                        minDiff = diff;
+                        currentIndex = index;
+                    }
+                });
+
+                document.getElementById('current-temp').innerText = hourlyTemp[currentIndex] + '°C';
+
+                const formatTime = (isoString) => {
+                    const d = new Date(isoString);
+                    return d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                };
+                document.getElementById('sunrise-val').innerText = formatTime(dailySunrise[0]);
+                document.getElementById('sunset-val').innerText = formatTime(dailySunset[0]);
+
+                const chartData = hourlyTime.map((time, index) => {
+                    return { x: new Date(time).getTime(), y: hourlyTemp[index] };
+                });
+
+                var options = {
+                    series: [{ name: 'Température (°C)', data: chartData }],
+                    chart: { type: 'area', height: 380, fontFamily: 'inherit', toolbar: { autoSelected: 'pan', show: true }, zoom: { enabled: true } },
+                    colors: ['#2a5298'],
+                    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.6, opacityTo: 0.05, stops: [0, 100] } },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', width: 3 },
+                    xaxis: { 
+                        type: 'datetime', 
+                        tooltip: { enabled: false },
+                        labels: {
+                            datetimeFormatter: {
+                                year: 'yyyy', month: 'MMM \'yy', day: 'dd MMM', hour: 'HH:mm'
+                            }
+                        }
+                    },
+                    yaxis: { labels: { formatter: function (value) { return value + "°"; } } },
+                    tooltip: { x: { format: 'dd MMM yyyy, HH:mm' }, theme: 'light' },
+                    grid: { borderColor: '#f1f1f1', strokeDashArray: 4 }
+                };
+
+                chartInstance = new ApexCharts(document.querySelector("#weather-chart"), options);
+                chartInstance.render();
+
+            } catch (error) {
+                console.error("Erreur", error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('weather-chart').innerHTML = '<p class="text-danger">Impossible de charger les données.</p>';
+            }
+        }
+
+        // Gérer la géolocalisation
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(async function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                
+                // Essayer de récupérer le nom de la ville
+                try {
+                    const nominatimRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    const nominatimData = await nominatimRes.json();
+                    let city = nominatimData.address.city || nominatimData.address.town || nominatimData.address.village || nominatimData.address.country || 'Votre Position';
+                    document.getElementById('location-name').innerText = city + ' (14 Jours)';
+                } catch(e) {
+                    document.getElementById('location-name').innerText = 'Votre Position (14 Jours)';
+                }
+
+                // Charger la météo de cette position précise
+                const dynamicUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=sunrise,sunset&hourly=temperature_2m&forecast_days=14`;
+                fetchWeatherData(dynamicUrl);
+
+            }, function(error) {
+                // L'utilisateur a refusé ou erreur technique = on revient au défaut (Tunis)
+                fetchWeatherData(defaultApiUrl);
+            });
+        } else {
+            // Le navigateur ne supporte pas la géolocalisation
+            fetchWeatherData(defaultApiUrl);
+        }
+    });
+</script>
+{% endblock %}

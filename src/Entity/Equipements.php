@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\User;
-use App\Repository\EquipementRepository;
+use App\Repository\EquipementsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -13,9 +13,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Aligné sur la table `equipement` (import gestion_equipement / equipement.sql) + colonnes LAMMA (caracteristiques, nombre_vues).
  */
-#[ORM\Entity(repositoryClass: EquipementRepository::class)]
-#[ORM\Table(name: 'equipement')]
-class Equipement
+#[ORM\Entity(repositoryClass: EquipementsRepository::class)]
+#[ORM\Table(name: 'equipements')]
+class Equipements
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

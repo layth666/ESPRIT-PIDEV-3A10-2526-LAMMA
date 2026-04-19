@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement Sécurisé — LAMMA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .lamma-payment { background: #0f172a; min-height: 80vh; color: #e5e7eb; padding: 3rem 0; }
+        .payment-card { background: #1e293b; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); padding: 2.5rem; max-width: 600px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .payment-card h2 { color: #f8fafc; margin-bottom: 2rem; font-weight: 700; text-align: center; }
+        .order-summary { background: #0f172a; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #F97316; }
+        .order-summary h4 { color: #F97316; font-size: 1.1rem; margin-bottom: 1rem; }
+        .order-summary p { margin-bottom: 0.5rem; }
+        .order-summary strong { color: #fff; }
+        .form-control { background: #334155; border: 1px solid #475569; color: #f8fafc; border-radius: 6px; padding: 0.75rem; }
+        .form-control:focus { background: #334155; border-color: #F97316; box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.25); color: #fff; }
+        .btn-pay { background: #F97316; color: #111827; border: none; padding: 0.8rem 2rem; border-radius: 6px; font-weight: 700; font-size: 1.1rem; width: 100%; transition: all 0.3s; margin-top: 1rem; cursor: pointer; }
+        .btn-pay:hover { background: #fb923c; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
+        .secure-badge { text-align: center; color: #10b981; font-weight: 600; margin-top: 1.5rem; font-size: 0.9rem; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="lamma-payment">
+    <div class="container-fluid px-4">
+        <div class="payment-card">
+            <h2>💳 Paiement en ligne sécurisé</h2>
+            
+            {% set frais = delivery.fraisLivraison ?? 0 %}
+            {% set total = equipement.prix + frais %}
+            
+            <div class="order-summary">
+                <h4>Résumé de la commande</h4>
+                <p>Equipement : <strong>{{ equipement.nom }}</strong></p>
+                <p>Prix d'équipement : <strong>{{ equipement.prix|number_format(2, ',', ' ') }} TND</strong></p>
+                <p>Frais de livraison estimé par l'IA : <strong class="text-primary">{% if frais > 0 %}{{ frais|number_format(2, ',', ' ') }} TND{% else %}GRATUIT{% endif %}</strong></p>
+                <hr style="border-color: rgba(255,255,255,0.1)">
+                <p><strong>Total de paiement : <span style="font-size: 1.2rem; color: #10b981;">{{ total|number_format(2, ',', ' ') }} TND</span></strong></p>
+                {% if delivery.estimation %}
+                <p class="text-success mt-2"><i class="fa fa-magic me-2"></i><strong>L'IA estime votre livraison autour du {{ delivery.estimation|date('d/m/Y') }}</strong></p>
+                {% endif %}
+            </div>
+
+            <form action="{{ path('app_boutique_payment_process', {id: equipement.id}) }}" method="post" id="payment-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('process_payment_' ~ equipement.id) }}">
+                
+                <div class="mb-3">
+                    <label class="form-label text-white-50">Nom du titulaire de la carte</label>
+                    <input type="text" class="form-control" placeholder="Ex: Jean Dupont" required autocomplete="cc-name">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-white-50">Numéro de carte</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background:#334155;border-color:#475569;color:#94a3b8;"><i class="fa fa-credit-card"></i></span>
+                        <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required autocomplete="cc-number">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-white-50">Date d'expiration</label>
+                        <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" required autocomplete="cc-exp">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-white-50">CVC</label>
+                        <input type="text" class="form-control" placeholder="123" maxlength="3" required autocomplete="cc-csc">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-pay" id="pay-btn">
+                    Payer {{ total|number_format(2, ',', ' ') }} TND
+                </button>
+                
+                <div class="secure-badge">
+                    <i class="fa fa-lock me-1"></i> Transaction sécurisée (Mock API)
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            const btn = document.getElementById('pay-btn');
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Traitement en cours...';
+            btn.disabled = true;
+            // Fake delay to simulate payment processing
+            setTimeout(function() {
+                return true;
+            }, 1500);
+        });
+    </script>
+{% endblock %}

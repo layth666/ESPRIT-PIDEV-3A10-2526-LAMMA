@@ -59,6 +59,15 @@ class DeliveryType extends AbstractType
                     'Annulée' => 'annulee',
                 ],
                 'disabled' => !$options['status_editable'],
+            ])
+            ->add('latitude', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
+                'required' => false,
+            ])
+            ->add('longitude', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
+                'required' => false,
+            ])
+            ->add('fraisLivraison', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
+                'required' => false,
             ]);
     }
 

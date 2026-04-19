@@ -1,24 +1,18 @@
 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
     <div class="sb-sidenav-menu">
-        <div class="sb-sidenav-menu-heading">Gestion</div>
-        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_admin' %}active{% endif %}" href="{{ path('app_admin') }}">
-            <div class="sb-nav-link-icon"><i class="fa fa-tachometer"></i></div>
+        <div class="sb-sidenav-menu-heading text-uppercase font-weight-bold" style="letter-spacing: 1px;">Gestion</div>
+        <a class="nav-link py-3 {% if app.request.attributes.get('_route') == 'app_admin' %}active text-primary fw-bold{% endif %}" href="{{ path('app_admin') }}">
+            <div class="sb-nav-link-icon text-primary"><i class="fa fa-tachometer fa-lg"></i></div>
             Tableau de bord
         </a>
-        <a class="nav-link" href="{{ path('app_boutique') }}">
-            <div class="sb-nav-link-icon"><i class="fa fa-store"></i></div>
-            Boutique
-        </a>
-        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_boutique_new' %}active{% endif %}" href="{{ path('app_boutique_new') }}">
-            <div class="sb-nav-link-icon"><i class="fa fa-plus-circle"></i></div>
+        <a class="nav-link py-3 {% if app.request.attributes.get('_route') == 'app_boutique_new' %}active text-primary fw-bold{% endif %}" href="{{ path('app_boutique_new') }}">
+            <div class="sb-nav-link-icon text-primary"><i class="fa fa-plus-circle fa-lg"></i></div>
             Ajouter équipement
         </a>
-        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_admin_add_user' %}active{% endif %}" href="{{ path('app_admin_add_user') }}">
-            <div class="sb-nav-link-icon"><i class="fa fa-user-plus"></i></div>
-            Ajouter utilisateur
-        </a>
-        <a class="nav-link" href="{{ path('app_home') }}">
-            <div class="sb-nav-link-icon"><i class="fa fa-home"></i></div>
+
+        <div class="sb-sidenav-menu-heading mt-3 text-uppercase font-weight-bold" style="letter-spacing: 1px;">Navigation</div>
+        <a class="nav-link py-3" href="{{ path('app_home') }}">
+            <div class="sb-nav-link-icon text-secondary"><i class="fa fa-arrow-left fa-lg"></i></div>
             Retour au site
         </a>
     </div>

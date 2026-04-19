@@ -2,32 +2,32 @@
 
 namespace App\Controller;
 
-use App\Entity\Equipement;
-use App\Form\EquipementType;
-use App\Repository\EquipementRepository;
+use App\Entity\Equipements;
+use App\Form\EquipementsType;
+use App\Repository\EquipementsRepository;
+use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
-
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+ 
+#[Route('/admin')]
+#[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
 {
     public function __construct(
-        private readonly EquipementRepository $equipementRepository,
+        private readonly EquipementsRepository $equipementRepository,
+        private readonly TransactionRepository $transactionRepository,
         private readonly EntityManagerInterface $em,
     ) {
     }
 
-    #[Route('/admin', name: 'app_admin')]
-    public function index(Request $request, SessionInterface $session): Response
+    #[Route('', name: 'app_admin')]
+    public function index(Request $request): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
 
         $all = $this->equipementRepository->findAllOrderedByDateDesc();
         $qRaw = trim($request->query->getString('q'));
@@ -40,8 +40,10 @@ class AdminController extends AbstractController
         $equipements = $this->filterEquipements($all, $qRaw, $catFilter);
         $equipements = $this->orderEquipementsForDisplay($equipements, $catFilter);
 
-        $livrableCount = count(array_filter($equipements, fn(Equipement $e): bool => $e->isLivrable()));
-        $deliveryCount = count(array_filter($equipements, fn(Equipement $e): bool => $e->getDelivery() !== null));
+        $livrableCount = count(array_filter($equipements, fn(Equipements $e): bool => $e->isLivrable()));
+        $deliveryCount = count(array_filter($equipements, fn(Equipements $e): bool => $e->getDelivery() !== null));
+
+        $transactions = $this->transactionRepository->findAllOrderedByDateDesc();
 
         return $this->render('admin/dashboard.html.twig', [
             'equipements' => $equipements,
@@ -51,15 +53,13 @@ class AdminController extends AbstractController
             'categories' => $categories,
             'current_categorie' => $catFilter ?? 'Toutes catégories',
             'q' => $qRaw,
+            'transactions' => $transactions,
         ]);
     }
 
-    #[Route('/admin/equipement/recherche', name: 'app_admin_search', methods: ['GET'])]
-    public function search(Request $request, SessionInterface $session): JsonResponse
+    #[Route('/admin/equipements/recherche', name: 'app_admin_search', methods: ['GET'])]
+    public function search(Request $request): JsonResponse
     {
-        if (!$this->isAdmin($session)) {
-            return new JsonResponse(['html' => '', 'count' => 0], Response::HTTP_FORBIDDEN);
-        }
 
         $all = $this->equipementRepository->findAllOrderedByDateDesc();
         $qRaw = trim($request->query->getString('q'));
@@ -79,13 +79,9 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/equipement/{id}', name: 'app_admin_equipement_show', requirements: ['id' => '\d+'])]
-    public function showEquipement(int $id, SessionInterface $session): Response
+    #[Route('/admin/equipements/{id}', name: 'app_admin_equipements_show', requirements: ['id' => '\d+'])]
+    public function showEquipement(int $id): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
 
         $equipement = $this->equipementRepository->find($id);
         if (!$equipement) {
@@ -97,20 +93,16 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/equipement/{id}/modifier', name: 'app_admin_equipement_edit', requirements: ['id' => '\d+'])]
-    public function editEquipement(Request $request, int $id, SessionInterface $session): Response
+    #[Route('/admin/equipements/{id}/modifier', name: 'app_admin_equipements_edit', requirements: ['id' => '\d+'])]
+    public function editEquipement(Request $request, int $id): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
 
         $equipement = $this->equipementRepository->find($id);
         if (!$equipement) {
             throw $this->createNotFoundException('Équipement introuvable.');
         }
 
-        $form = $this->createForm(EquipementType::class, $equipement);
+        $form = $this->createForm(EquipementsType::class, $equipement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -122,7 +114,7 @@ class AdminController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Équipement modifié avec succès.');
 
-            return $this->redirectToRoute('app_admin_equipement_show', ['id' => $equipement->getId()]);
+            return $this->redirectToRoute('app_admin_equipements_show', ['id' => $equipement->getId()]);
         }
 
         return $this->render('admin/equipement_form.html.twig', [
@@ -132,13 +124,9 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/equipement/{id}/supprimer', name: 'app_admin_equipement_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function deleteEquipement(Request $request, int $id, SessionInterface $session): Response
+    #[Route('/admin/equipements/{id}/supprimer', name: 'app_admin_equipements_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function deleteEquipement(Request $request, int $id): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
 
         $equipement = $this->equipementRepository->find($id);
         if (!$equipement) {
@@ -159,24 +147,20 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/add-user', name: 'app_admin_add_user')]
-    public function addUser(SessionInterface $session): Response
+    public function addUser(): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
 
         return $this->render('admin/add-user.html.twig');
     }
 
     /**
-     * @param list<Equipement> $all
+     * @param list<Equipements> $all
      *
-     * @return list<Equipement>
+     * @return list<Equipements>
      */
     private function filterEquipements(array $all, string $qRaw, ?string $catFilter): array
     {
-        return array_values(array_filter($all, function (Equipement $e) use ($qRaw, $catFilter) {
+        return array_values(array_filter($all, function (Equipements $e) use ($qRaw, $catFilter) {
             $matchSearch = $this->matchesIntelligentSearch($e, $qRaw);
 
             $matchCat = $catFilter === null
@@ -204,7 +188,7 @@ class AdminController extends AbstractController
 
     private function orderEquipementsForDisplay(array $list, ?string $catFilter): array
     {
-        usort($list, function (Equipement $a, Equipement $b) use ($catFilter) {
+        usort($list, function (Equipements $a, Equipements $b) use ($catFilter) {
             if ($catFilter === null) {
                 $ca = mb_strtolower($a->getCategorie() ?? '', 'UTF-8');
                 $cb = mb_strtolower($b->getCategorie() ?? '', 'UTF-8');
@@ -221,7 +205,7 @@ class AdminController extends AbstractController
         return $list;
     }
 
-    private function matchesIntelligentSearch(Equipement $e, string $rawQuery): bool
+    private function matchesIntelligentSearch(Equipements $e, string $rawQuery): bool
     {
         $rawQuery = trim($rawQuery);
         if ($rawQuery === '') {
@@ -249,7 +233,7 @@ class AdminController extends AbstractController
         return true;
     }
 
-    private function buildSearchHaystack(Equipement $e): string
+    private function buildSearchHaystack(Equipements $e): string
     {
         $parts = [
             $e->getNom(),
@@ -303,8 +287,4 @@ class AdminController extends AbstractController
         return $list;
     }
 
-    private function isAdmin(SessionInterface $session): bool
-    {
-        return $session->get('current_user_is_admin', false) === true;
-    }
 }

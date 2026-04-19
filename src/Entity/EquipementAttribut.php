@@ -17,7 +17,7 @@ class EquipementAttribut
 
     #[ORM\ManyToOne(inversedBy: 'attributs')]
     #[ORM\JoinColumn(name: 'equipement_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    private ?Equipement $equipement = null;
+    private ?Equipements $equipement = null;
 
     #[ORM\Column(name: 'nom_attribut', length: 100)]
     private ?string $nomAttribut = null;
@@ -33,12 +33,12 @@ class EquipementAttribut
         return $this->id;
     }
 
-    public function getEquipement(): ?Equipement
+    public function getEquipement(): ?Equipements
     {
         return $this->equipement;
     }
 
-    public function setEquipement(?Equipement $equipement): static
+    public function setEquipement(?Equipements $equipement): static
     {
         $this->equipement = $equipement;
 

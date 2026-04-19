@@ -9,28 +9,22 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/user')]
+#[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $em,
-        private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
     #[Route('/', name: 'app_user_index')]
-    public function index(SessionInterface $session): Response
+    public function index(): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
-
         $users = $this->userRepository->findAll();
 
         return $this->render('user/index.html.twig', [
@@ -39,19 +33,15 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new')]
-    public function new(Request $request, SessionInterface $session): Response
+    public function new(Request $request): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
-
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
+            // Pas de hashage comme demandé
+            $user->setPassword($user->getPassword());
             $this->em->persist($user);
             $this->em->flush();
 
@@ -66,20 +56,13 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit')]
-    public function edit(Request $request, User $user, SessionInterface $session): Response
+    public function edit(Request $request, User $user): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
-
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($user->getPassword()) {
-                $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
-            }
+            // Pas de hashage comme demandé
             $this->em->flush();
 
             $this->addFlash('success', 'Utilisateur modifié !');
@@ -94,13 +77,8 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, SessionInterface $session): Response
+    public function delete(Request $request, User $user): Response
     {
-        if (!$this->isAdmin($session)) {
-            $this->addFlash('error', 'Accès réservé à l’administrateur.');
-            return $this->redirectToRoute('app_boutique');
-        }
-
         $token = $request->request->getString('_token');
         if (!$this->isCsrfTokenValid('delete_user_' . $user->getId(), $token)) {
             throw $this->createAccessDeniedException('Jeton CSRF invalide.');
@@ -111,10 +89,5 @@ class UserController extends AbstractController
         $this->addFlash('success', 'Utilisateur supprimé.');
 
         return $this->redirectToRoute('app_user_index');
-    }
-
-    private function isAdmin(SessionInterface $session): bool
-    {
-        return $session->get('current_user_is_admin', false) === true;
     }
 }

@@ -33,8 +33,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
-    /** @var Collection<int, Equipement> */
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Equipement::class)]
+    /** @var Collection<int, Equipements> */
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Equipements::class)]
     private Collection $equipements;
 
     /** @var Collection<int, Delivery> */
@@ -128,13 +128,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->userid;
     }
 
-    /** @return Collection<int, Equipement> */
+    /** @return Collection<int, Equipements> */
     public function getEquipements(): Collection
     {
         return $this->equipements;
     }
 
-    public function addEquipement(Equipement $equipement): static
+    public function addEquipement(Equipements $equipement): static
     {
         if (!$this->equipements->contains($equipement)) {
             $this->equipements->add($equipement);
@@ -144,7 +144,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeEquipement(Equipement $equipement): static
+    public function removeEquipement(Equipements $equipement): static
     {
         if ($this->equipements->removeElement($equipement)) {
             // set the owning side to null (unless already changed)

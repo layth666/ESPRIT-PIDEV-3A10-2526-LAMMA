@@ -2,30 +2,31 @@
 
 namespace App\Controller;
 
+use App\Entity\Transaction;
 use App\Entity\Delivery;
-use App\Entity\Equipement;
+use App\Entity\Equipements;
 use App\Entity\User;
 use App\Form\DeliveryType;
-use App\Form\EquipementType;
-use App\Repository\EquipementRepository;
+use App\Form\EquipementsType;
+use App\Repository\EquipementsRepository;
 use App\Repository\UserRepository;
-use App\Service\EquipementVueService;
+use App\Service\EquipementsVueService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\DeliveryCostAiEstimator;
 class BoutiqueController extends AbstractController
 {
     public function __construct(
-        private readonly EquipementRepository $equipementRepository,
+        private readonly EquipementsRepository $equipementRepository,
         private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $em,
-        private readonly EquipementVueService $equipementVueService,
+        private readonly EquipementsVueService $equipementVueService,
         private readonly MailerInterface $mailer,
     ) {
     }
@@ -59,11 +60,10 @@ class BoutiqueController extends AbstractController
         ]);
     }
 
-    #[Route('/boutique', name: 'app_boutique')]
-    public function index(Request $request, SessionInterface $session): Response
+    #[Route('/boutique', name: 'app_boutique', methods: ['GET', 'POST'])]
+    public function index(Request $request): Response
     {
-        $currentUserId = $session->get('current_user_id');
-        $currentUser = $currentUserId ? $this->userRepository->find($currentUserId) : null;
+        $currentUser = $this->getUser();
 
         $all = $this->equipementRepository->findAllOrderedByDateDesc();
         $qRaw = trim($request->query->getString('q'));
@@ -75,7 +75,7 @@ class BoutiqueController extends AbstractController
 
         $filtered = $this->filterEquipements($all, $qRaw, $catFilter);
         // Filtrer pour ne montrer que les équipements non livrés ou appartenant à l'utilisateur
-        $filtered = array_filter($filtered, function (Equipement $e) use ($currentUser) {
+        $filtered = array_filter($filtered, function (Equipements $e) use ($currentUser) {
             if ($e->getDelivery() && $e->getDelivery()->getStatut() === 'livree') {
                 return $e->getOwner() === $currentUser;
             }
@@ -88,6 +88,31 @@ class BoutiqueController extends AbstractController
         // Ensure user1 and user2 exist
         $this->ensureTestUsersExist();
 
+        $form = null;
+        if ($currentUser) {
+            $equipement = new Equipements();
+            $equipement->setOwner($currentUser);
+            $form = $this->createForm(EquipementsType::class, $equipement);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $equipement->setDateAjout(new \DateTimeImmutable());
+                $equipement->setStatut($equipement->getStatut() ?: 'DISPONIBLE');
+                $delivery = $equipement->getDelivery();
+                if ($delivery) {
+                    $delivery->setEquipement($equipement);
+                }
+                $this->em->persist($equipement);
+                $this->em->flush();
+
+                $this->maybeSendNotificationEmail($equipement, $equipement->getMail());
+
+                $this->addFlash('success', 'Équipement ajouté !');
+
+                return $this->redirectToRoute('app_boutique');
+            }
+        }
+
         return $this->render('boutique/index.html.twig', [
             'equipements' => $filtered,
             'categories' => $categories,
@@ -95,61 +120,21 @@ class BoutiqueController extends AbstractController
             'q' => $qRaw,
             'views_count' => $viewsCount,
             'current_user' => $currentUser,
-            'users' => $this->userRepository->findBy(['userid' => ['user1', 'user2']]),
+            'users' => $this->userRepository->findBy([], ['userid' => 'ASC']),
+            'livraisons' => $currentUser ? $currentUser->getLivraisons() : [],
+            'form' => $form,
         ]);
     }
 
-    #[Route('/boutique/utilisateur', name: 'app_boutique_set_user', methods: ['POST'])]
-    public function setCurrentUser(Request $request, SessionInterface $session): Response
-    {
-        if (!$this->isCsrfTokenValid('set_current_user', $request->request->getString('_token'))) {
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
-        }
-
-        $userId = $request->request->getInt('user_id');
-        if ($userId > 0) {
-            $user = $this->userRepository->find($userId);
-            if ($user) {
-                $session->set('current_user_id', $userId);
-                $session->set('current_user_name', $user->getUserid());
-                $session->set('current_user_is_admin', in_array('ROLE_ADMIN', $user->getRoles(), true));
-                $this->addFlash('success', 'Utilisateur défini : ' . $user->getUserid());
-            }
-        } else {
-            $session->remove('current_user_id');
-            $session->remove('current_user_name');
-            $session->remove('current_user_is_admin');
-            $this->addFlash('success', 'Utilisateur déconnecté.');
-        }
-
-        return $this->redirectToRoute('app_boutique');
-    }
-
-    #[Route('/boutique/utilisateur-vues', name: 'app_boutique_user', methods: ['POST'])]
-    public function setBoutiqueUser(Request $request, SessionInterface $session): Response
-    {
-        if (!$this->isCsrfTokenValid('boutique_user', $request->request->getString('_token'))) {
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
-        }
-
-        $uid = trim($request->request->getString('user_id'));
-        if ($uid !== '') {
-            $session->set('boutique_user_id', $uid);
-            $this->addFlash('success', 'Identifiant enregistré pour le comptage des vues.');
-        }
-
-        return $this->redirectToRoute('app_boutique');
-    }
 
     #[Route('/mes-livraisons', name: 'app_my_deliveries')]
-    public function myDeliveries(SessionInterface $session): Response
+    public function myDeliveries(): Response
     {
-        $currentUserId = $session->get('current_user_id');
-        $currentUser = $currentUserId ? $this->userRepository->find($currentUserId) : null;
+        $currentUser = $this->getUser();
 
         if (!$currentUser) {
             $this->addFlash('error', 'Veuillez vous connecter.');
-            return $this->redirectToRoute('app_boutique');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('boutique/my_deliveries.html.twig', [
@@ -158,7 +143,7 @@ class BoutiqueController extends AbstractController
     }
 
     #[Route('/boutique/{id}/commander', name: 'app_boutique_order', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function order(Request $request, string $id, SessionInterface $session): Response
+    public function order(Request $request, string $id): Response
     {
         $equipement = $this->equipementRepository->find($id);
         if (!$equipement) {
@@ -175,12 +160,11 @@ class BoutiqueController extends AbstractController
             return $this->redirectToRoute('app_boutique_show', ['id' => $id]);
         }
 
-        $currentUserId = $session->get('current_user_id');
-        $currentUser = $currentUserId ? $this->userRepository->find($currentUserId) : null;
+        $currentUser = $this->getUser();
 
         if (!$currentUser) {
             $this->addFlash('error', 'Veuillez vous connecter pour commander.');
-            return $this->redirectToRoute('app_boutique_show', ['id' => $id]);
+            return $this->redirectToRoute('app_login');
         }
 
         // Vérifier que l'utilisateur n'est pas le propriétaire
@@ -213,18 +197,17 @@ class BoutiqueController extends AbstractController
     }
 
     #[Route('/boutique/{id}/livraison', name: 'app_boutique_delivery', requirements: ['id' => '\d+'])]
-    public function delivery(Request $request, string $id, SessionInterface $session): Response
+    public function delivery(Request $request, string $id): Response
     {
         $equipement = $this->equipementRepository->find($id);
         if (!$equipement) {
             throw $this->createNotFoundException();
         }
 
-        $currentUserId = $session->get('current_user_id');
-        $currentUser = $currentUserId ? $this->userRepository->find($currentUserId) : null;
+        $currentUser = $this->getUser();
         if (!$currentUser) {
             $this->addFlash('error', 'Veuillez vous connecter.');
-            return $this->redirectToRoute('app_boutique_show', ['id' => $id]);
+            return $this->redirectToRoute('app_login');
         }
 
         $delivery = $equipement->getDelivery();
@@ -254,14 +237,34 @@ class BoutiqueController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($isBuyer && !$delivery->getEstimation() && $delivery->getLatitude() && $delivery->getLongitude()) {
+                // INTELLIGENCE ARTIFICIELLE : Estimation de livraison (Mock)
+                // Logique basée sur les coordonnées (simulée ici par une complexité mathématique basique)
+                $latTns = 36.8065; // Latitude centre Tunis (admin)
+                $lngTns = 10.1815;
+                
+                // Calcul de distance euclidienne simplifiée
+                $diffLat = abs($latTns - $delivery->getLatitude()) * 111; // 1 degré ≈ 111 km
+                $diffLng = abs($lngTns - $delivery->getLongitude()) * 90; // Approx lng distance
+                $distanceKm = sqrt($diffLat * $diffLat + $diffLng * $diffLng);
+                
+                // Météo et Trafic simulés
+                $weatherPenalty = (int) date('H') % 3 === 0 ? 1 : 0; // 1 jour de +"pluie" factice
+                $trafficPenalty = $distanceKm < 20 ? 1 : 0; // Bouchons locaux
+                
+                $daysToDeliver = max(1, ceil($distanceKm / 100)) + $weatherPenalty + $trafficPenalty;
+                
+                $delivery->setEstimation((new \DateTime())->modify('+' . $daysToDeliver . ' days'));
+            }
+
             $this->em->flush();
             if ($isOwner) {
                 $this->addFlash('success', 'État de livraison mis à jour.');
                 return $this->redirectToRoute('app_boutique_show', ['id' => $id]);
             }
 
-            $this->addFlash('success', 'Coordonnées de livraison enregistrées.');
-            return $this->redirectToRoute('app_my_deliveries');
+            $this->addFlash('success', 'Coordonnées enregistrées. Veuillez procéder au paiement.');
+            return $this->redirectToRoute('app_boutique_payment', ['id' => $id]);
         }
 
         return $this->render('boutique/delivery.html.twig', [
@@ -273,20 +276,104 @@ class BoutiqueController extends AbstractController
         ]);
     }
 
-    #[Route('/boutique/nouveau', name: 'app_boutique_new')]
-    public function new(Request $request, SessionInterface $session): Response
+    #[Route('/delivery/estimate-cost', name: 'app_delivery_estimate', methods: ['POST'])]
+    public function estimateCost(Request $request, DeliveryCostAiEstimator $aiEstimator): JsonResponse
     {
-        $currentUserId = $session->get('current_user_id');
-        $currentUser = $currentUserId ? $this->userRepository->find($currentUserId) : null;
+        $data = json_decode($request->getContent(), true);
+        $distanceKm = isset($data['distance_km']) ? (float)$data['distance_km'] : 0.0;
 
-        if (!$currentUser) {
-            $this->addFlash('error', 'Vous devez être connecté en tant qu’utilisateur pour ajouter un équipement.');
-            return $this->redirectToRoute('app_boutique');
+        if ($distanceKm <= 0) {
+            return new JsonResponse(['error' => 'Invalid distance'], 400);
         }
 
-        $equipement = new Equipement();
+        $estimation = $aiEstimator->estimate($distanceKm);
+
+        return new JsonResponse($estimation);
+    }
+
+    #[Route('/boutique/{id}/paiement', name: 'app_boutique_payment', requirements: ['id' => '\d+'])]
+    public function payment(string $id): Response
+    {
+        $equipement = $this->equipementRepository->find($id);
+        if (!$equipement || !$equipement->getDelivery()) {
+            throw $this->createNotFoundException();
+        }
+
+        $currentUser = $this->getUser();
+        
+        $delivery = $equipement->getDelivery();
+        $isBuyer = $currentUser && $delivery->getAcheteur() && ($delivery->getAcheteur()->getId() === $currentUser->getId());
+        
+        if (!$isBuyer) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas payer cette commande.');
+        }
+
+        return $this->render('boutique/payment.html.twig', [
+            'equipement' => $equipement,
+            'delivery' => $delivery,
+        ]);
+    }
+
+    #[Route('/boutique/{id}/paiement/valider', name: 'app_boutique_payment_process', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function processPayment(Request $request, string $id): Response
+    {
+        $equipement = $this->equipementRepository->find($id);
+        if (!$equipement || !$equipement->getDelivery()) {
+            throw $this->createNotFoundException();
+        }
+        
+        $token = $request->request->getString('_token');
+        if (!$this->isCsrfTokenValid('process_payment_'.$id, $token)) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+
+        $delivery = $equipement->getDelivery();
+        $delivery->setStatut('preparation');
+        
+        // --- LOGIQUE METIER TRANSACTION (Mock) --- //
+        $transaction = new Transaction();
+        $transaction->setEquipement($equipement);
+        
+        // current buyer
+        $currentUser = $this->getUser();
+        if($currentUser) {
+            $transaction->setBuyer($currentUser);
+        } else {
+            // Fallback
+            $transaction->setBuyer($delivery->getAcheteur());
+        }
+        
+        $transaction->setSeller($equipement->getOwner());
+        
+        // Calculate total price
+        $frais = $delivery->getFraisLivraison() ?? 0.0;
+        $totalPrice = (float) $equipement->getPrix() + $frais;
+        $transaction->setPrice((string)$totalPrice);
+        
+        $transaction->setStripeToken('mock_token_' . bin2hex(random_bytes(8)));
+        
+        $this->em->persist($transaction);
+        $equipement->setStatut('VENDU');
+
+        $this->em->flush();
+
+        $this->addFlash('success', 'Paiement effectué avec succès. Votre commande est en préparation.');
+        return $this->redirectToRoute('app_my_deliveries');
+    }
+
+    #[Route('/boutique/nouveau', name: 'app_boutique_new')]
+    public function new(Request $request): Response
+    {
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            $this->addFlash('error', 'Vous devez être connecté pour ajouter un équipement.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $equipement = new Equipements();
         $equipement->setOwner($currentUser);
-        $form = $this->createForm(EquipementType::class, $equipement);
+        $form = $this->createForm(EquipementsType::class, $equipement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -309,24 +396,20 @@ class BoutiqueController extends AbstractController
         return $this->render('boutique/form.html.twig', [
             'form' => $form,
             'title' => 'Nouvel équipement (Boutique)',
+            'current_user' => $currentUser,
+            'users' => $this->userRepository->findBy([], ['userid' => 'ASC']),
         ]);
     }
 
     #[Route('/boutique/{id}', name: 'app_boutique_show', requirements: ['id' => '\d+'])]
-    public function show(string $id, SessionInterface $session): Response
+    public function show(string $id): Response
     {
         $equipement = $this->equipementRepository->find($id);
         if (!$equipement) {
             throw $this->createNotFoundException();
         }
 
-        $userId = $session->get('boutique_user_id');
-        if (is_string($userId) && $userId !== '') {
-            $this->equipementVueService->registerView($equipement, $userId);
-        }
-
-        $currentUserId = $session->get('current_user_id');
-        $currentUser = $currentUserId ? $this->userRepository->find($currentUserId) : null;
+        $currentUser = $this->getUser();
         
         // Vérifier si l'utilisateur actuel est le propriétaire de l'équipement
         $isOwner = false;
@@ -351,15 +434,14 @@ class BoutiqueController extends AbstractController
     }
 
     #[Route('/boutique/{id}/modifier', name: 'app_boutique_edit', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, string $id, SessionInterface $session): Response
+    public function edit(Request $request, string $id): Response
     {
         $equipement = $this->equipementRepository->find($id);
         if (!$equipement) {
             throw $this->createNotFoundException();
         }
 
-        $currentUserId = $session->get('current_user_id');
-        $currentUser = $currentUserId ? $this->userRepository->find($currentUserId) : null;
+        $currentUser = $this->getUser();
 
         // Vérifier que l'utilisateur est le propriétaire
         $isOwner = false;
@@ -371,7 +453,7 @@ class BoutiqueController extends AbstractController
             throw $this->createAccessDeniedException('Vous ne pouvez modifier que vos équipements.');
         }
 
-        $form = $this->createForm(EquipementType::class, $equipement);
+        $form = $this->createForm(EquipementsType::class, $equipement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -390,19 +472,20 @@ class BoutiqueController extends AbstractController
             'form' => $form,
             'title' => 'Modifier équipement',
             'equipement' => $equipement,
+            'current_user' => $currentUser,
+            'users' => $this->userRepository->findBy([], ['userid' => 'ASC']),
         ]);
     }
 
     #[Route('/boutique/{id}/supprimer', name: 'app_boutique_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function delete(Request $request, string $id, SessionInterface $session): Response
+    public function delete(Request $request, string $id): Response
     {
         $equipement = $this->equipementRepository->find($id);
         if (!$equipement) {
             throw $this->createNotFoundException();
         }
 
-        $currentUserId = $session->get('current_user_id');
-        $currentUser = $currentUserId ? $this->userRepository->find($currentUserId) : null;
+        $currentUser = $this->getUser();
 
         // Vérifier que l'utilisateur est le propriétaire
         $isOwner = false;
@@ -440,20 +523,20 @@ class BoutiqueController extends AbstractController
                 $this->em->persist($user);
             }
             // Always set roles
-            $user->setRoles($userid === 'user1' ? ['ROLE_ADMIN'] : []);
+            $user->setRoles($userid === 'user1' ? ['ROLE_ADMIN'] : ['ROLE_USER']);
             $this->em->persist($user);
         }
         $this->em->flush();
     }
 
     /**
-     * @param list<Equipement> $all
+     * @param list<Equipements> $all
      *
-     * @return list<Equipement>
+     * @return list<Equipements>
      */
     private function filterEquipements(array $all, string $qRaw, ?string $catFilter): array
     {
-        return array_values(array_filter($all, function (Equipement $e) use ($qRaw, $catFilter) {
+        return array_values(array_filter($all, function (Equipements $e) use ($qRaw, $catFilter) {
             $matchSearch = $this->matchesIntelligentSearch($e, $qRaw);
 
             $matchCat = $catFilter === null
@@ -478,13 +561,13 @@ class BoutiqueController extends AbstractController
     /**
      * Tri : par catégorie puis nom si « Toutes catégories », sinon par nom uniquement.
      *
-     * @param list<Equipement> $list
+     * @param list<Equipements> $list
      *
-     * @return list<Equipement>
+     * @return list<Equipements>
      */
     private function orderEquipementsForDisplay(array $list, ?string $catFilter): array
     {
-        usort($list, function (Equipement $a, Equipement $b) use ($catFilter) {
+        usort($list, function (Equipements $a, Equipements $b) use ($catFilter) {
             if ($catFilter === null) {
                 $ca = mb_strtolower($a->getCategorie() ?? '', 'UTF-8');
                 $cb = mb_strtolower($b->getCategorie() ?? '', 'UTF-8');
@@ -521,7 +604,7 @@ class BoutiqueController extends AbstractController
      * champs combinés (nom, description, catégorie, ville, type, statut, prix, mail),
      * accents approximativement neutralisés.
      */
-    private function matchesIntelligentSearch(Equipement $e, string $rawQuery): bool
+    private function matchesIntelligentSearch(Equipements $e, string $rawQuery): bool
     {
         $rawQuery = trim($rawQuery);
         if ($rawQuery === '') {
@@ -549,7 +632,7 @@ class BoutiqueController extends AbstractController
         return true;
     }
 
-    private function buildSearchHaystack(Equipement $e): string
+    private function buildSearchHaystack(Equipements $e): string
     {
         $parts = [
             $e->getNom(),
@@ -608,7 +691,7 @@ class BoutiqueController extends AbstractController
         return $list;
     }
 
-    private function maybeSendNotificationEmail(Equipement $e, mixed $to): void
+    private function maybeSendNotificationEmail(Equipements $e, mixed $to): void
     {
         if (!is_string($to) || trim($to) === '') {
             return;

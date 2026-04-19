@@ -3,17 +3,17 @@
 {% block title %}Détail équipement — LAMMA{% endblock %}
 
 {% block admin_content %}
-    <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-3 mb-4">
+    <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-3 mb-4 mt-4">
         <div>
-            <h2 class="mb-2">Équipement « {{ equipement.nom }} »</h2>
-            <p class="text-white-50 mb-0">Détails et actions de livraison pour cet équipement.</p>
+            <h2 class="mb-2 text-dark">Équipement « {{ equipement.nom }} »</h2>
+            <p class="text-muted mb-0">Détails et actions de livraison pour cet équipement.</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
-            <a href="#" onclick="history.back(); return false;" class="btn btn-outline-light btn-sm">← Retour</a>
-            <a href="{{ path('app_boutique_show', {id: equipement.id}) }}" class="btn btn-outline-light btn-sm">Fiche publique</a>
-            <a href="{{ path('app_admin_equipement_edit', {id: equipement.id}) }}" class="btn btn-lamma btn-sm">Modifier</a>
-            <form method="post" action="{{ path('app_admin_equipement_delete', {id: equipement.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cet équipement ?');">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete_equipement_' ~ equipement.id) }}">
+            <a href="#" onclick="history.back(); return false;" class="btn btn-outline-secondary btn-sm">← Retour</a>
+            <a href="{{ path('app_boutique_show', {id: equipement.id}) }}" class="btn btn-outline-primary btn-sm">Fiche publique</a>
+            <a href="{{ path('app_admin_equipements_edit', {id: equipement.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+            <form method="post" action="{{ path('app_admin_equipements_delete', {id: equipement.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cet équipement ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_equipements_' ~ equipement.id) }}">
                 <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
             </form>
         </div>
@@ -21,74 +21,93 @@
 
     <div class="row g-4">
         <div class="col-xl-8">
-            <div class="admin-card p-4 h-100">
-                <h4 class="mb-3">Informations principales</h4>
-                <p class="text-white-50">{{ equipement.description ?: 'Aucune description fournie.' }}</p>
+            <div class="card shadow-sm p-4 h-100">
+                <h4 class="mb-3 text-dark">Informations principales</h4>
+                <p class="text-muted">{{ equipement.description ?: 'Aucune description fournie.' }}</p>
 
                 <div class="row gy-3 mt-4">
                     <div class="col-md-6">
-                        <div class="text-white-50 small mb-1">Prix</div>
-                        <div class="fw-semibold">{{ equipement.prix|number_format(2, ',', ' ') }} TND</div>
+                        <div class="text-muted small mb-1">Prix</div>
+                        <div class="fw-semibold text-dark">{{ equipement.prix|number_format(2, ',', ' ') }} TND</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="text-white-50 small mb-1">Type</div>
-                        <div>{{ equipement.type }}</div>
+                        <div class="text-muted small mb-1">Type</div>
+                        <div class="text-dark">{{ equipement.type }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="text-white-50 small mb-1">Catégorie</div>
-                        <div>{{ equipement.categorie ?: '—' }}</div>
+                        <div class="text-muted small mb-1">Catégorie</div>
+                        <div class="text-dark">{{ equipement.categorie ?: '—' }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="text-white-50 small mb-1">Ville</div>
-                        <div>{{ equipement.ville ?: '—' }}</div>
+                        <div class="text-muted small mb-1">Ville</div>
+                        <div class="text-dark">{{ equipement.ville ?: '—' }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="text-white-50 small mb-1">Statut</div>
-                        <div>{{ equipement.statut }}</div>
+                        <div class="text-muted small mb-1">Statut</div>
+                        <div class="text-dark">{{ equipement.statut }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="text-white-50 small mb-1">Livrable</div>
-                        <div>{{ equipement.livrable ? 'Oui' : 'Non' }}</div>
+                        <div class="text-muted small mb-1">Livrable</div>
+                        <div class="text-dark">{{ equipement.livrable ? 'Oui' : 'Non' }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="text-white-50 small mb-1">Date ajout</div>
-                        <div>{{ equipement.dateAjout ? equipement.dateAjout|date('d/m/Y H:i') : '—' }}</div>
+                        <div class="text-muted small mb-1">Date ajout</div>
+                        <div class="text-dark">{{ equipement.dateAjout ? equipement.dateAjout|date('d/m/Y H:i') : '—' }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="text-white-50 small mb-1">Propriétaire</div>
-                        <div>{{ equipement.owner ? equipement.owner.userid : 'Aucun' }}</div>
+                        <div class="text-muted small mb-1">Propriétaire</div>
+                        <div class="text-dark">{{ equipement.owner ? equipement.owner.userid : 'Aucun' }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-xl-4">
-            <div class="admin-card p-4 mb-4">
-                <h5 class="mb-3">Actions rapides</h5>
+            <div class="card shadow-sm p-4 mb-4">
+                <h5 class="mb-3 text-dark">Actions rapides</h5>
                 <div class="d-grid gap-2">
-                    <a href="{{ path('app_boutique_edit', {id: equipement.id}) }}" class="btn btn-lamma">Modifier l'équipement</a>
-                    <a href="{{ path('app_boutique_show', {id: equipement.id}) }}" class="btn btn-outline-light">Voir la fiche publique</a>
+                    <a href="{{ path('app_admin_equipements_edit', {id: equipement.id}) }}" class="btn btn-warning">Modifier l'équipement</a>
+                    <a href="{{ path('app_boutique_show', {id: equipement.id}) }}" class="btn btn-outline-secondary">Voir la fiche publique</a>
                     {% if equipement.delivery %}
-                        <a href="{{ path('app_boutique_delivery', {id: equipement.id}) }}" class="btn btn-outline-light">Gérer la livraison</a>
+                        <a href="{{ path('app_boutique_delivery', {id: equipement.id}) }}" class="btn btn-outline-primary">Gérer la livraison</a>
                     {% endif %}
                 </div>
             </div>
 
-            <div class="admin-card p-4">
-                <h5 class="mb-3">Livraison</h5>
+            <div class="card shadow-sm border-start border-primary border-4 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 text-dark">Livraison</h5>
+                    {% if equipement.delivery %}
+                        <i class="fa fa-truck text-primary fs-4"></i>
+                    {% endif %}
+                </div>
+                
                 {% if equipement.delivery %}
                     {% set addressParts = [] %}
                     {% if equipement.delivery.rue %}{% set addressParts = addressParts|merge([equipement.delivery.rue]) %}{% endif %}
                     {% if equipement.delivery.ville %}{% set addressParts = addressParts|merge([equipement.delivery.ville]) %}{% endif %}
                     {% if equipement.delivery.codePostal %}{% set addressParts = addressParts|merge([equipement.delivery.codePostal]) %}{% endif %}
                     {% if equipement.delivery.pays %}{% set addressParts = addressParts|merge([equipement.delivery.pays]) %}{% endif %}
-                    <div class="mb-2"><strong>Statut :</strong> {{ equipement.delivery.statut|replace({'en_attente': 'En attente', 'confirmee': 'Confirmée', 'preparation': 'En préparation', 'expediee': 'Expédiée', 'en_cours': 'En cours', 'livree': 'Livrée', 'annulee': 'Annulée'}) }}</div>
-                    <div class="mb-2"><strong>Acheteur :</strong> {{ equipement.delivery.acheteur ? equipement.delivery.acheteur.userid : 'Aucun' }}</div>
-                    <div class="mb-2"><strong>Adresse :</strong> {{ addressParts ? addressParts|join(', ') : 'Non renseignée' }}</div>
-                    <div class="mb-2"><strong>Date estimée :</strong> {{ equipement.delivery.estimation ? equipement.delivery.estimation|date('d/m/Y') : '—' }}</div>
-                    <div class="mb-2"><strong>Date livraison :</strong> {{ equipement.delivery.dateLivraison ? equipement.delivery.dateLivraison|date('d/m/Y') : '—' }}</div>
+                    
+                    <div class="small text-muted mb-4">
+                        <div class="mb-2"><strong class="text-dark">Statut :</strong> <span class="badge bg-secondary">{{ equipement.delivery.statut|replace({'en_attente': 'En attente', 'confirmee': 'Confirmée', 'preparation': 'En préparation', 'expediee': 'Expédiée', 'en_cours': 'En cours', 'livree': 'Livrée', 'annulee': 'Annulée'}) }}</span></div>
+                        <div class="mb-2"><strong class="text-dark">Acheteur :</strong> {{ equipement.delivery.acheteur ? equipement.delivery.acheteur.userid : 'Aucun' }}</div>
+                        <div class="mb-2"><strong class="text-dark">Adresse :</strong> {{ addressParts ? addressParts|join(', ') : 'Non renseignée' }}</div>
+                        <div class="mb-2"><strong class="text-dark">Date estimée :</strong> {{ equipement.delivery.estimation ? equipement.delivery.estimation|date('d/m/Y') : '—' }} <i class="fa fa-magic text-success" title="Calculé par l'IA"></i></div>
+                        <div class="mb-2"><strong class="text-dark">Date livraison :</strong> <span class="text-primary fw-bold">{{ equipement.delivery.dateLivraison ? equipement.delivery.dateLivraison|date('d/m/Y') : 'À définir' }}</span></div>
+                    </div>
+
+                    <hr class="text-muted">
+                    
+                    <div class="text-center mt-3">
+                        <span class="d-block text-muted small fw-bold mb-2 text-uppercase">QR Code Livreur</span>
+                        <a href="{{ url('app_qrcode_recap', {id: equipement.id}) }}" target="_blank" title="Cliquez pour simuler un scan sur PC">
+                            <img src="{{ qr_server_apiUrl|escape('html_attr') }}?size=150x150&data={{ url('app_qrcode_recap', {id: equipement.id})|escape('url') }}" alt="QR Code Livraison" class="img-fluid border p-1 bg-white rounded shadow-sm hover-zoom">
+                        </a>
+                        <p class="text-muted small mt-2">À scanner pour accéder au suivi</p>
+                    </div>
                 {% else %}
-                    <p class="text-white-50 mb-0">Aucune livraison associée à cet équipement.</p>
+                    <p class="text-muted mb-0"><i class="fa fa-info-circle me-1"></i>Aucune livraison associée à cet équipement.</p>
                 {% endif %}
             </div>
         </div>

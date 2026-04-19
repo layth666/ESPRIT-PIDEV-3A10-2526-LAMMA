@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Equipement;
+use App\Entity\Equipements;
 use App\Entity\User;
 use App\Repository\DeliveryRepository;
 use Doctrine\DBAL\Types\Types;
@@ -17,9 +17,9 @@ class Delivery
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'delivery', targetEntity: Equipement::class)]
+    #[ORM\OneToOne(inversedBy: 'delivery', targetEntity: Equipements::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Equipement $equipement = null;
+    private ?Equipements $equipement = null;
 
     #[ORM\ManyToOne(inversedBy: 'livraisons')]
     private ?User $acheteur = null;
@@ -45,17 +45,26 @@ class Delivery
     #[ORM\Column(length: 20)]
     private ?string $statut = 'en_cours';
 
+    #[ORM\Column(nullable: true)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $longitude = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $fraisLivraison = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEquipement(): ?Equipement
+    public function getEquipement(): ?Equipements
     {
         return $this->equipement;
     }
 
-    public function setEquipement(Equipement $equipement): static
+    public function setEquipement(Equipements $equipement): static
     {
         $this->equipement = $equipement;
 
@@ -154,6 +163,42 @@ class Delivery
     public function setStatut(string $statut): static
     {
         $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): static
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getFraisLivraison(): ?float
+    {
+        return $this->fraisLivraison;
+    }
+
+    public function setFraisLivraison(?float $fraisLivraison): static
+    {
+        $this->fraisLivraison = $fraisLivraison;
 
         return $this;
     }

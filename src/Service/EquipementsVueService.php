@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Equipement;
+use App\Entity\Equipements;
 use App\Entity\EquipementVue;
 use App\Repository\EquipementVueRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Équivalent Java Services.EquipementVueService — comptage des vues par utilisateur (boutique LAMMA).
  */
-class EquipementVueService
+class EquipementsVueService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -21,7 +21,7 @@ class EquipementVueService
     /**
      * Enregistre une vue unique par couple (équipement, userId). Incrémente nombre_vues si nouvelle vue.
      */
-    public function registerView(Equipement $equipement, string $userId): bool
+    public function registerView(Equipements $equipement, string $userId): bool
     {
         $userId = trim($userId);
         if ($userId === '') {
@@ -47,7 +47,7 @@ class EquipementVueService
         return true;
     }
 
-    public function getViewsCount(Equipement $equipement): int
+    public function getViewsCount(Equipements $equipement): int
     {
         return $this->vueRepository->countForEquipement($equipement);
     }
