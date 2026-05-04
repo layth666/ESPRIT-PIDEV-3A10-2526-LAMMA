@@ -66,7 +66,8 @@ async function startFaceLogin() {
                 
                 // Convert Float32Array to standard array
                 const descriptor = Array.from(detection.descriptor);
-                const csrfToken = document.querySelector('input[name="_csrf_token"]').value;
+                const csrfInput = document.querySelector('input[name="_csrf_token"]');
+                const csrfToken = csrfInput ? csrfInput.value : '';
                 
                 // Send descriptor to backend to match
                 const response = await fetch('/face/login', {
@@ -106,7 +107,8 @@ function showEnrollForm() {
 }
 
 async function enrollFaceSubmit() {
-    const email = document.getElementById('face-enroll-email').value;
+    const emailInput = document.getElementById('face-enroll-email');
+    const email = emailInput ? emailInput.value : '';
     if (!email) {
         alert('Please enter your email.');
         return;
@@ -127,30 +129,42 @@ async function enrollFaceSubmit() {
             await startWebcam(video);
         }
         
-        const detection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
-        
-        if (!detection) {
-            throw new Error("No face detected during enrollment. Please try again.");
-        }
-        
-        loadingText.innerText = "Saving face data...";
-        const descriptor = Array.from(detection.descriptor);
-        const csrfToken = document.querySelector('input[name="_csrf_token"]').value;
-        
-        const response = await fetch('/face/enroll', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, descriptor, _csrf_token: csrfToken })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            alert('Face enrolled successfully! You can now login with Face ID.');
-            closeFaceModal();
-        } else {
-            throw new Error(data.error || 'Enrollment failed.');
-        }
+        // Give the camera a moment to focus
+        setTimeout(async () => {
+            try {
+                const detection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
+                
+                if (!detection) {
+                    throw new Error("No face detected during enrollment. Please try again.");
+                }
+                
+                loadingText.innerText = "Saving face data...";
+                const descriptor = Array.from(detection.descriptor);
+                const csrfInput = document.querySelector('input[name="_csrf_token"]');
+                const csrfToken = csrfInput ? csrfInput.value : '';
+                
+                const response = await fetch('/face/enroll', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, descriptor, _csrf_token: csrfToken })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Face enrolled successfully! You can now login with Face ID.');
+                    closeFaceModal();
+                } else {
+                    throw new Error(data.error || 'Enrollment failed.');
+                }
+            } catch (e) {
+                loadingText.style.display = 'none';
+                errorContainer.innerText = e.message;
+                document.getElementById('face-actions').style.display = 'flex';
+                stopWebcam();
+            }
+        }, 1500);
+
     } catch (e) {
         loadingText.style.display = 'none';
         errorContainer.innerText = e.message;

@@ -1,10 +1,11 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 {% import '_macros.html.twig' as macros %}
 
 {% block title %}Repas et Plats - LAMMA{% endblock %}
+{% block page_title %}Repas & Plats IA{% endblock %}
 {% block admin_title %}Repas & Plats IA{% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <section class="crud-section">
     <div class="row align-items-center mb-5">
         <div class="col-md-6">
@@ -20,10 +21,31 @@
         </div>
     </div>
 
+    {# Search & Sort Bar #}
+    <div class="scout-card mb-4" style="padding: 15px; background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); border-radius: 15px;">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0"><i class="fa fa-search text-primary"></i></span>
+                    <input type="text" id="repasSearchInput" class="form-control" placeholder="Rechercher par nom ou type..." style="background: transparent; border: none; border-bottom: 2px solid #e2e8f0; border-radius: 0;" onkeyup="filterRepas()">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select id="repasSortSelect" class="form-control" style="background: transparent; border-radius: 10px;" onchange="filterRepas()">
+                    <option value="">Trier par...</option>
+                    <option value="nom_asc">Nom (A-Z)</option>
+                    <option value="prix_asc">Prix croissant</option>
+                    <option value="prix_desc">Prix décroissant</option>
+                    <option value="cal_desc">Calories max</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
     {# Visual Card Grid #}
-    <div class="row">
+    <div class="row" id="repasGrid">
         {% for item in items %}
-            <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+            <div class="col-xl-4 col-lg-6 col-md-6 mb-4 repas-card-wrapper" data-nom="{{ item.nom|lower }}" data-type="{{ item.typeRepas|lower }}" data-prix="{{ item.prix }}" data-calories="{{ item.calories ?? 0 }}">
                 <div class="scout-plat-card">
                     {# Card Header with Image #}
                     <div class="plat-card-header" style="background-image: url('{{ item.imageUrl ? (item.imageUrl starts with 'http' ? item.imageUrl : asset('uploads/repas/' ~ item.imageUrl)) : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop' }}');">
@@ -88,6 +110,40 @@
             </div>
         {% endfor %}
     </div>
+
+<script>
+function filterRepas() {
+    const searchInput = document.getElementById('repasSearchInput');
+    const sortSelect = document.getElementById('repasSortSelect');
+    const grid = document.getElementById('repasGrid');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll('.repas-card-wrapper'));
+    
+    const searchTerm = searchInput.value.toLowerCase();
+    const sortMode = sortSelect.value;
+    
+    // Filter
+    cards.forEach(card => {
+        const nom = card.getAttribute('data-nom') || '';
+        const type = card.getAttribute('data-type') || '';
+        const matches = nom.includes(searchTerm) || type.includes(searchTerm);
+        card.style.display = matches ? '' : 'none';
+    });
+    
+    // Sort
+    if (sortMode) {
+        const visibleCards = cards.filter(c => c.style.display !== 'none');
+        visibleCards.sort((a, b) => {
+            if (sortMode === 'prix_asc') return parseFloat(a.getAttribute('data-prix')) - parseFloat(b.getAttribute('data-prix'));
+            if (sortMode === 'prix_desc') return parseFloat(b.getAttribute('data-prix')) - parseFloat(a.getAttribute('data-prix'));
+            if (sortMode === 'nom_asc') return a.getAttribute('data-nom').localeCompare(b.getAttribute('data-nom'));
+            if (sortMode === 'cal_desc') return parseFloat(b.getAttribute('data-calories')) - parseFloat(a.getAttribute('data-calories'));
+            return 0;
+        });
+        visibleCards.forEach(c => grid.appendChild(c));
+    }
+}
+</script>
 </section>
 
 <style>

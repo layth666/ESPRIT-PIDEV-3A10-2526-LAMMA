@@ -10,15 +10,17 @@ class ParticipationRestaurant
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private int $id;
+    private ?int $id = null;
 
     // ================= LIENS
 
-    #[ORM\Column(type: "integer")]
-    private int $participantId;
+    #[ORM\ManyToOne(targetEntity: Participation::class)]
+    #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', nullable: false)]
+    private Participation $participant;
 
-    #[ORM\Column(type: "integer")]
-    private int $evenementId;
+    #[ORM\ManyToOne(targetEntity: Evenement::class)]
+    #[ORM\JoinColumn(name: 'evenement_id', referencedColumnName: 'id_event', nullable: false)]
+    private Evenement $evenement;
 
     // ================= BESOIN SPECIFIQUE
 
@@ -102,54 +104,54 @@ class ParticipationRestaurant
 
     // ================= GETTERS / SETTERS
 
-    public function getId(): int { return $this->id; }
+    public function getId(): ?int { return $this->id; }
 
-    public function getParticipantId(): int { return $this->participantId; }
-    public function setParticipantId(int $participantId) { $this->participantId = $participantId; }
+    public function getParticipant(): Participation { return $this->participant; }
+    public function setParticipant(Participation $participant): static { $this->participant = $participant; return $this; }
 
-    public function getEvenementId(): int { return $this->evenementId; }
-    public function setEvenementId(int $evenementId) { $this->evenementId = $evenementId; }
+    public function getEvenement(): Evenement { return $this->evenement; }
+    public function setEvenement(Evenement $evenement): static { $this->evenement = $evenement; return $this; }
 
     public function getBesoinLibelle(): ?string { return $this->besoinLibelle; }
-    public function setBesoinLibelle(?string $besoinLibelle) { $this->besoinLibelle = $besoinLibelle; }
+    public function setBesoinLibelle(?string $besoinLibelle): static { $this->besoinLibelle = $besoinLibelle; return $this; }
 
     public function getBesoinDescription(): ?string { return $this->besoinDescription; }
-    public function setBesoinDescription(?string $besoinDescription) { $this->besoinDescription = $besoinDescription; }
+    public function setBesoinDescription(?string $besoinDescription): static { $this->besoinDescription = $besoinDescription; return $this; }
 
     public function getRestrictionLibelle(): ?string { return $this->restrictionLibelle; }
-    public function setRestrictionLibelle(?string $restrictionLibelle) { $this->restrictionLibelle = $restrictionLibelle; }
+    public function setRestrictionLibelle(?string $restrictionLibelle): static { $this->restrictionLibelle = $restrictionLibelle; return $this; }
 
     public function getRestrictionDescription(): ?string { return $this->restrictionDescription; }
-    public function setRestrictionDescription(?string $restrictionDescription) { $this->restrictionDescription = $restrictionDescription; }
+    public function setRestrictionDescription(?string $restrictionDescription): static { $this->restrictionDescription = $restrictionDescription; return $this; }
 
     public function getNiveauGravite(): ?string { return $this->niveauGravite; }
-    public function setNiveauGravite(?string $niveauGravite) { $this->niveauGravite = $niveauGravite; }
+    public function setNiveauGravite(?string $niveauGravite): static { $this->niveauGravite = $niveauGravite; return $this; }
 
     public function isRestrictionActive(): bool { return $this->restrictionActive; }
-    public function setRestrictionActive(bool $restrictionActive) { $this->restrictionActive = $restrictionActive; }
+    public function setRestrictionActive(bool $restrictionActive): static { $this->restrictionActive = $restrictionActive; return $this; }
 
     public function getMenuPropositionId(): ?int { return $this->menuPropositionId; }
-    public function setMenuPropositionId(?int $menuPropositionId) { $this->menuPropositionId = $menuPropositionId; }
+    public function setMenuPropositionId(?int $menuPropositionId): static { $this->menuPropositionId = $menuPropositionId; return $this; }
 
     public function getDateChoix(): ?\DateTimeInterface { return $this->dateChoix; }
-    public function setDateChoix(?\DateTimeInterface $dateChoix) { $this->dateChoix = $dateChoix; }
+    protected function setDateChoix(?\DateTimeInterface $dateChoix): static { $this->dateChoix = $dateChoix; return $this; }
 
     public function getDateLimiteModification(): ?\DateTimeInterface { return $this->dateLimiteModification; }
-    public function setDateLimiteModification(?\DateTimeInterface $dateLimiteModification) { $this->dateLimiteModification = $dateLimiteModification; }
+    protected function setDateLimiteModification(?\DateTimeInterface $dateLimiteModification): static { $this->dateLimiteModification = $dateLimiteModification; return $this; }
 
     public function getCommentaire(): ?string { return $this->commentaire; }
-    public function setCommentaire(?string $commentaire) { $this->commentaire = $commentaire; }
+    public function setCommentaire(?string $commentaire): static { $this->commentaire = $commentaire; return $this; }
 
     public function isAnnule(): bool { return $this->annule; }
-    public function setAnnule(bool $annule) { $this->annule = $annule; }
+    public function setAnnule(bool $annule): static { $this->annule = $annule; return $this; }
 
     public function __toString(): string
     {
         return sprintf(
             "ParticipantRestauration{id=%d, participant=%d, evenement=%d, annule=%s}",
             $this->id,
-            $this->participantId,
-            $this->evenementId,
+            $this->participant->getId(),
+            $this->evenement->getId_event(),
             $this->annule ? 'true' : 'false'
         );
     }

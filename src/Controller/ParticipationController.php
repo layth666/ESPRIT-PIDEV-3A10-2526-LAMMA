@@ -25,7 +25,7 @@ class ParticipationController extends AbstractController
 
     // ===== INDEX =====
     #[Route('/', name: 'app_participation_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(\App\Service\SmartAIService $aiService): Response
     {
         $qb = $this->repository->createQueryBuilder('p');
 
@@ -39,12 +39,27 @@ class ParticipationController extends AbstractController
         
         // Fetch event titles to avoid showing IDs in the list
         $evenementRepo = $this->em->getRepository(\App\Entity\Evenement::class);
+        $userRepo = $this->em->getRepository(\App\Entity\Users::class); // Assuming entity name is Users
         $eventMap = [];
+        $userMap = [];
+        $aiInsights = [];
+        
         foreach ($participations as $p) {
             if ($p->getEvenementId() && !isset($eventMap[$p->getEvenementId()])) {
                 $event = $evenementRepo->find($p->getEvenementId());
                 if ($event) {
                     $eventMap[$p->getEvenementId()] = $event;
+                    // AI Insight for this event
+                    $aiInsights[$p->getEvenementId()] = [
+                        'popularity' => $aiService->calculatePopularity($event),
+                        'analysis' => $aiService->analyzeEvent($event->getTitre(), $event->getDescription())
+                    ];
+                }
+            }
+            if ($p->getUserId() && !isset($userMap[$p->getUserId()])) {
+                $userObj = $userRepo->find($p->getUserId());
+                if ($userObj) {
+                    $userMap[$p->getUserId()] = $userObj->getName(); // Assuming getName() exists
                 }
             }
         }
@@ -52,6 +67,8 @@ class ParticipationController extends AbstractController
         return $this->render('participation/index.html.twig', [
             'items' => $participations,
             'eventMap' => $eventMap,
+            'userMap' => $userMap,
+            'aiInsights' => $aiInsights,
         ]);
     }
 
@@ -61,6 +78,14 @@ class ParticipationController extends AbstractController
     {
         $participation = new Participation();
 
+        $eventId = $request->query->get('event_id');
+        if ($eventId) {
+            $evenement = $this->em->getRepository(\App\Entity\Evenement::class)->find($eventId);
+            if ($evenement) {
+                $participation->setEvenementId($evenement->getIdEvent());
+            }
+        }
+
         $form = $this->createForm(\App\Form\ParticipationType::class, $participation);
         $form->handleRequest($request);
 
@@ -68,7 +93,7 @@ class ParticipationController extends AbstractController
 
             $evenement = $form->get('evenement')->getData();
             if ($evenement) {
-                $participation->setEvenementId($evenement->getId());
+                $participation->setEvenementId($evenement->getIdEvent());
             }
 
             $user = $this->getUser();

@@ -23,6 +23,9 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
+/**
+ * @extends AbstractType<Users>
+ */
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

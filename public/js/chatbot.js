@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const typingEl = appendMessage('scout', '<i class="fas fa-ellipsis-h fa-pulse"></i> Scout réfléchit...');
         
         try {
-            const response = await fetch('/api/chatbot/ask', {
+            const response = await fetch(window.CHATBOT_API_URL || '/api/chatbot/ask', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: text })
@@ -40,14 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             typingEl.remove();
 
-            if (data.response) {
+            if (response.ok && data.response) {
                 appendMessage('scout', data.response);
             } else {
-                appendMessage('scout', "Oups, j'ai rencontré un problème technique.");
+                const errorMsg = data.error || "Oups, j'ai rencontré un problème technique.";
+                appendMessage('scout', errorMsg);
             }
         } catch (err) {
             typingEl.remove();
-            appendMessage('scout', "Désolé, je n'arrive pas à me connecter au serveur.");
+            appendMessage('scout', "Erreur de connexion : " + err.message + " (URL: " + (window.CHATBOT_API_URL || 'non définie') + ")");
         }
     };
 

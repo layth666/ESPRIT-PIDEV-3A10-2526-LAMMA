@@ -16,7 +16,8 @@ class RepasDetailleController extends AbstractController {
         $user = $this->getUser();
         $favIds = [];
         if ($user) {
-            $favs = $favoriRepo->findByUser($user->getId());
+            $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+            $favs = $favoriRepo->findByUser($userId);
             foreach ($favs as $f) {
                 if ($f->getRepasDetaille()) $favIds[] = $f->getRepasDetaille()->getId();
             }
@@ -179,7 +180,7 @@ class RepasDetailleController extends AbstractController {
 
     private function calculateNutrition(RepasDetaille $e, \App\Repository\IngredientRepository $ir): void
     {
-        $ingredientsNames = $e->getIngredients() ?? [];
+        $ingredientsNames = $e->getIngredients();
         $totalCalories = 0;
         $totalProteines = 0;
 

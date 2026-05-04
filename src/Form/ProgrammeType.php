@@ -11,6 +11,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+/**
+ * @extends AbstractType<Programme>
+ */
 class ProgrammeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -26,11 +29,6 @@ class ProgrammeType extends AbstractType
             ->add('date_fin', DateTimeType::class , [
             'widget' => 'single_text',
             'required' => false,
-            'attr' => ['class' => 'form-control']
-        ])
-            ->add('event_id', EntityType::class , [
-            'class' => Evenement::class ,
-            'choice_label' => 'titre',
             'attr' => ['class' => 'form-control']
         ])
             ;

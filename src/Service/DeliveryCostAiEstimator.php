@@ -10,7 +10,7 @@ class DeliveryCostAiEstimator
      * et simule des conditions de trafic et de météo.
      *
      * @param float $distanceKm
-     * @return array Résultat de l'estimation avec détails
+     * @return array<string, mixed> Résultat de l'estimation avec détails
      */
     public function estimate(float $distanceKm): array
     {
@@ -37,9 +37,8 @@ class DeliveryCostAiEstimator
         ];
 
         // "IA" : générer des conditions basées de manière pseudo-aléatoire (ou juste aléatoire pour la simulation)
-        // On pourrait utiliser l'heure ou la distance pour baser le pseudo-aléatoire.
         $seed = crc32(date('Y-m-d H') . $distanceKm);
-        srand($seed); // Fixe la seed pour que les résultats ne changent pas frénétiquement dans la même heure
+        srand($seed); 
         
         $weatherIndex = rand(0, count($weatherConditions) - 1);
         $trafficIndex = rand(0, count($trafficConditions) - 1);

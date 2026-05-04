@@ -19,12 +19,14 @@ class EquipementVueRepository extends ServiceEntityRepository
 
     public function countForEquipement(Equipements $equipement): int
     {
-        return (int) $this->createQueryBuilder('v')
-            ->select('COUNT(v.id)')
+        $dto = $this->createQueryBuilder('v')
+            ->select("NEW App\Dto\StatsDto('count', COUNT(v.id))")
             ->andWhere('v.equipement = :e')
             ->setParameter('e', $equipement)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getOneOrNullResult();
+            
+        return $dto ? (int) $dto->total : 0;
     }
 
     public function findOneByEquipementAndUser(Equipements $equipement, string $userId): ?EquipementVue

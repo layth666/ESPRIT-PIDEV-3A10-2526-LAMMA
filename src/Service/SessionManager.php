@@ -19,6 +19,7 @@ use App\Entity\Users;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
 class SessionManager
 {
@@ -34,7 +35,12 @@ class SessionManager
     public function has(string $key): bool { return $this->getSession()->has($key); }
     public function remove(string $key): void { $this->getSession()->remove($key); }
     public function invalidate(): void { $this->getSession()->invalidate(); }
-    public function flash(string $type, string $message): void { $this->getSession()->getFlashBag()->add($type, $message); }
+    public function flash(string $type, string $message): void {
+        $session = $this->getSession();
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add($type, $message);
+        }
+    }
 
     // ── Current user ──────────────────────────────────────────────────────────
     public function getCurrentUser(): ?Users { $u = $this->security->getUser(); return ($u instanceof Users) ? $u : null; }

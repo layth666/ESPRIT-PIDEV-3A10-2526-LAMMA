@@ -16,8 +16,9 @@ class Participation
     #[ORM\Column(type: "integer")]
     private int $userId;
 
-    #[ORM\Column(type: "integer", nullable: true)]
-    private ?int $evenementId = null;
+    #[ORM\ManyToOne(targetEntity: Evenement::class)]
+    #[ORM\JoinColumn(name: 'evenement_id', referencedColumnName: 'id_event', nullable: true)]
+    private ?Evenement $evenement = null;
 
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $dateInscription;
@@ -118,14 +119,17 @@ class Participation
     #[ORM\Column(type: "integer")]
     private int $pointsEarned = 0;
 
-    #[ORM\Column(type: "integer", nullable: true)]
-    private ?int $abonnementId = null;
+    #[ORM\ManyToOne(targetEntity: Abonnement::class)]
+    #[ORM\JoinColumn(name: 'abonnement_id', referencedColumnName: 'id', nullable: true)]
+    private ?Abonnement $abonnement = null;
 
-    #[ORM\Column(type: "integer", nullable: true)]
-    private ?int $restaurantId = null;
+    #[ORM\ManyToOne(targetEntity: Restaurant::class)]
+    #[ORM\JoinColumn(name: 'restaurant_id', referencedColumnName: 'id', nullable: true)]
+    private ?Restaurant $restaurant = null;
 
-    #[ORM\Column(type: "integer", nullable: true)]
-    private ?int $menuId = null;
+    #[ORM\ManyToOne(targetEntity: Menu::class)]
+    #[ORM\JoinColumn(name: 'menu_id', referencedColumnName: 'id', nullable: true)]
+    private ?Menu $menu = null;
 
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $raisonAnnulation = null;
@@ -180,11 +184,11 @@ class Participation
     public function getUserId(): int { return $this->userId; }
     public function setUserId(int $userId): self { $this->userId = $userId; return $this; }
 
-    public function getEvenementId(): ?int { return $this->evenementId; }
-    public function setEvenementId(?int $evenementId): self { $this->evenementId = $evenementId; return $this; }
+    public function getEvenement(): ?Evenement { return $this->evenement; }
+    public function setEvenement(?Evenement $evenement): self { $this->evenement = $evenement; return $this; }
 
     public function getDateInscription(): \DateTimeInterface { return $this->dateInscription; }
-    public function setDateInscription(\DateTimeInterface $dateInscription): self { $this->dateInscription = $dateInscription; return $this; }
+    protected function setDateInscription(\DateTimeInterface $dateInscription): self { $this->dateInscription = $dateInscription; return $this; }
 
     public function getType(): string { return $this->type; }
     public function setType(string $type): self { $this->type = $type; return $this; }
@@ -193,7 +197,7 @@ class Participation
     public function setStatut(string $statut): self { $this->statut = $statut; return $this; }
 
     public function getHebergementNuits(): int { return $this->hebergementNuits; }
-    public function setHebergementNuits(int $hebergementNuits): self { $this->hebergementNuits = $hebergementNuits; return $this; }
+    public function setHebergementNuits(?int $hebergementNuits): self { $this->hebergementNuits = $hebergementNuits ?? 0; return $this; }
 
     public function getContexteSocial(): ?string { return $this->contexteSocial; }
     public function setContexteSocial(?string $contexteSocial): self { $this->contexteSocial = $contexteSocial; return $this; }
@@ -234,14 +238,14 @@ class Participation
     public function getPointsEarned(): int { return $this->pointsEarned; }
     public function setPointsEarned(int $pointsEarned): self { $this->pointsEarned = $pointsEarned; return $this; }
 
-    public function getAbonnementId(): ?int { return $this->abonnementId; }
-    public function setAbonnementId(?int $abonnementId): self { $this->abonnementId = $abonnementId; return $this; }
+    public function getAbonnement(): ?Abonnement { return $this->abonnement; }
+    public function setAbonnement(?Abonnement $abonnement): self { $this->abonnement = $abonnement; return $this; }
 
-    public function getRestaurantId(): ?int { return $this->restaurantId; }
-    public function setRestaurantId(?int $restaurantId): self { $this->restaurantId = $restaurantId; return $this; }
+    public function getRestaurant(): ?Restaurant { return $this->restaurant; }
+    public function setRestaurant(?Restaurant $restaurant): self { $this->restaurant = $restaurant; return $this; }
 
-    public function getMenuId(): ?int { return $this->menuId; }
-    public function setMenuId(?int $menuId): self { $this->menuId = $menuId; return $this; }
+    public function getMenu(): ?Menu { return $this->menu; }
+    public function setMenu(?Menu $menu): self { $this->menu = $menu; return $this; }
 
     public function getRaisonAnnulation(): ?string { return $this->raisonAnnulation; }
     public function setRaisonAnnulation(?string $raisonAnnulation): self { $this->raisonAnnulation = $raisonAnnulation; return $this; }

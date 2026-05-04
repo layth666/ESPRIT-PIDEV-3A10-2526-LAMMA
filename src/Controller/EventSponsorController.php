@@ -11,7 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/event/sponsor')]
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/admin/event-sponsor')]
+#[IsGranted('ROLE_ADMIN')]
 final class EventSponsorController extends AbstractController
 {
     #[Route(name: 'app_event_sponsor_index', methods: ['GET'])]

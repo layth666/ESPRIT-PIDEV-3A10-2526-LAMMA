@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Enum\RestrictionType;
 
 #[ORM\Entity]
 class Abonnement
@@ -13,25 +14,27 @@ class Abonnement
     #[ORM\Column(type: "integer")]
     private int $id;
 
-    #[ORM\Column(type: "integer")]
-    private int $userId;
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    private Users $user;
 
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $userName = null;
 
-    #[ORM\Column(type: "integer", nullable: true)]
-    private ?int $evenementId = null;
+    #[ORM\ManyToOne(targetEntity: Evenement::class)]
+    #[ORM\JoinColumn(name: 'evenement_id', referencedColumnName: 'id_event', nullable: true)]
+    private ?Evenement $evenement = null;
 
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     #[Assert\NotBlank(message: "Le nom est obligatoire.")]
     private ?string $nom = null;
 
-    #[ORM\Column(type: "string", length: 100, nullable: true)]
-    private ?string $restrictionType = null;
+    #[ORM\Column(length: 100, nullable: true, enumType: RestrictionType::class)]
+    private ?RestrictionType $restrictionType = null;
 
     #[ORM\Column(type: "string", length: 50)]
     #[Assert\NotBlank(message: "Veuillez sélectionner un type.")]
-    private ?string $type = null;
+    private string $type;
 
     #[ORM\Column(type: "date", nullable: true)]
     private ?\DateTimeInterface $dateDebut = null;
@@ -41,11 +44,12 @@ class Abonnement
 
     #[ORM\Column(type: "decimal", precision: 10, scale: 2)]
     #[Assert\NotBlank(message: "Le prix est obligatoire.")]
-    private ?string $prix = null;
+    private string $prix;
 
     #[ORM\Column(type: "string", length: 50)]
     private string $statut;
 
+    /** @var array<string, mixed>|null */
     #[ORM\Column(type: "json", nullable: true)]
     private ?array $avantages = [];
 
@@ -102,6 +106,10 @@ class Abonnement
 
     public function initialiser(): void
     {
+        if (!$this->dateDebut instanceof \DateTime && !$this->dateDebut instanceof \DateTimeImmutable) {
+            return;
+        }
+
         // Calcul date fin
         switch ($this->type) {
             case self::TYPE_EVENT_PASS:
@@ -137,7 +145,7 @@ class Abonnement
 
     public function estProcheExpiration(int $jours): bool
     {
-        if (!$this->dateFin) return false;
+        if (!$this->dateFin instanceof \DateTime && !$this->dateFin instanceof \DateTimeImmutable) return false;
 
         $date = (clone $this->dateFin)->modify("-$jours days");
 
@@ -165,34 +173,29 @@ class Abonnement
         return $this->id;
     }
 
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId)
-    {
-        $this->userId = $userId;
-    }
+    public function getUser(): Users { return $this->user; }
+    public function setUser(Users $user): static { $this->user = $user; return $this; }
 
     public function getUserName(): ?string
     {
         return $this->userName;
     }
 
-    public function setUserName(?string $userName)
+    public function setUserName(?string $userName): static
     {
         $this->userName = $userName;
+        return $this;
     }
 
-    public function getEvenementId(): ?int
+    public function getEvenement(): ?Evenement
     {
-        return $this->evenementId;
+        return $this->evenement;
     }
 
-    public function setEvenementId(?int $evenementId)
+    public function setEvenement(?Evenement $evenement): static
     {
-        $this->evenementId = $evenementId;
+        $this->evenement = $evenement;
+        return $this;
     }
 
     public function getNom(): ?string
@@ -200,59 +203,49 @@ class Abonnement
         return $this->nom;
     }
 
-    public function setNom(?string $nom)
+    public function setNom(?string $nom): static
     {
         $this->nom = $nom;
+        return $this;
     }
 
-    public function getRestrictionType(): ?string
+    public function getRestrictionType(): ?RestrictionType
     {
         return $this->restrictionType;
     }
 
-    public function setRestrictionType(?string $restrictionType)
+    public function setRestrictionType(?RestrictionType $restrictionType): static
     {
         $this->restrictionType = $restrictionType;
+        return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function setType(?string $type)
+    public function setType(string $type): static
     {
         $this->type = $type;
+        return $this;
     }
 
-    public function getDateDebut(): ?\DateTimeInterface
-    {
-        return $this->dateDebut;
-    }
+    public function getDateDebut(): ?\DateTimeInterface { return $this->dateDebut; }
+    protected function setDateDebut(?\DateTimeInterface $dateDebut): static { $this->dateDebut = $dateDebut; return $this; }
 
-    public function setDateDebut(?\DateTimeInterface $dateDebut)
-    {
-        $this->dateDebut = $dateDebut;
-    }
+    public function getDateFin(): ?\DateTimeInterface { return $this->dateFin; }
+    protected function setDateFin(?\DateTimeInterface $dateFin): static { $this->dateFin = $dateFin; return $this; }
 
-    public function getDateFin(): ?\DateTimeInterface
-    {
-        return $this->dateFin;
-    }
-
-    public function setDateFin(?\DateTimeInterface $dateFin)
-    {
-        $this->dateFin = $dateFin;
-    }
-
-    public function getPrix(): ?string
+    public function getPrix(): string
     {
         return $this->prix;
     }
 
-    public function setPrix(?string $prix)
+    public function setPrix(string $prix): static
     {
         $this->prix = $prix;
+        return $this;
     }
 
     public function getStatut(): string
@@ -260,19 +253,23 @@ class Abonnement
         return $this->statut;
     }
 
-    public function setStatut(string $statut)
+    public function setStatut(string $statut): static
     {
         $this->statut = $statut;
+        return $this;
     }
 
+    /** @return array<string, mixed>|null */
     public function getAvantages(): ?array
     {
         return $this->avantages;
     }
 
-    public function setAvantages(?array $avantages)
+    /** @param array<string, mixed>|null $avantages */
+    public function setAvantages(?array $avantages): static
     {
         $this->avantages = $avantages;
+        return $this;
     }
 
     public function isAutoRenew(): bool
@@ -280,9 +277,10 @@ class Abonnement
         return $this->autoRenew;
     }
 
-    public function setAutoRenew(bool $autoRenew)
+    public function setAutoRenew(bool $autoRenew): static
     {
         $this->autoRenew = $autoRenew;
+        return $this;
     }
 
     public function getPointsAccumules(): int
@@ -290,9 +288,10 @@ class Abonnement
         return $this->pointsAccumules;
     }
 
-    public function setPointsAccumules(int $pointsAccumules)
+    public function setPointsAccumules(int $pointsAccumules): static
     {
         $this->pointsAccumules = $pointsAccumules;
+        return $this;
     }
 
     public function getChurnScore(): float
@@ -300,9 +299,10 @@ class Abonnement
         return $this->churnScore;
     }
 
-    public function setChurnScore(float $churnScore)
+    public function setChurnScore(float $churnScore): static
     {
         $this->churnScore = $churnScore;
+        return $this;
     }
 
     public function isTemplate(): bool
@@ -328,9 +328,9 @@ class Abonnement
     public function __toString(): string
     {
         return sprintf(
-            "Abonnement{id=%d, userId=%d, type=%s, statut=%s, prix=%s, points=%d}",
+            "Abonnement{id=%d, user=%d, type=%s, statut=%s, prix=%s, points=%d}",
             $this->id,
-            $this->userId,
+            $this->user->getId(),
             $this->type,
             $this->statut,
             $this->prix,

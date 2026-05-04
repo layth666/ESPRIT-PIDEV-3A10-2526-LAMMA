@@ -16,11 +16,24 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
     
+    /**
+     * @return array<Transaction>
+     */
     public function findAllOrderedByDateDesc(): array
     {
         return $this->createQueryBuilder('t')
             ->orderBy('t.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function getTotalValue(): float
+    {
+        $dto = $this->createQueryBuilder('t')
+            ->select("NEW App\Dto\StatsDto('total', COALESCE(SUM(t.price), 0))")
+            ->getQuery()
+            ->getOneOrNullResult();
+        
+        return $dto ? (float) $dto->total : 0.0;
     }
 }

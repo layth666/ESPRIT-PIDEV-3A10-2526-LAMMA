@@ -2,11 +2,11 @@
 
 {% block title %}Nouveau Sponsor{% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <div class="container-fluid px-4">
     <h1 class="mt-4">Nouveau Sponsor</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ path('app_admin') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}">Dashboard</a></li>
         <li class="breadcrumb-item"><a href="{{ path('app_sponsor_index') }}">Sponsors</a></li>
         <li class="breadcrumb-item active">Nouveau</li>
     </ol>
@@ -16,7 +16,7 @@
             <i class="fas fa-plus me-1"></i> Ajouter un Sponsor
         </div>
         <div class="card-body">
-            {{ form_start(form, {'attr': {'class': 'row g-3', 'enctype': 'multipart/form-data'}}) }}
+            {{ form_start(form, {'attr': {'class': 'row g-3', 'enctype': 'multipart/form-data', 'novalidate': 'novalidate'}}) }}
 
                 <div class="col-md-6">
                     {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label fw-bold'}}) }}

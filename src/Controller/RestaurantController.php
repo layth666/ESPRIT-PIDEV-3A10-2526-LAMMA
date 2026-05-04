@@ -32,7 +32,8 @@ class RestaurantController extends AbstractController
         $user = $this->getUser();
         $favIds = [];
         if ($user) {
-            $favs = $favoriRepo->findByUser($user->getId());
+            $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+            $favs = $favoriRepo->findByUser($userId);
             foreach ($favs as $f) {
                 if ($f->getRestaurant()) $favIds[] = $f->getRestaurant()->getId();
             }

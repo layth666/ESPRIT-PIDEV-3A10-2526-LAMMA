@@ -18,57 +18,34 @@ class EquipementVue
 
     #[ORM\ManyToOne(inversedBy: null)]
     #[ORM\JoinColumn(name: 'equipement_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    private ?Equipements $equipement = null;
+    private Equipements $equipement;
 
     #[ORM\Column(name: 'user_id', length: 255)]
-    private ?string $userId = null;
+    private string $userId;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $lastViewed = null;
+    private \DateTimeInterface $lastViewed;
 
     public function __construct()
     {
-        $this->lastViewed = new \DateTimeImmutable();
+        $this->lastViewed = new \DateTime();
     }
 
-    public function getId(): ?int
+    public function getId(): ?int { return $this->id; }
+
+    public function getEquipement(): Equipements { return $this->equipement; }
+    public function setEquipement(Equipements $equipement): static { $this->equipement = $equipement; return $this; }
+
+    public function getUserId(): string { return $this->userId; }
+    public function setUserId(string $userId): static { $this->userId = $userId; return $this; }
+
+    public function getLastViewed(): \DateTimeInterface { return $this->lastViewed; }
+    protected function setLastViewed(\DateTimeInterface $lastViewed): static
     {
-        return $this->id;
-    }
-
-    public function getEquipement(): ?Equipements
-    {
-        return $this->equipement;
-    }
-
-    public function setEquipement(?Equipements $equipement): static
-    {
-        $this->equipement = $equipement;
-
-        return $this;
-    }
-
-    public function getUserId(): ?string
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(string $userId): static
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function getLastViewed(): ?\DateTimeInterface
-    {
-        return $this->lastViewed;
-    }
-
-    public function setLastViewed(\DateTimeInterface $lastViewed): static
-    {
+        if ($lastViewed instanceof \DateTimeImmutable) {
+            $lastViewed = \DateTime::createFromImmutable($lastViewed);
+        }
         $this->lastViewed = $lastViewed;
-
         return $this;
     }
 }

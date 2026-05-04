@@ -120,13 +120,15 @@
         <div class="d-flex justify-content-between align-items-center mb-5">
             <h2 style="font-family:'Anton', sans-serif; text-transform:uppercase;">Explore Our Bowls</h2>
             
+            {% if app.user %}
             <button id="btn-surprise-meal" class="btn" style="background: linear-gradient(135deg, #f97316, #eab308); color: white; font-weight: 800; border-radius: 10px; padding: 10px 20px; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4); border: none; transition: transform 0.2s;">
                 <i class="fa fa-magic"></i> Plat Surprise (IA)
             </button>
+            {% endif %}
 
             <div class="position-relative">
                 <i class="fa fa-search position-absolute" style="left: 15px; top: 15px; color: #475569;"></i>
-                <input type="text" class="search-bar-rations pl-5" placeholder="Scout for trail rations...">
+                <input type="text" id="search-input" class="search-bar-rations pl-5" placeholder="Scout for trail rations...">
             </div>
         </div>
 
@@ -151,7 +153,26 @@
 
 {% block javascripts %}
 <script>
-    document.getElementById('btn-surprise-meal').addEventListener('click', function() {
+    // Dynamic Search Filter
+    document.getElementById('search-input').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('#meal-grid .col-md-12');
+        
+        cards.forEach(card => {
+            const titleElement = card.querySelector('h3');
+            const descElement = card.querySelector('.ration-desc');
+            const title = titleElement ? titleElement.textContent.toLowerCase() : '';
+            const desc = descElement ? descElement.textContent.toLowerCase() : '';
+            
+            if (title.includes(searchTerm) || desc.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    document.getElementById('btn-surprise-meal')?.addEventListener('click', function() {
         const btn = this;
         const originalText = btn.innerHTML;
         btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Génération...';

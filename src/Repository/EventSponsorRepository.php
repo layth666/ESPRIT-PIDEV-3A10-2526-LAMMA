@@ -6,6 +6,9 @@ use App\Entity\EventSponsor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<EventSponsor>
+ */
 class EventSponsorRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -13,6 +16,10 @@ class EventSponsorRepository extends ServiceEntityRepository
         parent::__construct($registry, EventSponsor::class);
     }
 
+    /**
+     * @param array<string, mixed> $filters
+     * @return array<EventSponsor>
+     */
     public function findWithFilters(array $filters): array
     {
         $qb = $this->createQueryBuilder('es')

@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\User;
+use App\Entity\Users;
 use App\Repository\EquipementsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Aligné sur la table `equipement` (import gestion_equipement / equipement.sql) + colonnes LAMMA (caracteristiques, nombre_vues).
+ * Aligné sur la table `equipements` (Lamma Boutique).
  */
 #[ORM\Entity(repositoryClass: EquipementsRepository::class)]
 #[ORM\Table(name: 'equipements')]
@@ -19,12 +19,12 @@ class Equipements
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: Types::BIGINT)]
-    private ?string $id = null;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
 
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
-    private ?string $nom = null;
+    private string $nom;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -34,12 +34,12 @@ class Equipements
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank(message: 'Le type (Vente/Location) est obligatoire.')]
-    private ?string $type = null;
+    private string $type;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Assert\NotBlank(message: 'Le prix est obligatoire.')]
     #[Assert\Positive(message: 'Le prix doit être supérieur à 0.')]
-    private ?string $prix = null;
+    private string $prix;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $ville = null;
@@ -67,23 +67,23 @@ class Equipements
     private ?Delivery $delivery = null;
 
     #[ORM\ManyToOne(inversedBy: 'equipements')]
-    private ?User $owner = null;
+    private ?Users $owner = null;
 
     #[ORM\Column]
     private bool $livrable = false;
 
     public function __construct()
     {
-        $this->dateAjout = new \DateTimeImmutable();
+        $this->dateAjout = new \DateTime();
         $this->attributs = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getNom(): string
     {
         return $this->nom;
     }
@@ -119,19 +119,19 @@ class Equipements
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function setType(?string $type): static
+    public function setType(string $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getPrix(): ?string
+    public function getPrix(): string
     {
         return $this->prix;
     }
@@ -172,8 +172,11 @@ class Equipements
         return $this->dateAjout;
     }
 
-    public function setDateAjout(?\DateTimeInterface $dateAjout): static
+    protected function setDateAjout(?\DateTimeInterface $dateAjout): static
     {
+        if ($dateAjout instanceof \DateTimeImmutable) {
+            $dateAjout = \DateTime::createFromImmutable($dateAjout);
+        }
         $this->dateAjout = $dateAjout;
 
         return $this;
@@ -250,12 +253,12 @@ class Equipements
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): ?Users
     {
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): static
+    public function setOwner(?Users $owner): static
     {
         $this->owner = $owner;
 

@@ -70,7 +70,7 @@ class CartController extends AbstractController
     #[Route('/add-custom/{id}', name: 'app_cart_add_custom', methods: ['POST'])]
     public function addCustom(int $id, Request $request, CartService $cartService): Response
     {
-        $supplements = $request->request->all('supplements') ?? [];
+        $supplements = $request->request->all('supplements');
         // Clean up supplements to remove zeros
         $supplements = array_filter($supplements, fn($q) => $q > 0);
         

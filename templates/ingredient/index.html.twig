@@ -1,10 +1,22 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 {% import '_macros.html.twig' as macros %}
 
 {% block title %}Ingrédients - LAMMA{% endblock %}
 {% block admin_title %}Gestion des Stocks{% endblock %}
 
 {% block admin_content %}
+    {{ block('main_body') }}
+{% endblock %}
+
+{% block body %}
+    <div style="padding-top: 120px; background: #f8faff; min-height: 100vh;">
+        <div class="container">
+            {{ block('main_body') }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_body %}
 <section class="crud-section">
     <div class="row align-items-center mb-4">
         <div class="col-md-6">

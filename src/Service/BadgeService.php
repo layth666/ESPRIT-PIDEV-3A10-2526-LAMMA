@@ -8,11 +8,11 @@ use App\Repository\EvenementRepository;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\SvgWriter;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\RoundBlockSizeMode;
-use Picqer\Barcode\BarcodeGeneratorPNG;
+use Picqer\Barcode\BarcodeGeneratorSVG;
 use Twig\Environment;
 
 class BadgeService
@@ -55,15 +55,13 @@ class BadgeService
             roundBlockSizeMode: RoundBlockSizeMode::Margin
         );
         
-        $writer = new PngWriter();
+        $writer = new SvgWriter();
         $result = $writer->write($qrCode);
         $qrCodeData = $result->getDataUri();
 
-        // 3. Generate Barcode (Code128)
-        // We use ONLY the technical code for the barcode for better scan compatibility
-        $generator = new BarcodeGeneratorPNG();
-        $barcodeData = base64_encode($generator->getBarcode($ticketCode, $generator::TYPE_CODE_128, 3, 100));
-        $barcodeUri = "data:image/png;base64," . $barcodeData;
+        // 3. Generate Barcode (Code128 - SVG)
+        $generator = new BarcodeGeneratorSVG();
+        $barcodeUri = "data:image/svg+xml;base64," . base64_encode($generator->getBarcode($ticketCode, $generator::TYPE_CODE_128, 3, 100));
 
         // 4. Render HTML Template
         $html = $this->twig->render('participation/badge_pdf.html.twig', [
@@ -111,13 +109,12 @@ class BadgeService
             roundBlockSizeMode: RoundBlockSizeMode::Margin
         );
         
-        $writer = new PngWriter();
+        $writer = new SvgWriter();
         $result = $writer->write($qrCode);
         $qrCodeData = $result->getDataUri();
 
-        $generator = new BarcodeGeneratorPNG();
-        $barcodeData = base64_encode($generator->getBarcode($passCode, $generator::TYPE_CODE_128, 3, 100));
-        $barcodeUri = "data:image/png;base64," . $barcodeData;
+        $generator = new BarcodeGeneratorSVG();
+        $barcodeUri = "data:image/svg+xml;base64," . base64_encode($generator->getBarcode($passCode, $generator::TYPE_CODE_128, 3, 100));
 
         // 2. Render Template (Reusing the same responsive template but with Abonnement data)
         // We simulate a Participation-like structure for the template to reuse the CSS
@@ -158,7 +155,7 @@ class BadgeService
 
     public function generateFacturePdf(Abonnement $abonnement, string $participantName): string
     {
-        $invoiceNumber = "INV-" . date('Y') . "-" . str_pad($abonnement->getId(), 4, '0', STR_PAD_LEFT);
+        $invoiceNumber = "INV-" . date('Y') . "-" . str_pad((string)$abonnement->getId(), 4, '0', STR_PAD_LEFT);
 
         $html = $this->twig->render('abonnement/facture_pdf.html.twig', [
             'abonnement' => $abonnement,

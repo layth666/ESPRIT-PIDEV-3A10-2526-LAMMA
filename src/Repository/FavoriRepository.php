@@ -20,11 +20,17 @@ class FavoriRepository
         return $this->em->getRepository($this->entityClass)->find($id);
     }
 
+    /**
+     * @return array<Favori>
+     */
     public function findByUser(int $userId): array
     {
         return $this->em->getRepository($this->entityClass)->findBy(['userId' => $userId], ['createdAt' => 'DESC']);
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     */
     public function findOneBy(array $criteria): ?Favori
     {
         return $this->em->getRepository($this->entityClass)->findOneBy($criteria);
@@ -48,17 +54,26 @@ class FavoriRepository
 
     /**
      * Retourne le top 5 des restaurants favoris
+     * @return array<int, array<string, mixed>>
      */
     public function getPopularityStats(): array
     {
         return $this->em->createQueryBuilder()
-            ->select('r.nom as label, COUNT(f.id) as total')
+            ->select('NEW App\Dto\StatsDto(r.nom, COUNT(f.id))')
             ->from(Favori::class, 'f')
             ->join('f.restaurant', 'r')
             ->groupBy('r.nom')
-            ->orderBy('total', 'DESC')
+            ->orderBy('COUNT(f.id)', 'DESC')
             ->setMaxResults(5)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param array<string, mixed> $criteria
+     */
+    public function count(array $criteria): int
+    {
+        return $this->em->getRepository($this->entityClass)->count($criteria);
     }
 }

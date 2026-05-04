@@ -6,6 +6,9 @@ use App\Entity\Sponsor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<Sponsor>
+ */
 class SponsorRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -13,6 +16,10 @@ class SponsorRepository extends ServiceEntityRepository
         parent::__construct($registry, Sponsor::class);
     }
 
+    /**
+     * @param array<string, mixed> $filters
+     * @return array<Sponsor>
+     */
     public function findWithFilters(array $filters): array
     {
         $qb = $this->createQueryBuilder('s');

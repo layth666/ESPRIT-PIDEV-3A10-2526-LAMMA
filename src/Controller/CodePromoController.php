@@ -21,7 +21,7 @@ class CodePromoController extends AbstractController
         
         // Handle selection or new
         $promoId = $request->query->get('id');
-        $promo = $promoId ? $repo->find($promoId) : new CodePromo();
+        $promo = $promoId ? $repo->find((int)$promoId) : new CodePromo();
         
         $form = $this->createForm(CodePromoType::class, $promo);
         $form->handleRequest($request);

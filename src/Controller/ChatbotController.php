@@ -20,11 +20,19 @@ class ChatbotController extends AbstractController
             return $this->json(['error' => 'Message vide'], 400);
         }
 
-        $response = $chatbotService->getAiResponse($message);
+        try {
+            $response = $chatbotService->getAiResponse($message);
 
-        return $this->json([
-            'response' => $response,
-            'time' => (new \DateTime())->format('H:i')
-        ]);
+            return $this->json([
+                'response' => $response,
+                'time' => (new \DateTime())->format('H:i')
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                'error' => 'Erreur fatale: ' . $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], 500);
+        }
     }
 }

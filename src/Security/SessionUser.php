@@ -8,8 +8,10 @@ class SessionUser implements UserInterface
 {
     private int $id;
     private string $identifier;
+    /** @var list<string> */
     private array $roles;
 
+    /** @param list<string> $roles */
     public function __construct(int $id, string $identifier, array $roles)
     {
         $this->id = $id;
@@ -27,6 +29,7 @@ class SessionUser implements UserInterface
         return $this->identifier;
     }
 
+    /** @return list<string> */
     public function getRoles(): array
     {
         return $this->roles;

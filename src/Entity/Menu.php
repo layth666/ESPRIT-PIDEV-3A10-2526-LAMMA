@@ -3,18 +3,23 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Traits\TimestampableTrait;
+use App\Traits\BlameableTrait;
 
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 class Menu
 {
+    use TimestampableTrait;
+    use BlameableTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private int $id;
+    private ?int $id = null;
 
-    #[ORM\Column(type: "integer")]
-    private int $restaurantId;
+    #[ORM\ManyToOne(targetEntity: Restaurant::class)]
+    #[ORM\JoinColumn(name: 'restaurant_id', referencedColumnName: 'id', nullable: false)]
+    private Restaurant $restaurant;
 
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $restaurantNom = null;
@@ -37,12 +42,9 @@ class Menu
     #[ORM\Column(type: "boolean")]
     private bool $actif = true;
 
-    #[ORM\Column(type: "datetime")]
-    private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(type: "datetime")]
-    private \DateTimeInterface $updatedAt;
 
+    /** @var array<int, int> */
     #[ORM\Column(type: "json")]
     private array $dishesIds = [];
 
@@ -51,13 +53,12 @@ class Menu
     public function __construct()
     {
         $this->actif = true;
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
         $this->dishesIds = [];
     }
 
     // ================= VALIDATION (équivalent Java)
 
+    /** @return array<string, string> */
     public function validate(): array
     {
         $errors = [];
@@ -68,7 +69,7 @@ class Menu
             $errors['nom'] = "Le nom ne doit pas dépasser 100 caractères.";
         }
 
-        if (!$this->restaurantId) {
+        if (!$this->restaurant) {
             $errors['restaurant'] = "Restaurant obligatoire.";
         }
 
@@ -97,11 +98,7 @@ class Menu
 
     // ================= LIFECYCLE (auto update)
 
-    #[ORM\PreUpdate]
-    public function preUpdate(): void
-    {
-        $this->updatedAt = new \DateTime();
-    }
+
 
     // ================= LOGIQUE MÉTIER
 
@@ -116,40 +113,38 @@ class Menu
 
     // ================= GETTERS / SETTERS
 
-    public function getId(): int { return $this->id; }
+    public function getId(): ?int { return $this->id; }
 
-    public function getRestaurantId(): int { return $this->restaurantId; }
-    public function setRestaurantId(int $restaurantId) { $this->restaurantId = $restaurantId; }
+    public function getRestaurant(): Restaurant { return $this->restaurant; }
+    public function setRestaurant(Restaurant $restaurant): static { $this->restaurant = $restaurant; return $this; }
 
     public function getRestaurantNom(): ?string { return $this->restaurantNom; }
-    public function setRestaurantNom(?string $restaurantNom) { $this->restaurantNom = $restaurantNom; }
+    public function setRestaurantNom(?string $restaurantNom): static { $this->restaurantNom = $restaurantNom; return $this; }
 
     public function getNom(): string { return $this->nom; }
-    public function setNom(string $nom) { $this->nom = $nom; }
+    public function setNom(string $nom): static { $this->nom = $nom; return $this; }
 
     public function getDescription(): ?string { return $this->description; }
-    public function setDescription(string $description) { $this->description = $description; }
+    public function setDescription(?string $description): static { $this->description = $description; return $this; }
 
     public function getPrix(): ?string { return $this->prix; }
-    public function setPrix(?string $prix) { $this->prix = $prix; }
+    public function setPrix(?string $prix): static { $this->prix = $prix; return $this; }
 
     public function getDateDebut(): ?\DateTimeInterface { return $this->dateDebut; }
-    public function setDateDebut(?\DateTimeInterface $dateDebut) { $this->dateDebut = $dateDebut; }
+    protected function setDateDebut(?\DateTimeInterface $dateDebut): static { $this->dateDebut = $dateDebut; return $this; }
 
     public function getDateFin(): ?\DateTimeInterface { return $this->dateFin; }
-    public function setDateFin(?\DateTimeInterface $dateFin) { $this->dateFin = $dateFin; }
+    protected function setDateFin(?\DateTimeInterface $dateFin): static { $this->dateFin = $dateFin; return $this; }
 
     public function isActif(): bool { return $this->actif; }
-    public function setActif(bool $actif) { $this->actif = $actif; }
+    public function setActif(bool $actif): static { $this->actif = $actif; return $this; }
 
-    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
-    public function setCreatedAt(\DateTimeInterface $createdAt) { $this->createdAt = $createdAt; }
 
-    public function getUpdatedAt(): \DateTimeInterface { return $this->updatedAt; }
-    public function setUpdatedAt(\DateTimeInterface $updatedAt) { $this->updatedAt = $updatedAt; }
 
+    /** @return array<int, int> */
     public function getDishesIds(): array { return $this->dishesIds; }
-    public function setDishesIds(array $dishesIds) { $this->dishesIds = $dishesIds; }
+    /** @param array<int, int> $dishesIds */
+    public function setDishesIds(array $dishesIds): static { $this->dishesIds = $dishesIds; return $this; }
 
     // ================= toString
 
@@ -157,4 +152,10 @@ class Menu
     {
         return $this->nom . ($this->prix ? " (" . $this->prix . " €)" : "");
     }
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $imageUrl = null;
+
+    public function getImageUrl(): ?string { return $this->imageUrl; }
+    public function setImageUrl(?string $imageUrl): static { $this->imageUrl = $imageUrl; return $this; }
 }

@@ -8,7 +8,7 @@ use App\Repository\EquipementVueRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Équivalent Java Services.EquipementVueService — comptage des vues par utilisateur (boutique LAMMA).
+ * Service pour le comptage des vues par utilisateur.
  */
 class EquipementsVueService
 {
@@ -30,7 +30,7 @@ class EquipementsVueService
 
         $existing = $this->vueRepository->findOneByEquipementAndUser($equipement, $userId);
         if ($existing !== null) {
-            $existing->setLastViewed(new \DateTimeImmutable());
+            $existing->setLastViewed(new \DateTime());
             $this->em->flush();
 
             return false;

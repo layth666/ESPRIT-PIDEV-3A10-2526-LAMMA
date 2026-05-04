@@ -1,7 +1,8 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 {% import '_macros.html.twig' as macros %}
 
 {% block title %}Menu Catalog - LAMMA{% endblock %}
+{% block page_title %}Cartes & Menus{% endblock %}
 {% block admin_title %}Cartes & Menus{% endblock %}
 
 
@@ -81,7 +82,7 @@
 </style>
 {% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <div class="row">
     <!-- Sidebar -->
     <div class="col-lg-3">
@@ -90,15 +91,25 @@
             <h2 class="catalog-title">Menu Catalog</h2>
             <p class="catalog-desc">Curate dining experiences for your expedition groups and explorers.</p>
             
-            <div class="sidebar-btns">
-                <a href="{{ path('app_menu_new') }}" class="btn-new-menu text-center" style="text-decoration:none;">+ NEW</a>
-                <button class="btn-sync" title="Synchroniser avec les restaurants"><i class="fa fa-refresh"></i> SYNC</button>
-            </div>
+            {% if is_granted('ROLE_ADMIN') %}
+                <div class="sidebar-btns">
+                    <a href="{{ path('app_menu_new') }}" class="btn-new-menu text-center" style="text-decoration:none;">+ NEW</a>
+                    <button class="btn-sync" title="Synchroniser avec les restaurants"><i class="fa fa-refresh"></i> SYNC</button>
+                </div>
+            {% endif %}
 
             <div class="scout-search-box">
                 <i class="fa fa-search"></i>
-                <input type="text" placeholder="Scout Search">
+                <input type="text" id="menuSearchInput" placeholder="Rechercher (Nom, Restau...)" onkeyup="filterMenus()">
             </div>
+
+            <div class="menu-group-label"><i class="fa fa-sort"></i> Tri</div>
+            <select id="menuSortSelect" class="form-control mb-4" style="background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.1); color: white;" onchange="filterMenus()">
+                <option value="">Trier par...</option>
+                <option value="prix_asc">Prix (Croissant)</option>
+                <option value="prix_desc">Prix (Décroissant)</option>
+                <option value="nom_asc">Nom (A-Z)</option>
+            </select>
 
             <div class="menu-group-label"><i class="fa fa-check-circle"></i> Active Menus</div>
             <span class="menu-count">{{ items|length }} menus found</span>
@@ -111,9 +122,9 @@
             <i class="fa fa-bars text-success"></i> ACTIVE MENUS
         </h2>
         
-        <div class="row">
+        <div class="row" id="menuGrid">
             {% for menu in items %}
-                <div class="col-md-12">
+                <div class="col-md-12 menu-card-wrapper" data-nom="{{ menu.nom|lower }}" data-restaurant="{{ menu.restaurantNom|lower }}" data-prix="{{ menu.prix }}">
                     <div class="menu-item-card">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
@@ -141,15 +152,17 @@
                                 <a href="{{ path('app_menu_show', {id: menu.id}) }}" class="btn btn-sm btn-outline-info" title="Voir détails">
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                <a href="{{ path('app_menu_edit', {id: menu.id}) }}" class="btn btn-sm btn-outline-warning" title="Modifier">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-                                <form method="post" action="{{ path('app_menu_delete', {id: menu.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce menu ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ menu.id) }}">
-                                    <button class="btn btn-sm btn-outline-danger" title="Supprimer">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </form>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('app_menu_edit', {id: menu.id}) }}" class="btn btn-sm btn-outline-warning" title="Modifier">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_menu_delete', {id: menu.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce menu ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ menu.id) }}">
+                                        <button class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -163,4 +176,36 @@
         </div>
     </div>
 </div>
+<script>
+function filterMenus() {
+    const searchInput = document.getElementById('menuSearchInput');
+    const sortSelect = document.getElementById('menuSortSelect');
+    const grid = document.getElementById('menuGrid');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll('.menu-card-wrapper'));
+    
+    const searchTerm = searchInput.value.toLowerCase();
+    const sortMode = sortSelect.value;
+    
+    // Filter
+    cards.forEach(card => {
+        const nom = card.getAttribute('data-nom') || '';
+        const restau = card.getAttribute('data-restaurant') || '';
+        const matches = nom.includes(searchTerm) || restau.includes(searchTerm);
+        card.style.display = matches ? '' : 'none';
+    });
+    
+    // Sort
+    if (sortMode) {
+        const visibleCards = cards.filter(c => c.style.display !== 'none');
+        visibleCards.sort((a, b) => {
+            if (sortMode === 'prix_asc') return parseFloat(a.getAttribute('data-prix')) - parseFloat(b.getAttribute('data-prix'));
+            if (sortMode === 'prix_desc') return parseFloat(b.getAttribute('data-prix')) - parseFloat(a.getAttribute('data-prix'));
+            if (sortMode === 'nom_asc') return a.getAttribute('data-nom').localeCompare(b.getAttribute('data-nom'));
+            return 0;
+        });
+        visibleCards.forEach(c => grid.appendChild(c));
+    }
+}
+</script>
 {% endblock %}

@@ -10,10 +10,11 @@ class MealTicket
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private int $id;
+    private ?int $id = null;
 
-    #[ORM\Column(type: "integer")]
-    private int $participationId;
+    #[ORM\ManyToOne(targetEntity: Participation::class)]
+    #[ORM\JoinColumn(name: 'participation_id', referencedColumnName: 'id', nullable: false)]
+    private Participation $participation;
 
     #[ORM\Column(type: "integer")]
     private int $userId;
@@ -38,12 +39,12 @@ class MealTicket
     }
 
     public function initialiser(
-        int $participationId,
+        Participation $participation,
         int $userId,
         string $qrCode,
         \DateTimeInterface $timeSlot
     ): void {
-        $this->participationId = $participationId;
+        $this->participation = $participation;
         $this->userId = $userId;
         $this->qrCode = $qrCode;
         $this->timeSlot = $timeSlot;
@@ -70,19 +71,20 @@ class MealTicket
 
     // ================= GETTERS / SETTERS
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getParticipationId(): int
+    public function getParticipation(): Participation
     {
-        return $this->participationId;
+        return $this->participation;
     }
 
-    public function setParticipationId(int $participationId)
+    public function setParticipation(Participation $participation): static
     {
-        $this->participationId = $participationId;
+        $this->participation = $participation;
+        return $this;
     }
 
     public function getUserId(): int
@@ -90,9 +92,10 @@ class MealTicket
         return $this->userId;
     }
 
-    public function setUserId(int $userId)
+    public function setUserId(int $userId): static
     {
         $this->userId = $userId;
+        return $this;
     }
 
     public function getQrCode(): string
@@ -100,9 +103,10 @@ class MealTicket
         return $this->qrCode;
     }
 
-    public function setQrCode(string $qrCode)
+    public function setQrCode(string $qrCode): static
     {
         $this->qrCode = $qrCode;
+        return $this;
     }
 
     public function getTimeSlot(): \DateTimeInterface
@@ -110,9 +114,10 @@ class MealTicket
         return $this->timeSlot;
     }
 
-    public function setTimeSlot(\DateTimeInterface $timeSlot)
+    protected function setTimeSlot(\DateTimeInterface $timeSlot): static
     {
         $this->timeSlot = $timeSlot;
+        return $this;
     }
 
     public function isUsed(): bool
@@ -120,9 +125,10 @@ class MealTicket
         return $this->used;
     }
 
-    public function setUsed(bool $used)
+    public function setUsed(bool $used): static
     {
         $this->used = $used;
+        return $this;
     }
 
     public function getUsedAt(): ?\DateTimeInterface
@@ -130,9 +136,10 @@ class MealTicket
         return $this->usedAt;
     }
 
-    public function setUsedAt(?\DateTimeInterface $usedAt)
+    protected function setUsedAt(?\DateTimeInterface $usedAt): static
     {
         $this->usedAt = $usedAt;
+        return $this;
     }
 
     public function __toString(): string

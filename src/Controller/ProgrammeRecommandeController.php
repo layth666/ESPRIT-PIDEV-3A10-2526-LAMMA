@@ -133,7 +133,8 @@ class ProgrammeRecommandeController extends AbstractController
     {
         $titre = $request->query->get('titre');
         $eventId = $request->query->get('eventId');
-        return new JsonResponse($this->repository->searchByTitreOrEvent($titre, $eventId));
+        $eventIdInt = ($eventId !== null && $eventId !== '') ? (int) $eventId : null;
+        return new JsonResponse($this->repository->searchByTitreOrEvent($titre, $eventIdInt));
     }
 
     #[Route('/between', name: 'programme_between_dates', methods: ['GET'])]

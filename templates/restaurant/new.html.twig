@@ -1,7 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}Nouveau Restaurant - LAMMA{% endblock %}
 {% block page_title %}Ajouter un Restaurant{% endblock %}
+{% block admin_title %}Ajouter un Restaurant{% endblock %}
 
 {% block body %}
 <section class="crud-section" style="padding: 60px 0;">

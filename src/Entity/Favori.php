@@ -6,17 +6,24 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
+use App\Traits\TimestampableTrait;
+use App\Traits\BlameableTrait;
+
 #[ORM\Entity]
-#[ORM\Table(name: "favori")]
+#[ORM\Table(name: "favori", options: ["engine" => "InnoDB"])]
+#[ORM\HasLifecycleCallbacks]
 class Favori
 {
+    use TimestampableTrait;
+    use BlameableTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: "integer")]
-    private ?int $userId = null;
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    private Users $user;
 
     #[ORM\ManyToOne(targetEntity: Restaurant::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -26,12 +33,10 @@ class Favori
     #[ORM\JoinColumn(nullable: true)]
     private ?RepasDetaille $repasDetaille = null;
 
-    #[ORM\Column(type: "datetime")]
-    private ?DateTimeInterface $createdAt = null;
+
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -39,14 +44,14 @@ class Favori
         return $this->id;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): Users
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(int $userId): self
+    public function setUser(Users $user): static
     {
-        $this->userId = $userId;
+        $this->user = $user;
         return $this;
     }
 
@@ -55,7 +60,7 @@ class Favori
         return $this->restaurant;
     }
 
-    public function setRestaurant(?Restaurant $restaurant): self
+    public function setRestaurant(?Restaurant $restaurant): static
     {
         $this->restaurant = $restaurant;
         return $this;
@@ -66,20 +71,12 @@ class Favori
         return $this->repasDetaille;
     }
 
-    public function setRepasDetaille(?RepasDetaille $repasDetaille): self
+    public function setRepasDetaille(?RepasDetaille $repasDetaille): static
     {
         $this->repasDetaille = $repasDetaille;
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeInterface
-    {
-        return $this->createdAt;
-    }
 
-    public function setCreatedAt(DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
+
 }

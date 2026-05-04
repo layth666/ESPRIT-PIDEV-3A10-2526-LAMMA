@@ -3,12 +3,20 @@
 namespace App\Entity;
 
 use App\Repository\TransactionRepository;
+use App\Entity\Users;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use App\Traits\TimestampableTrait;
+use App\Traits\BlameableTrait;
+
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
+#[ORM\Table(name: 'payment_transaction')]
+#[ORM\HasLifecycleCallbacks]
 class Transaction
 {
+    use TimestampableTrait;
+    use BlameableTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -16,28 +24,27 @@ class Transaction
 
     #[ORM\ManyToOne(targetEntity: Equipements::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Equipements $equipement = null;
+    private Equipements $equipement;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $seller = null;
+    private Users $seller;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $buyer = null;
+    private Users $buyer;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $price = null;
+    private string $price;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ \Symfony\Component\Serializer\Attribute\Ignore]
     private ?string $stripeToken = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -45,40 +52,40 @@ class Transaction
         return $this->id;
     }
 
-    public function getEquipement(): ?Equipements
+    public function getEquipement(): Equipements
     {
         return $this->equipement;
     }
 
-    public function setEquipement(?Equipements $equipement): static
+    public function setEquipement(Equipements $equipement): static
     {
         $this->equipement = $equipement;
         return $this;
     }
 
-    public function getSeller(): ?User
+    public function getSeller(): Users
     {
         return $this->seller;
     }
 
-    public function setSeller(?User $seller): static
+    public function setSeller(Users $seller): static
     {
         $this->seller = $seller;
         return $this;
     }
 
-    public function getBuyer(): ?User
+    public function getBuyer(): Users
     {
         return $this->buyer;
     }
 
-    public function setBuyer(?User $buyer): static
+    public function setBuyer(Users $buyer): static
     {
         $this->buyer = $buyer;
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): string
     {
         return $this->price;
     }
@@ -94,20 +101,10 @@ class Transaction
         return $this->stripeToken;
     }
 
-    public function setStripeToken(?string $stripeToken): static
+    public function setStripeToken(#[ \SensitiveParameter] ?string $stripeToken): static
     {
         $this->stripeToken = $stripeToken;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
 }

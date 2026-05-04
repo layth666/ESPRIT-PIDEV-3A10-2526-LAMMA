@@ -19,13 +19,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class FavoriController extends AbstractController
 {
     private FavoriRepository $favoriRepo;
-    private EntityManagerInterface $em;
 
     #[Route('/', name: 'app_favori_index', methods: ['GET'])]
     public function index(): Response
     {
         $user = $this->getUser();
-        $favs = $this->favoriRepo->findByUser($user->getId());
+        $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+        $favs = $this->favoriRepo->findByUser($userId);
         
         $restaurants = [];
         $repas = [];
@@ -45,10 +45,9 @@ class FavoriController extends AbstractController
         ]);
     }
 
-    public function __construct(FavoriRepository $favoriRepo, EntityManagerInterface $em)
+    public function __construct(FavoriRepository $favoriRepo)
     {
         $this->favoriRepo = $favoriRepo;
-        $this->em = $em;
     }
 
     #[Route('/toggle', name: 'app_favori_toggle', methods: ['POST'])]
@@ -67,7 +66,7 @@ class FavoriController extends AbstractController
             return $this->json(['error' => 'Non authentifié'], 401);
         }
         
-        $userId = $user->getId();
+        $userId = method_exists($user, 'getId') ? $user->getId() : 0;
 
         $criteria = ['userId' => $userId];
         $favori = null;
@@ -114,7 +113,8 @@ class FavoriController extends AbstractController
     public function listRestaurants(): Response
     {
         $user = $this->getUser();
-        $favs = $this->favoriRepo->findByUser($user->getId());
+        $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+        $favs = $this->favoriRepo->findByUser($userId);
         $restaurants = [];
         foreach ($favs as $f) {
             if ($f->getRestaurant()) $restaurants[] = $f->getRestaurant();
@@ -129,7 +129,8 @@ class FavoriController extends AbstractController
     public function listRepas(): Response
     {
         $user = $this->getUser();
-        $favs = $this->favoriRepo->findByUser($user->getId());
+        $userId = method_exists($user, 'getId') ? $user->getId() : 0;
+        $favs = $this->favoriRepo->findByUser($userId);
         $repas = [];
         foreach ($favs as $f) {
             if ($f->getRepasDetaille()) $repas[] = $f->getRepasDetaille();

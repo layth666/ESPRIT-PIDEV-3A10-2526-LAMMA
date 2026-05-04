@@ -28,7 +28,7 @@ class Restauration
     private ?int $id = null;
 
     #[ORM\Column(type:"string", length:20)]
-    private ?string $type = null;
+    private string $type;
 
     #[ORM\Column(type:"boolean")]
     private bool $actif = true;
@@ -69,7 +69,7 @@ class Restauration
     #[ORM\Column(type:"integer", nullable:true)]
     private ?int $participantId = null;
 
-    public function __construct(string $type = null)
+    public function __construct(string $type = self::TYPE_MENU)
     {
         $this->type = $type;
     }
@@ -126,45 +126,45 @@ class Restauration
 
     public function getId(): ?int { return $this->id; }
 
-    public function getType(): ?string { return $this->type; }
-    public function setType(string $type): self { $this->type = $type; return $this; }
+    public function getType(): string { return $this->type; }
+    public function setType(string $type): static { $this->type = $type; return $this; }
 
     public function isActif(): bool { return $this->actif; }
-    public function setActif(bool $actif): self { $this->actif = $actif; return $this; }
+    public function setActif(bool $actif): static { $this->actif = $actif; return $this; }
 
     public function getNom(): ?string { return $this->nom; }
-    public function setNom(?string $nom): self { $this->nom = $nom; return $this; }
+    public function setNom(?string $nom): static { $this->nom = $nom; return $this; }
 
     public function getOptionRestaurationId(): ?int { return $this->optionRestaurationId; }
-    public function setOptionRestaurationId(?int $id): self { $this->optionRestaurationId = $id; return $this; }
+    public function setOptionRestaurationId(?int $id): static { $this->optionRestaurationId = $id; return $this; }
 
     public function getLibelle(): ?string { return $this->libelle; }
-    public function setLibelle(?string $libelle): self { $this->libelle = $libelle; return $this; }
+    public function setLibelle(?string $libelle): static { $this->libelle = $libelle; return $this; }
 
     public function getTypeEvenement(): ?string { return $this->typeEvenement; }
-    public function setTypeEvenement(?string $typeEvenement): self { $this->typeEvenement = $typeEvenement; return $this; }
+    public function setTypeEvenement(?string $typeEvenement): static { $this->typeEvenement = $typeEvenement; return $this; }
 
     public function getNomRepas(): ?string { return $this->nomRepas; }
-    public function setNomRepas(?string $nomRepas): self { $this->nomRepas = $nomRepas; return $this; }
+    public function setNomRepas(?string $nomRepas): static { $this->nomRepas = $nomRepas; return $this; }
 
     public function getPrix(): ?string { return $this->prix; }
-    public function setPrix(?string $prix): self { $this->prix = $prix; return $this; }
+    public function setPrix(?string $prix): static { $this->prix = $prix; return $this; }
 
     public function getDate(): ?\DateTimeInterface { return $this->date; }
-    public function setDate(?\DateTimeInterface $date): self { $this->date = $date; return $this; }
+    public function setDate(?\DateTimeInterface $date): static { $this->date = $date; return $this; }
 
     public function getRestrictionLibelle(): ?string { return $this->restrictionLibelle; }
-    public function setRestrictionLibelle(?string $libelle): self { $this->restrictionLibelle = $libelle; return $this; }
+    public function setRestrictionLibelle(?string $libelle): static { $this->restrictionLibelle = $libelle; return $this; }
 
     public function getRestrictionDescription(): ?string { return $this->restrictionDescription; }
-    public function setRestrictionDescription(?string $desc): self { $this->restrictionDescription = $desc; return $this; }
+    public function setRestrictionDescription(?string $desc): static { $this->restrictionDescription = $desc; return $this; }
 
     public function getDatePresence(): ?\DateTimeInterface { return $this->datePresence; }
-    public function setDatePresence(?\DateTimeInterface $date): self { $this->datePresence = $date; return $this; }
+    public function setDatePresence(?\DateTimeInterface $date): static { $this->datePresence = $date; return $this; }
 
     public function isAbonnementActif(): bool { return $this->abonnementActif; }
-    public function setAbonnementActif(bool $actif): self { $this->abonnementActif = $actif; return $this; }
+    public function setAbonnementActif(bool $actif): static { $this->abonnementActif = $actif; return $this; }
 
     public function getParticipantId(): ?int { return $this->participantId; }
-    public function setParticipantId(?int $id): self { $this->participantId = $id; return $this; }
+    public function setParticipantId(?int $id): static { $this->participantId = $id; return $this; }
 }

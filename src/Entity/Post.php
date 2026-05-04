@@ -30,7 +30,7 @@ class Post
         pattern: "/^[a-zA-Z0-9\s\p{P}]+$/u",
         message: "Le titre contient des caractères non autorisés."
     )]
-    private ?string $title = null;
+    private string $title;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: "Le contenu ne peut pas être vide.")]
@@ -40,11 +40,12 @@ class Post
         minMessage: "Le contenu doit contenir au moins {{ limit }} caractères.",
         maxMessage: "Le contenu ne peut pas dépasser {{ limit }} caractères."
     )]
-    private ?string $content = null;
+    private string $content;
 
-    #[ORM\Column(name: 'created_at', nullable: true)]
-    private ?\DateTime $createdAt = null;
+    #[ORM\Column(name: 'created_at', type: 'datetime_immutable', nullable: false)]
+    private \DateTimeImmutable $createdAt;
 
+    /** @var array<string, int> */
     #[ORM\Column(type: 'json', nullable: true)]
     private array $reactions = [];
 
@@ -53,6 +54,10 @@ class Post
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $comments;
+
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Users $author;
 
     public function __construct()
     {
@@ -65,7 +70,18 @@ class Post
             '😢' => 0,
             '😡' => 0
         ];
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function getAuthor(): Users
+    {
+        return $this->author;
+    }
+
+    protected function setAuthor(Users $author): static
+    {
+        $this->author = $author;
+        return $this;
     }
 
     public function getId(): ?int
@@ -73,7 +89,7 @@ class Post
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -84,7 +100,7 @@ class Post
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -95,20 +111,21 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTime $createdAt): static
+    protected function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
+    /** @return array<string, int> */
     public function getReactions(): array
     {
-        if ($this->reactions === null) {
+        if (empty($this->reactions)) {
             $this->reactions = [
                 '👍' => 0,
                 '❤️' => 0,
@@ -121,6 +138,7 @@ class Post
         return $this->reactions;
     }
 
+    /** @param array<string, int>|null $reactions */
     public function setReactions(?array $reactions): static
     {
         if ($reactions === null) {
@@ -177,11 +195,7 @@ class Post
 
     public function removeComment(Comment $comment): static
     {
-        if ($this->comments->removeElement($comment)) {
-            if ($comment->getPost() === $this) {
-                $comment->setPost(null);
-            }
-        }
+        $this->comments->removeElement($comment);
         return $this;
     }
 }

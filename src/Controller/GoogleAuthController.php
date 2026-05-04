@@ -29,6 +29,7 @@
 namespace App\Controller;
 
 use App\Entity\Users;
+use App\Entity\Email;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -71,12 +72,12 @@ class GoogleAuthController extends AbstractController
             $name  = $googleUser->getName() ?: $googleUser->getFirstName() ?: 'User';
 
             // Try to find existing user by email
-            $user = $em->getRepository(Users::class)->findOneBy(['email' => $email]);
+            $user = $em->getRepository(Users::class)->findOneBy(['email.value' => $email]);
 
             if (!$user) {
                 // First-time Google login → auto-register
                 $user = new Users();
-                $user->setEmail($email);
+                $user->setEmail(new Email($email));
                 $user->setName($name);
                 $user->setRole('USER');
 

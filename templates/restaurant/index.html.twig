@@ -1,7 +1,8 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 {% import '_macros.html.twig' as macros %}
 
 {% block title %}Restaurants - LAMMA{% endblock %}
+{% block page_title %}Logistique Culinaire{% endblock %}
 {% block admin_title %}Logistique Culinaire{% endblock %}
 
 {% block stylesheets %}
@@ -72,7 +73,7 @@
     </style>
 {% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <section class="crud-section">
     <div class="row align-items-center mb-5">
         <div class="col-md-6">
@@ -89,9 +90,27 @@
     {# Single Global Map #}
     <div id="global-map"></div>
 
-    <div class="restaurant-grid">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-0 text-white"><i class="fa fa-search"></i></span>
+                <input type="text" id="restaurantSearchInput" class="form-control" placeholder="Rechercher par nom ou adresse..." style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: white;" onkeyup="filterRestaurants()">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select id="restaurantSortSelect" class="form-control" style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: white;" onchange="filterRestaurants()">
+                <option value="">Trier par...</option>
+                <option value="nom_asc">Nom (A-Z)</option>
+                <option value="rating_desc">Note (Décroissant)</option>
+                <option value="places_desc">Places (Décroissant)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="restaurant-grid" id="restaurantGrid">
         {% for entity in items %}
-            <div class="restaurant-card">
+            <div class="restaurant-card-wrapper" data-nom="{{ entity.nom|lower }}" data-adresse="{{ entity.adresse|lower }}" data-rating="{{ entity.rating|default(0) }}" data-places="{{ entity.nombrePlaces|default(0) }}">
+                <div class="restaurant-card">
                 <div class="d-flex justify-content-between align-items-start">
                     <h3 class="card-title">{{ entity.nom }}</h3>
                     <div style="color: #f1c40f;"><i class="fa fa-star"></i> {{ entity.rating }}</div>
@@ -119,6 +138,7 @@
                     {% endif %}
                 </div>
             </div>
+        </div>
         {% endfor %}
     </div>
 </section>
@@ -156,6 +176,38 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+</script>
+<script>
+function filterRestaurants() {
+    const searchInput = document.getElementById('restaurantSearchInput');
+    const sortSelect = document.getElementById('restaurantSortSelect');
+    const grid = document.getElementById('restaurantGrid');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll('.restaurant-card-wrapper'));
+    
+    const searchTerm = searchInput.value.toLowerCase();
+    const sortMode = sortSelect.value;
+    
+    // Filter
+    cards.forEach(card => {
+        const nom = card.getAttribute('data-nom') || '';
+        const adresse = card.getAttribute('data-adresse') || '';
+        const matches = nom.includes(searchTerm) || adresse.includes(searchTerm);
+        card.style.display = matches ? '' : 'none';
+    });
+    
+    // Sort
+    if (sortMode) {
+        const visibleCards = cards.filter(c => c.style.display !== 'none');
+        visibleCards.sort((a, b) => {
+            if (sortMode === 'rating_desc') return parseFloat(b.getAttribute('data-rating')) - parseFloat(a.getAttribute('data-rating'));
+            if (sortMode === 'places_desc') return parseInt(b.getAttribute('data-places')) - parseInt(a.getAttribute('data-places'));
+            if (sortMode === 'nom_asc') return a.getAttribute('data-nom').localeCompare(b.getAttribute('data-nom'));
+            return 0;
+        });
+        visibleCards.forEach(c => grid.appendChild(c));
+    }
+}
 </script>
 {% endblock %}
 

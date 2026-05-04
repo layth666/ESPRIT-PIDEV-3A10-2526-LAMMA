@@ -2,11 +2,11 @@
 
 {% block title %}Event Sponsors{% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <div class="container-fluid px-4">
     <h1 class="mt-4">Event Sponsors</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ path('app_admin') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}">Dashboard</a></li>
         <li class="breadcrumb-item active">Event Sponsors</li>
     </ol>
 
@@ -142,12 +142,12 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center text-muted">Aucun event sponsor trouvé.</td>
+                        <td colspan="7" class="text-center text-white-50">Aucun event sponsor trouvé.</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            <div id="noResultMsg" class="text-center text-muted mt-2" style="display:none;">
+            <div id="noResultMsg" class="text-center text-white-50 mt-2" style="display:none;">
                 Aucun résultat pour cette recherche.
             </div>
         </div>

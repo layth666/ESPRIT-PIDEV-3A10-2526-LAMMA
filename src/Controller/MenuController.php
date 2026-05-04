@@ -58,7 +58,7 @@ class MenuController extends AbstractController
             $this->syncRestaurantNom($menu);
 
             // Handle dishesIds from custom checkbox list in template
-            $dishes = $request->request->all('dishes') ?? [];
+            $dishes = $request->request->all('dishes');
             $menu->setDishesIds(array_keys($dishes));
 
             $this->em->persist($menu);
@@ -105,7 +105,7 @@ class MenuController extends AbstractController
             $this->syncRestaurantNom($menu);
 
             // Handle dishesIds
-            $dishes = $request->request->all('dishes') ?? [];
+            $dishes = $request->request->all('dishes');
             $menu->setDishesIds(array_keys($dishes));
 
             $this->em->flush();

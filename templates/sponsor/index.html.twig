@@ -2,11 +2,11 @@
 
 {% block title %}Liste des Sponsors{% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <div class="container-fluid px-4">
     <h1 class="mt-4">Sponsors</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ path('app_admin') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}">Dashboard</a></li>
         <li class="breadcrumb-item active">Sponsors</li>
     </ol>
 
@@ -111,7 +111,7 @@
                                      style="width:55px; height:55px; object-fit:contain; border-radius:6px; background:#f9f9f9; border:1px solid #ddd;">
                             {% else %}
                                 <div style="width:55px; height:55px; background:#f0f0f0; border-radius:6px; display:flex; align-items:center; justify-content:center; border:1px solid #ddd;">
-                                    <i class="fas fa-image text-muted"></i>
+                                    <i class="fas fa-image text-white-50"></i>
                                 </div>
                             {% endif %}
                         </td>
@@ -138,12 +138,14 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center text-muted">Aucun sponsor trouvé.</td>
+                    <tr>
+                        <td colspan="7" class="text-center text-white-50">Aucun sponsor trouvé.</td>
+                    </tr>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            <div id="noResultMsg" class="text-center text-muted mt-2" style="display:none;">
+            <div id="noResultMsg" class="text-center text-white-50 mt-2" style="display:none;">
                 Aucun résultat pour cette recherche.
             </div>
         </div>

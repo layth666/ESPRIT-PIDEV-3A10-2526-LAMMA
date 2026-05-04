@@ -1,4 +1,4 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}Modifier Menu - LAMMA{% endblock %}
 
@@ -76,7 +76,7 @@
 </style>
 {% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <div class="poesie-container">
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     

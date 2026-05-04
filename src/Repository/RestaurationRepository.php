@@ -24,7 +24,7 @@ class RestaurationRepository
 
     /**
      * Retourne toutes les restaurations
-     * @return Restauration[]
+     * @return array<Restauration>
      */
     public function findAll(): array
     {
@@ -33,8 +33,11 @@ class RestaurationRepository
 
     /**
      * Retourne des restaurations selon des critères
+     * @param array<string, mixed> $criteria
+     * @param array<string, string>|null $orderBy
+     * @return array<Restauration>
      */
-    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null): array
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
         return $this->em->getRepository($this->entityClass)->findBy($criteria, $orderBy, $limit, $offset);
     }

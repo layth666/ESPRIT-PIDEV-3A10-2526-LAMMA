@@ -3,7 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Equipements;
-use App\Entity\User;
+use App\Entity\Users;
+use App\Entity\Coordinates;
 use App\Repository\DeliveryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,16 +20,19 @@ class Delivery
 
     #[ORM\OneToOne(inversedBy: 'delivery', targetEntity: Equipements::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Equipements $equipement = null;
+    private Equipements $equipement;
 
     #[ORM\ManyToOne(inversedBy: 'livraisons')]
-    private ?User $acheteur = null;
+    private ?Users $acheteur = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $estimation = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $estimation = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dateLivraison = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $dateLivraison = null;
+
+    #[ORM\Embedded(class: Coordinates::class, columnPrefix: false)]
+    private Coordinates $coordinates;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $rue = null;
@@ -43,23 +47,24 @@ class Delivery
     private ?string $pays = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $statut = 'en_cours';
+    private string $statut = 'en_cours';
 
-    #[ORM\Column(nullable: true)]
-    private ?float $latitude = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $longitude = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $fraisLivraison = null;
+
+    public function __construct()
+    {
+        $this->coordinates = new Coordinates();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEquipement(): ?Equipements
+    public function getEquipement(): Equipements
     {
         return $this->equipement;
     }
@@ -71,36 +76,36 @@ class Delivery
         return $this;
     }
 
-    public function getAcheteur(): ?User
+    public function getAcheteur(): ?Users
     {
         return $this->acheteur;
     }
 
-    public function setAcheteur(?User $acheteur): static
+    public function setAcheteur(?Users $acheteur): static
     {
         $this->acheteur = $acheteur;
 
         return $this;
     }
 
-    public function getEstimation(): ?\DateTimeInterface
+    public function getEstimation(): ?\DateTimeImmutable
     {
         return $this->estimation;
     }
 
-    public function setEstimation(?\DateTimeInterface $estimation): static
+    protected function setEstimation(?\DateTimeImmutable $estimation): static
     {
         $this->estimation = $estimation;
 
         return $this;
     }
 
-    public function getDateLivraison(): ?\DateTimeInterface
+    public function getDateLivraison(): ?\DateTimeImmutable
     {
         return $this->dateLivraison;
     }
 
-    public function setDateLivraison(?\DateTimeInterface $dateLivraison): static
+    protected function setDateLivraison(?\DateTimeImmutable $dateLivraison): static
     {
         $this->dateLivraison = $dateLivraison;
 
@@ -155,7 +160,7 @@ class Delivery
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getStatut(): string
     {
         return $this->statut;
     }
@@ -167,26 +172,14 @@ class Delivery
         return $this;
     }
 
-    public function getLatitude(): ?float
+    public function getCoordinates(): Coordinates
     {
-        return $this->latitude;
+        return $this->coordinates;
     }
 
-    public function setLatitude(?float $latitude): static
+    public function setCoordinates(Coordinates $coordinates): static
     {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
-    }
-
-    public function setLongitude(?float $longitude): static
-    {
-        $this->longitude = $longitude;
+        $this->coordinates = $coordinates;
 
         return $this;
     }

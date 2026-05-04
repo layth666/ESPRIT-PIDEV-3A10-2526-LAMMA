@@ -1,48 +1,5 @@
 {% extends 'base.html.twig' %}
 
-<<<<<<< HEAD
-{% block title %}Détails Événement - LAMMA{% endblock %}
-{% block page_title %}{{ item.titre }}{% endblock %}
-{% block page_subtitle %}Détails et planification de l'événement{% endblock %}
-
-{% block body %}
-<section class="crud-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="card card-detail overflow-hidden mb-4">
-                    {% if item.image %}
-                        <img src="{{ item.image }}" class="card-img-top" alt="{{ item.titre }}" style="max-height: 400px; object-fit: cover;">
-                    {% endif %}
-                    <div class="card-header"><i class="fa fa-info-circle"></i> Informations de l'événement</div>
-                    <div class="card-body">
-                        <h3>{{ item.titre }} <span class="badge badge-info">{{ item.type }}</span></h3>
-                        <p class="text-muted"><i class="fa fa-map-marker"></i> {{ item.lieu ?? 'Lieu non défini' }}</p>
-                        <hr>
-                        <p>{{ item.description|nl2br }}</p>
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Début :</strong> {{ item.dateDebut ? item.dateDebut|date('d/m/Y H:i') : 'N/A' }}
-                            </div>
-                            <div class="col-md-6">
-                                <strong>Fin :</strong> {{ item.dateFin ? item.dateFin|date('d/m/Y H:i') : 'N/A' }}
-                            </div>
-                        </div>
-                        {% if item.spotifyUrl %}
-                            <div class="mt-3">
-                                <strong>Spotify :</strong> <a href="{{ item.spotifyUrl }}" target="_blank">{{ item.spotifyUrl }}</a>
-                            </div>
-                        {% endif %}
-                        <div class="mt-3">
-                            <span class="text-muted"><i class="fa fa-eye"></i> {{ item.nbVues }} vues</span>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <a href="{{ path('app_evenement_edit', {id: item.id}) }}" class="btn btn-warning" style="border-radius:25px;padding:10px 30px;">Modifier</a>
-                            <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary" style="border-radius:25px;padding:10px 30px;">Retour</a>
-                        </div>
-                    </div>
-=======
 {% block title %}Détail événement{% endblock %}
 {% block hero %}{% endblock %}
 
@@ -59,8 +16,11 @@
                    <i class="fa fa-calendar-plus"></i> Google Agenda
                 </a>
 
+                <a href="{{ path('app_participation_new', {'event_id': evenement.id_event}) }}" class="btn btn-primary me-2 rounded-0 border-0 fw-bold">
+                   <i class="fa fa-handshake"></i> S'inscrire
+                </a>
                 <a href="{{ path('app_evenement_index') }}" class="btn btn-outline-light me-2 rounded-0 border-2"><i class="fa fa-arrow-left"></i> Retour</a>
-                {% if role == 'admin' %}
+                {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('app_evenement_edit', {'id': evenement.id_event}) }}" class="btn text-white rounded-0" style="background-color: #ff3c36; border: none;"><i class="fa fa-pencil"></i> Modifier</a>
                 {% endif %}
             </div>
@@ -71,6 +31,7 @@
             <div class="col-md-5">
                 {% if evenement.image is not empty %}
                     <img src="{{ (evenement.image starts with 'http') ? evenement.image : asset('uploads/' ~ evenement.image) }}" class="w-100 h-100" alt="{{ evenement.titre }}" style="object-fit: cover; min-height: 400px;" onerror="this.onerror=null; this.src='{{ asset('uploads/logo.png') }}';">
+
                 {% else %}
                     <div class="d-flex align-items-center justify-content-center h-100 text-secondary" style="min-height: 400px;">
                         Aucune image
@@ -132,8 +93,8 @@
                     {% if evenement.isProposeMakeup() %}
                         <div class="mt-4 p-4 border border-warning rounded text-white" style="background: rgba(255,193,7,0.1);">
                             <h5 class="text-warning mb-3"><i class="fa fa-magic me-2"></i> Réserver le Coin Make-up</h5>
-                            <p class="small text-light">Cet événement dispose d'un espace maquillage exclusif. Réservez votre place dès maintenant !</p>
-                            <form action="#" method="POST" class="d-flex w-100">
+                            <p class="small text-light">Cet événement dispose d'un espace maquillage exclusif. Réservez votre place dès maintenant ! Vous recevrez un email de confirmation.</p>
+                            <form action="{{ path('app_evenement_reserver_makeup', {'id': evenement.id_event}) }}" method="POST" class="d-flex w-100">
                                 <input type="email" name="email" class="form-control rounded-0 me-2" placeholder="Votre adresse e-mail" required>
                                 <button type="submit" class="btn btn-warning rounded-0 fw-bold px-4">Réserver</button>
                             </form>
@@ -158,28 +119,31 @@
                                 <span class="badge bg-secondary me-1 mb-1">{{ eq.libelle }}</span>
                             {% endfor %}
                         </div>
+                        <div class="mt-3">
+                            <a href="{{ path('app_boutique') }}" class="btn btn-warning btn-sm fw-bold rounded-0">
+                                <i class="fa fa-shopping-cart"></i> Allez au store
+                            </a>
+                        </div>
                     {% else %}
                         <p class="text-secondary mb-0">Aucun équipement recommandé.</p>
                     {% endif %}
 
                     <div class="mt-4">
-                        {% if role == 'admin' %}
+                        {% if is_granted('ROLE_ADMIN') %}
                             {{ include('evenement/_delete_form.html.twig') }}
                         {% endif %}
                     </div>
->>>>>>> feryelPI
                 </div>
             </div>
         </div>
     </div>
-<<<<<<< HEAD
-</section>
-{% endblock %}
-=======
+    </div>
+    </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    // Fetch random quote anonymously
     fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://zenquotes.io/api/random'))
       .then(response => response.ok ? response.json() : null)
       .then(data => {
@@ -191,14 +155,17 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       });
 
+    // --- RELIABLE WEATHER SYSTEM (Open-Meteo) ---
     const lieu = "{{ evenement.lieu|url_encode }}";
     const weatherText = document.getElementById('weather-text');
 
+    // 1. Get coordinates
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${lieu}&count=1&language=fr&format=json`)
       .then(res => res.json())
       .then(geo => {
         if (geo.results && geo.results.length > 0) {
             const { latitude, longitude, name } = geo.results[0];
+            // 2. Get weather
             return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
         }
         throw new Error('Ville non trouvée');
@@ -208,9 +175,19 @@ document.addEventListener("DOMContentLoaded", function() {
         if (data.current_weather) {
             const temp = Math.round(data.current_weather.temperature);
             const code = data.current_weather.weathercode;
-            const icons = {0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 51: '🌦️', 61: '🌧️', 71: '❄️', 95: '⛈️'};
+            
+            // Map weather codes to emojis
+            const icons = {
+                0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
+                45: '🌫️', 48: '🌫️',
+                51: '🌦️', 53: '🌦️', 55: '🌦️',
+                61: '🌧️', 63: '🌧️', 65: '🌧️',
+                71: '❄️', 73: '❄️', 75: '❄️',
+                80: '🌦️', 81: '🌦️', 82: '🌦️',
+                95: '⛈️'
+            };
             const icon = icons[code] || '🌡️';
-            weatherText.innerHTML = `${temp}°C ${icon}`;
+            weatherText.innerHTML = `${name} : ${icon} ${temp}°C`;
         }
       })
       .catch(() => {
@@ -218,6 +195,5 @@ document.addEventListener("DOMContentLoaded", function() {
       });
 });
 </script>
-{% endblock %}
 
->>>>>>> feryelPI
+{% endblock %}

@@ -22,11 +22,11 @@ use Doctrine\ORM\EntityManagerInterface;
 )]
 class TestServicesCommand extends Command
 {
-    private $cartService;
-    private $mealTicketService;
-    private $geminiAnalyzer;
-    private $requestStack;
-    private $em;
+    private CartService $cartService;
+    private MealTicketService $mealTicketService;
+    private GeminiMenuAnalyzer $geminiAnalyzer;
+    private RequestStack $requestStack;
+    private EntityManagerInterface $em;
 
     public function __construct(
         CartService $cartService, 
@@ -59,16 +59,16 @@ class TestServicesCommand extends Command
         $request->setSession($session);
         $this->requestStack->push($request);
 
-        $this->cartService->add(1, 15.50); // Add item ID 1
-        $this->cartService->add(1, 15.50); // Add item ID 1 again
-        $this->cartService->add(2, 9.99);  // Add item ID 2
+        $this->cartService->add(1); // Add item ID 1
+        $this->cartService->add(1); // Add item ID 1 again
+        $this->cartService->add(2);  // Add item ID 2
 
         $io->writeln(" + Ajout Article 1 (15.50) x 2");
         $io->writeln(" + Ajout Article 2 (9.99) x 1");
         $io->writeln(" => Nombre d'articles : <info>" . $this->cartService->countItems() . "</info>");
         $io->writeln(" => Total du panier   : <info>" . $this->cartService->getTotal() . " €</info>");
         
-        $this->cartService->remove(1); // decrement item 1
+        $this->cartService->remove("1"); // decrement item 1
         $io->writeln(" - Retrait de 1 Article 1");
         $io->writeln(" => Nouveau Total     : <info>" . $this->cartService->getTotal() . " €</info>");
         $io->success('CartService fonctionne correctement.');

@@ -1,5 +1,5 @@
 vich_uploader:
-    db_driver: orm # or mongodb or propel or phpcr
+    db_driver: orm
     mappings:
         evenements:
             uri_prefix: /uploads

@@ -16,7 +16,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormError;
 
-#[Route('/users')]
+#[Route('/admin/users')]
 final class UsersController extends AbstractController
 {
     private function currentUserId(): ?int

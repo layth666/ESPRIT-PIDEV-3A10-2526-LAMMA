@@ -17,13 +17,13 @@ class RepasDetaille
     private ?int $id = null;
 
     #[ORM\Column(type:"string", length:120)]
-    private ?string $nom = null;
+    private string $nom;
 
     #[ORM\Column(type:"text")]
-    private ?string $description = null;
+    private string $description;
 
     #[ORM\Column(type:"decimal", precision:10, scale:2)]
-    private ?string $prix = null;
+    private string $prix;
 
     #[ORM\Column(type:"integer", nullable:true)]
     private ?int $calories = null;
@@ -37,24 +37,30 @@ class RepasDetaille
     #[ORM\Column(type:"date", nullable:true)]
     private ?DateTimeInterface $date = null;
 
-    #[ORM\Column(type:"integer", nullable:true)]
-    private ?int $participantId = null;
+    #[ORM\ManyToOne(targetEntity: Participation::class)]
+    #[ORM\JoinColumn(name: 'participant_id', referencedColumnName: 'id', nullable: true)]
+    private ?Participation $participant = null;
 
-    #[ORM\Column(type:"integer", nullable:true)]
-    private ?int $evenementId = null;
+    #[ORM\ManyToOne(targetEntity: Evenement::class)]
+    #[ORM\JoinColumn(name: 'evenement_id', referencedColumnName: 'id_event', nullable: true)]
+    private ?Evenement $evenement = null;
 
-    #[ORM\Column(type:"integer", nullable:true)]
-    private ?int $restaurantId = null;
+    #[ORM\ManyToOne(targetEntity: Restaurant::class)]
+    #[ORM\JoinColumn(name: 'restaurant_id', referencedColumnName: 'id', nullable: true)]
+    private ?Restaurant $restaurant = null;
 
-    #[ORM\Column(type:"integer", nullable:true)]
-    private ?int $menuId = null;
+    #[ORM\ManyToOne(targetEntity: Menu::class)]
+    #[ORM\JoinColumn(name: 'menu_id', referencedColumnName: 'id', nullable: true)]
+    private ?Menu $menu = null;
 
     #[ORM\Column(type:"integer", nullable:true)]
     private ?int $tempsPreparation = null;
 
+    /** @var array<string> */
     #[ORM\Column(type:"json", nullable:true)]
     private array $ingredients = [];
 
+    /** @var array<string> */
     #[ORM\Column(type:"json", nullable:true)]
     private array $allergenes = [];
 
@@ -90,69 +96,73 @@ class RepasDetaille
     // -------- GETTERS / SETTERS --------
 
     public function getId(): ?int { return $this->id; }
-    public function getNom(): ?string { return $this->nom; }
-    public function setNom(string $nom): self { $this->nom = $nom; return $this; }
+    public function getNom(): string { return $this->nom; }
+    public function setNom(string $nom): static { $this->nom = $nom; return $this; }
 
-    public function getDescription(): ?string { return $this->description; }
-    public function setDescription(string $desc): self { $this->description = $desc; return $this; }
+    public function getDescription(): string { return $this->description; }
+    public function setDescription(string $desc): static { $this->description = $desc; return $this; }
 
-    public function getPrix(): ?string { return $this->prix; }
-    public function setPrix(string $prix): self { $this->prix = $prix; return $this; }
+    public function getPrix(): string { return $this->prix; }
+    public function setPrix(string $prix): static { $this->prix = $prix; return $this; }
 
     public function getCalories(): ?int { return $this->calories; }
-    public function setCalories(?int $c): self { $this->calories = $c; return $this; }
+    public function setCalories(?int $c): static { $this->calories = $c; return $this; }
 
     public function getProteines(): ?int { return $this->proteines; }
-    public function setProteines(?int $p): self { $this->proteines = $p; return $this; }
+    public function setProteines(?int $p): static { $this->proteines = $p; return $this; }
 
     public function getTypeRepas(): ?string { return $this->typeRepas; }
-    public function setTypeRepas(?string $t): self { $this->typeRepas = $t; return $this; }
+    public function setTypeRepas(?string $t): static { $this->typeRepas = $t; return $this; }
 
     public function getDate(): ?DateTimeInterface { return $this->date; }
-    public function setDate(?DateTimeInterface $d): self { $this->date = $d; return $this; }
+    protected function setDate(?DateTimeInterface $d): static { $this->date = $d; return $this; }
 
-    public function getParticipantId(): ?int { return $this->participantId; }
-    public function setParticipantId(?int $id): self { $this->participantId = $id; return $this; }
+    public function getParticipant(): ?Participation { return $this->participant; }
+    public function setParticipant(?Participation $p): static { $this->participant = $p; return $this; }
 
-    public function getEvenementId(): ?int { return $this->evenementId; }
-    public function setEvenementId(?int $id): self { $this->evenementId = $id; return $this; }
+    public function getEvenement(): ?Evenement { return $this->evenement; }
+    public function setEvenement(?Evenement $e): static { $this->evenement = $e; return $this; }
 
-    public function getRestaurantId(): ?int { return $this->restaurantId; }
-    public function setRestaurantId(?int $id): self { $this->restaurantId = $id; return $this; }
+    public function getRestaurant(): ?Restaurant { return $this->restaurant; }
+    public function setRestaurant(?Restaurant $r): static { $this->restaurant = $r; return $this; }
 
-    public function getMenuId(): ?int { return $this->menuId; }
-    public function setMenuId(?int $id): self { $this->menuId = $id; return $this; }
+    public function getMenu(): ?Menu { return $this->menu; }
+    public function setMenu(?Menu $m): static { $this->menu = $m; return $this; }
 
     public function getTempsPreparation(): ?int { return $this->tempsPreparation; }
-    public function setTempsPreparation(?int $t): self { $this->tempsPreparation = $t; return $this; }
+    public function setTempsPreparation(?int $t): static { $this->tempsPreparation = $t; return $this; }
 
+    /** @return array<string> */
     public function getIngredients(): array { return $this->ingredients; }
-    public function setIngredients(array $i): self { $this->ingredients = $i; return $this; }
+    /** @param array<string> $i */
+    public function setIngredients(array $i): static { $this->ingredients = $i; return $this; }
 
+    /** @return array<string> */
     public function getAllergenes(): array { return $this->allergenes; }
-    public function setAllergenes(array $a): self { $this->allergenes = $a; return $this; }
+    /** @param array<string> $a */
+    public function setAllergenes(array $a): static { $this->allergenes = $a; return $this; }
 
     public function isVegetarien(): bool { return $this->vegetarien; }
-    public function setVegetarien(bool $b): self { $this->vegetarien = $b; return $this; }
+    public function setVegetarien(bool $b): static { $this->vegetarien = $b; return $this; }
 
     public function isVegan(): bool { return $this->vegan; }
-    public function setVegan(bool $b): self { $this->vegan = $b; return $this; }
+    public function setVegan(bool $b): static { $this->vegan = $b; return $this; }
 
     public function isSansGluten(): bool { return $this->sansGluten; }
-    public function setSansGluten(bool $b): self { $this->sansGluten = $b; return $this; }
+    public function setSansGluten(bool $b): static { $this->sansGluten = $b; return $this; }
 
     public function isHalal(): bool { return $this->halal; }
-    public function setHalal(bool $b): self { $this->halal = $b; return $this; }
+    public function setHalal(bool $b): static { $this->halal = $b; return $this; }
 
     public function isActif(): bool { return $this->actif; }
-    public function setActif(bool $b): self { $this->actif = $b; return $this; }
+    public function setActif(bool $b): static { $this->actif = $b; return $this; }
 
     public function getImageUrl(): ?string { return $this->imageUrl; }
-    public function setImageUrl(?string $s): self { $this->imageUrl = $s; return $this; }
+    public function setImageUrl(?string $s): static { $this->imageUrl = $s; return $this; }
 
     public function getNotes(): ?string { return $this->notes; }
-    public function setNotes(?string $s): self { $this->notes = $s; return $this; }
+    public function setNotes(?string $s): static { $this->notes = $s; return $this; }
 
     public function getChoixCount(): int { return $this->choixCount; }
-    public function setChoixCount(int $n): self { $this->choixCount = $n; return $this; }
+    public function setChoixCount(int $n): static { $this->choixCount = $n; return $this; }
 }

@@ -3,7 +3,7 @@
 {% block title %}Gestion des Codes Promo - LAMMA{% endblock %}
 {% block admin_title %}Gestion des Codes Promo{% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <style>
     :root {
         --scout-dark: #0f172a;
@@ -208,8 +208,11 @@
     <div class="promo-layout">
         <!-- Panel Liste -->
         <div class="promo-list-panel">
+            <div style="padding: 15px; border-bottom: 1px solid var(--scout-border);">
+                <input type="text" id="promoSearch" placeholder="Filtrer par code..." class="form-control" style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--scout-border); color: white;" onkeyup="filterPromo()">
+            </div>
             <div class="table-container">
-                <table class="scout-table">
+                <table class="scout-table" id="promoTable">
                     <thead>
                         <tr>
                             <th>Code</th>
@@ -221,7 +224,7 @@
                     </thead>
                     <tbody>
                         {% for code in codes %}
-                        <tr onclick="window.location.href='?id={{ code.id }}'" class="{{ currentPromo.id == code.id ? 'selected-row' : '' }}">
+                        <tr onclick="window.location.href='?id={{ code.id }}'" class="{{ currentPromo.id == code.id ? 'selected-row' : '' }} promo-row" data-code="{{ code.code|lower }}">
                             <td style="font-weight: 800; color: var(--scout-orange);">{{ code.code }}</td>
                             <td>{{ code.discountPercentage }}%</td>
                             <td>{{ code.expirationDate ? code.expirationDate|date('Y-m-d') : '∞' }}</td>
@@ -287,4 +290,14 @@
         </div>
     </div>
 </div>
+<script>
+function filterPromo() {
+    const search = document.getElementById('promoSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('.promo-row');
+    rows.forEach(row => {
+        const code = row.getAttribute('data-code') || '';
+        row.style.display = code.includes(search) ? '' : 'none';
+    });
+}
+</script>
 {% endblock %}

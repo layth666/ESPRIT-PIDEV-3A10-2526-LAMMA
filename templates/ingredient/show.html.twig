@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}Détails Ingrédient - LAMMA{% endblock %}
 {% block page_title %}{{ item.nom }}{% endblock %}

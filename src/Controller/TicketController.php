@@ -28,7 +28,7 @@ class TicketController extends AbstractController
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
             $user = $this->getUser();
-            $items = $this->ticketService->findByUserId($user instanceof \App\Entity\User ? $user->getId() : 0);
+            $items = $this->ticketService->findByUserId($user instanceof \App\Entity\Users ? $user->getId() : 0);
         } else {
             $items = $this->ticketService->findAll();
         }

@@ -17,6 +17,14 @@ class AbonnementRepository
     }
 
     /**
+     * @return array<Abonnement>
+     */
+    public function findAll(): array
+    {
+        return $this->em->getRepository($this->entityClass)->findAll();
+    }
+
+    /**
      * Trouve un Abonnement par son ID
      */
     public function find(int $id): ?Abonnement
@@ -26,6 +34,7 @@ class AbonnementRepository
 
     /**
      * Récupère les abonnements selon le statut fourni
+     * @return array<Abonnement>
      */
     public function findByStatut(string $statut): array
     {
@@ -34,6 +43,7 @@ class AbonnementRepository
 
     /**
      * Récupère tous les abonnements actifs
+     * @return array<Abonnement>
      */
     public function findActifs(): array
     {
@@ -52,16 +62,24 @@ class AbonnementRepository
 
     /**
      * Retourne les revenus cumulés par type d'abonnement pour les abonnements actifs
+     * @return array<int, array<string, mixed>>
      */
     public function getRevenueStats(): array
     {
         return $this->em->createQueryBuilder()
-            ->select('a.type as label, SUM(a.prix) as total')
+            ->select('NEW App\Dto\StatsDto(a.type, SUM(a.prix))')
             ->from(Abonnement::class, 'a')
             ->where('a.statut = :statut')
             ->setParameter('statut', Abonnement::STATUT_ACTIF)
             ->groupBy('a.type')
             ->getQuery()
             ->getResult();
+    }
+    /**
+     * @param array<string, mixed> $criteria
+     */
+    public function count(array $criteria): int
+    {
+        return $this->em->getRepository($this->entityClass)->count($criteria);
     }
 }

@@ -51,6 +51,7 @@ class RestaurationController extends AbstractController
         return $menu;
     }
 
+    /** @return Restauration[] */
     public function getMenusActifs(): array
     {
         return $this->restaurationRepo->findBy([
@@ -59,6 +60,7 @@ class RestaurationController extends AbstractController
         ]);
     }
 
+    /** @return Restauration[] */
     public function getMenusByOption(int $optionId): array
     {
         return array_filter($this->getMenusActifs(), function (Restauration $menu) use ($optionId) {
@@ -96,6 +98,7 @@ class RestaurationController extends AbstractController
         return $option;
     }
 
+    /** @return Restauration[] */
     public function getOptionsByType(string $type): array
     {
         return $this->restaurationRepo->findBy([
@@ -104,6 +107,7 @@ class RestaurationController extends AbstractController
         ]);
     }
 
+    /** @return Restauration[] */
     public function getAllOptions(): array
     {
         return array_filter($this->restaurationRepo->findBy(['type' => Restauration::TYPE_OPTION]), fn($r) => $r->isActif());
@@ -120,11 +124,13 @@ class RestaurationController extends AbstractController
         return $repas;
     }
 
+    /** @return Restauration[] */
     public function getRepasByParticipant(int $participantId): array
     {
         return $this->restaurationRepo->findBy(['participantId' => $participantId, 'type' => Restauration::TYPE_REPAS]);
     }
 
+    /** @return Restauration[] */
     public function getRepasByDate(DateTimeImmutable $date): array
     {
         return $this->restaurationRepo->findBy(['date' => $date, 'type' => Restauration::TYPE_REPAS]);
@@ -162,6 +168,7 @@ class RestaurationController extends AbstractController
         return $restriction;
     }
 
+    /** @return Restauration[] */
     public function getRestrictionsActives(): array
     {
         return $this->restaurationRepo->findBy(['type' => Restauration::TYPE_RESTRICTION, 'actif' => true]);
@@ -176,6 +183,7 @@ class RestaurationController extends AbstractController
         return $presence;
     }
 
+    /** @return Restauration[] */
     public function getPresenceByParticipant(int $participantId): array
     {
         return $this->restaurationRepo->findBy(['participantId' => $participantId, 'type' => Restauration::TYPE_PRESENCE]);
@@ -199,6 +207,7 @@ class RestaurationController extends AbstractController
         return $besoin;
     }
 
+    /** @return ParticipationRestaurant[] */
     public function getBesoinsByParticipantId(int $participantId): array
     {
         return $this->participantRepo->findBy(['participantId' => $participantId]);

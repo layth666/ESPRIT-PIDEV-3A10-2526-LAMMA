@@ -20,35 +20,38 @@ class Equipment
     private ?Evenement $event_id = null;
 
     #[ORM\Column(type: "string", length: 255)]
-    private ?string $libelle = null;
+    private string $libelle;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(int $id): static
     {
         $this->id = $id;
+        return $this;
     }
 
-    public function getEvent_id()
+    public function getEvent_id(): ?Evenement
     {
         return $this->event_id;
     }
 
-    public function setEvent_id($event_id)
+    public function setEvent_id(?Evenement $event_id): static
     {
         $this->event_id = $event_id;
+        return $this;
     }
 
-    public function getLibelle()
+    public function getLibelle(): string
     {
         return $this->libelle;
     }
 
-    public function setLibelle($libelle)
+    public function setLibelle(string $libelle): static
     {
         $this->libelle = $libelle;
+        return $this;
     }
 }

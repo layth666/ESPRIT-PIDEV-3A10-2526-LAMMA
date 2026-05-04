@@ -32,6 +32,18 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted()) {
 
+            // ── Manual reCAPTCHA v2 verification ───────────────────────────────
+            $recaptchaResponse = $request->request->get('g-recaptcha-response');
+            $secretKey = $_ENV['EWZ_RECAPTCHA_SECRET'] ?? '';
+            
+            // Simple validation call to Google
+            $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secretKey.'&response='.$recaptchaResponse);
+            $responseData = json_decode($verifyResponse);
+            
+            if (!$responseData || !$responseData->success) {
+                $form->addError(new FormError('Please complete the CAPTCHA checkbox.'));
+            }
+
             // ── Confirm password check ───────────────────────────────────────
             $plainPassword   = $form->get('password')->getData();
             $confirmPassword = $request->request->get('confirm_password');

@@ -20,13 +20,15 @@ class GeminiMenuAnalyzer
     /**
      * Analyse une image uploadée par Gemini 1.5 Flash
      * @param UploadedFile $file
-     * @return array Informations extraites
+     * @return array{nom: string, description: string, prix: float, calories: int, proteines: int, tags: string[]} Informations extraites
      */
     public function extractMenuData(UploadedFile $file): array
     {
         $filename = strtolower($file->getClientOriginalName());
-        $mimeType = $file->getMimeType();
-        $base64Image = base64_encode(file_get_contents($file->getPathname()));
+        $mimeType = (string)$file->getMimeType();
+        $pathname = $file->getPathname();
+        $content = file_get_contents($pathname);
+        $base64Image = base64_encode($content !== false ? $content : '');
 
         return $this->callGeminiApi($base64Image, $mimeType, $filename);
     }
@@ -34,7 +36,7 @@ class GeminiMenuAnalyzer
     /**
      * Analyse une image depuis un chemin local (utile pour CLI ou tests)
      * @param string $filePath
-     * @return array Informations extraites
+     * @return array{nom: string, description: string, prix: float, calories: int, proteines: int, tags: string[]} Informations extraites
      */
     public function extractMenuDataFromPath(string $filePath): array
     {
@@ -43,14 +45,16 @@ class GeminiMenuAnalyzer
         }
 
         $filename = strtolower(basename($filePath));
-        $mimeType = mime_content_type($filePath) ?: 'image/jpeg';
-        $base64Image = base64_encode(file_get_contents($filePath));
+        $mimeType = (string)(mime_content_type($filePath) ?: 'image/jpeg');
+        $content = file_get_contents($filePath);
+        $base64Image = base64_encode($content !== false ? $content : '');
 
         return $this->callGeminiApi($base64Image, $mimeType, $filename);
     }
 
     /**
      * Prédit les valeurs nutritionnelles à partir d'un simple NOM d'ingrédient
+     * @return array{calories: int, proteines: int}
      */
     public function predictNutritionByName(string $name): array
     {
@@ -68,19 +72,25 @@ class GeminiMenuAnalyzer
         try {
             if (empty($this->apiKey)) throw new Exception("Clé API manquante");
 
-            $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' . $this->apiKey;
+            $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $this->apiKey;
             $response = $this->httpClient->request('POST', $url, [
                 'json' => $body,
                 'timeout' => 10
             ]);
 
+            /** @var array<string, mixed> $data */
             $data = $response->toArray(false);
+            /** @var string $rawText */
             $rawText = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
             
             // Minimal parsing logic
             $start = strpos($rawText, '{');
             $end = strrpos($rawText, '}');
+            if ($start === false || $end === false) {
+                 return ['calories' => 120, 'proteines' => 4];
+            }
             $jsonStr = substr($rawText, $start, $end - $start + 1);
+            /** @var array<string, mixed>|null $decoded */
             $decoded = json_decode($jsonStr, true);
 
             return [
@@ -95,6 +105,7 @@ class GeminiMenuAnalyzer
 
     /**
      * Appel à l'API Gemini et extraction
+     * @return array{nom: string, description: string, prix: float, calories: int, proteines: int, tags: string[]}
      */
     private function callGeminiApi(string $base64Image, string $mimeType, string $filename): array
     {
@@ -127,7 +138,7 @@ class GeminiMenuAnalyzer
                 throw new Exception("GEMINI_API_KEY non configurée.");
             }
 
-            $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' . $this->apiKey;
+            $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $this->apiKey;
 
             $response = $this->httpClient->request('POST', $url, [
                 'headers' => [
@@ -137,13 +148,16 @@ class GeminiMenuAnalyzer
                 'timeout' => 15 // Timeout raisonnable pour générer du texte
             ]);
 
+            /** @var array<string, mixed> $data */
             $data = $response->toArray(false); // false pour ne pas throw si HTTP erroné immédiatement
             
             if ($response->getStatusCode() !== 200 || !isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+                /** @var string $errorMsg */
                 $errorMsg = isset($data['error']['message']) ? $data['error']['message'] : 'Erreur API';
                 throw new Exception("Réponse API invalide : " . $errorMsg);
             }
 
+            /** @var string $rawText */
             $rawText = $data['candidates'][0]['content']['parts'][0]['text'];
 
             // Parsing tolérant
@@ -157,6 +171,7 @@ class GeminiMenuAnalyzer
 
     /**
      * Extraction tolérante du premier et dernier '{' / '}' 
+     * @return array{nom: string, description: string, prix: float, calories: int, proteines: int, tags: string[]}
      */
     private function parseJsonTolerant(string $rawText): array
     {
@@ -168,6 +183,7 @@ class GeminiMenuAnalyzer
         }
 
         $jsonStr = substr($rawText, $start, $end - $start + 1);
+        /** @var array<string, mixed>|null $decoded */
         $decoded = json_decode($jsonStr, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -176,8 +192,8 @@ class GeminiMenuAnalyzer
 
         // On sécurise la structure retournée
         return [
-            'nom' => $decoded['nom'] ?? 'Plat Mystère',
-            'description' => $decoded['description'] ?? 'Une délicieuse surprise concoctée par notre chef.',
+            'nom' => (string)($decoded['nom'] ?? 'Plat Mystère'),
+            'description' => (string)($decoded['description'] ?? 'Une délicieuse surprise concoctée par notre chef.'),
             'prix' => isset($decoded['prix']) ? (float)$decoded['prix'] : 12.50,
             'calories' => isset($decoded['calories']) ? (int)$decoded['calories'] : 550,
             'proteines' => isset($decoded['proteines']) ? (int)$decoded['proteines'] : 15,
@@ -187,6 +203,7 @@ class GeminiMenuAnalyzer
 
     /**
      * Génération de valeursFallback (basées sur les mots clés du fichier) si l'IA échoue
+     * @return array{nom: string, description: string, prix: float, calories: int, proteines: int, tags: string[]}
      */
     private function generateFallbackMenu(string $filename): array
     {

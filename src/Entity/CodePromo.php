@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
 #[ORM\Entity]
-#[ORM\Table(name: "promo_code")]
+#[ORM\Table(name: 'promo_code', options: ["engine" => "InnoDB"])]
 class CodePromo
 {
     #[ORM\Id]
@@ -15,7 +15,7 @@ class CodePromo
     private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 50, unique: true)]
-    private ?string $code = null;
+    private string $code;
 
     #[ORM\Column(type: "integer")]
     private int $discountPercentage = 0;
@@ -39,12 +39,12 @@ class CodePromo
         return $this->id;
     }
 
-    public function getCode(): ?string
+    public function getCode(): string
     {
         return $this->code;
     }
 
-    public function setCode(string $code): self
+    public function setCode(string $code): static
     {
         $this->code = $code;
         return $this;
@@ -55,7 +55,7 @@ class CodePromo
         return $this->discountPercentage;
     }
 
-    public function setDiscountPercentage(int $discountPercentage): self
+    public function setDiscountPercentage(int $discountPercentage): static
     {
         $this->discountPercentage = $discountPercentage;
         return $this;
@@ -66,7 +66,7 @@ class CodePromo
         return $this->expirationDate;
     }
 
-    public function setExpirationDate(?DateTimeInterface $expirationDate): self
+    protected function setExpirationDate(?DateTimeInterface $expirationDate): static
     {
         $this->expirationDate = $expirationDate;
         return $this;
@@ -77,7 +77,7 @@ class CodePromo
         return $this->active;
     }
 
-    public function setActive(bool $active): self
+    public function setActive(bool $active): static
     {
         $this->active = $active;
         return $this;
@@ -88,7 +88,7 @@ class CodePromo
         return $this->usageLimit;
     }
 
-    public function setUsageLimit(int $usageLimit): self
+    public function setUsageLimit(int $usageLimit): static
     {
         $this->usageLimit = $usageLimit;
         return $this;
@@ -99,7 +99,7 @@ class CodePromo
         return $this->currentUsage;
     }
 
-    public function setCurrentUsage(int $currentUsage): self
+    public function setCurrentUsage(int $currentUsage): static
     {
         $this->currentUsage = $currentUsage;
         return $this;

@@ -1,9 +1,10 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}Gestion des Plans d'Abonnement - Admin{% endblock %}
+{% block page_title %}Plans d'Abonnement{% endblock %}
 {% block admin_title %}Plans d'Abonnement{% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <section class="crud-section">
 
     {# Header #}

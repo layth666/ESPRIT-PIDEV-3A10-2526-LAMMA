@@ -111,16 +111,21 @@ class AbonnementController extends AbstractController
         $userId = method_exists($user, 'getId') ? $user->getId() : 0;
 
         // Vérifier si l'utilisateur a déjà souscrit à ce plan
-        $existing = $this->repository->createQueryBuilder('a')
+        $qb = $this->repository->createQueryBuilder('a')
             ->andWhere('a.isTemplate = :f')
             ->andWhere('a.userId = :uid')
             ->andWhere('a.planSourceId = :planId')
             ->setParameter('f', false)
             ->setParameter('uid', $userId)
             ->setParameter('planId', $planId)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->setMaxResults(1);
+
+        $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($qb, true);
+        $existing = null;
+        foreach ($paginator as $item) {
+            $existing = $item;
+            break;
+        }
 
         if ($existing) {
             $this->addFlash('warning', '⚠️ Vous avez déjà souscrit à ce plan.');
@@ -161,7 +166,7 @@ class AbonnementController extends AbstractController
                         'name' => 'Abonnement : ' . $plan->getNom(),
                         'description' => 'Facturation de souscription - Lamma Expédition',
                     ],
-                    'unit_amount' => (int) ($plan->getPrix() * 100),
+                    'unit_amount' => (int) ((float)$plan->getPrix() * 100),
                 ],
                 'quantity' => 1,
             ]],
@@ -169,7 +174,7 @@ class AbonnementController extends AbstractController
             'success_url' => $urlGenerator->generate('app_abonnement_payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL) . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => $urlGenerator->generate('app_abonnement_payment_cancel', ['id' => $abonnement->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
             'metadata' => [
-                'abonnement_id' => $abonnement->getId(),
+                'abonnement_id' => (string) $abonnement->getId(),
             ],
         ]);
 

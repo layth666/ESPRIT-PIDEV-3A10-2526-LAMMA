@@ -10,55 +10,60 @@ class Service
 {
 
     #[ORM\Id]
+    #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 255)]
-    private ?string $nom = null;
+    private string $nom;
 
     #[ORM\Column(type: "text")]
-    private ?string $description = null;
+    private string $description;
 
     #[ORM\Column(type: "float")]
-    private ?float $prix = null;
+    private float $prix;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(?int $id): static
     {
         $this->id = $id;
+        return $this;
     }
 
-    public function getNom()
+    public function getNom(): string
     {
         return $this->nom;
     }
 
-    public function setNom($nom)
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
+        return $this;
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function setDescription($description)
+    public function setDescription(string $description): static
     {
         $this->description = $description;
+        return $this;
     }
 
-    public function getPrix()
+    public function getPrix(): float
     {
         return $this->prix;
     }
 
-    public function setPrix($prix)
+    public function setPrix(float $prix): static
     {
         $this->prix = $prix;
+        return $this;
     }
 }

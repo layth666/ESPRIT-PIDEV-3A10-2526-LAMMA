@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class ForgotPasswordController extends AbstractController
 {
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -33,7 +33,7 @@ class ForgotPasswordController extends AbstractController
             return new JsonResponse(['error' => 'Email is required.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = $usersRepository->findOneBy(['email' => $email]);
+        $user = $usersRepository->findOneBy(['email.value' => $email]);
 
         if (!$user) {
             // For security reasons, don't reveal if user exists. 
@@ -114,7 +114,7 @@ class ForgotPasswordController extends AbstractController
             return new JsonResponse(['error' => 'Password must be at least 6 characters.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = $usersRepository->findOneBy(['email' => $email]);
+        $user = $usersRepository->findOneBy(['email.value' => $email]);
         if (!$user) {
             return new JsonResponse(['error' => 'User no longer exists.'], Response::HTTP_NOT_FOUND);
         }

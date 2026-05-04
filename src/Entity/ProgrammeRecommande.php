@@ -13,8 +13,9 @@ class ProgrammeRecommande
     private ?int $id = null;
 
     // ---------------- RELATION PARTICIPATION
-    #[ORM\Column(type: "integer")]
-    private int $participationId; // futur ManyToOne vers Participation
+    #[ORM\ManyToOne(targetEntity: Participation::class)]
+    #[ORM\JoinColumn(name: 'participation_id', referencedColumnName: 'id', nullable: false)]
+    private Participation $participation;
 
     // ---------------- ACTIVITÉ
     #[ORM\Column(type: "string", length: 255)]
@@ -44,14 +45,14 @@ class ProgrammeRecommande
 
     // ---------------- CONSTRUCTEUR
     public function __construct(
-        int $participationId = 0,
+        Participation $participation,
         string $activite = '',
         \DateTimeInterface $heureDebut = null,
         \DateTimeInterface $heureFin = null,
         string $ambiance = self::AMBIANCE_CALME,
         ?string $justification = null
     ) {
-        $this->participationId = $participationId;
+        $this->participation = $participation;
         $this->activite = $activite;
         if ($heureDebut) $this->heureDebut = $heureDebut;
         if ($heureFin) $this->heureFin = $heureFin;
@@ -70,17 +71,17 @@ class ProgrammeRecommande
     // ---------------- GETTERS / SETTERS
     public function getId(): ?int { return $this->id; }
 
-    public function getParticipationId(): int { return $this->participationId; }
-    public function setParticipationId(int $participationId): void { $this->participationId = $participationId; }
+    public function getParticipation(): Participation { return $this->participation; }
+    public function setParticipation(Participation $participation): void { $this->participation = $participation; }
 
     public function getActivite(): string { return $this->activite; }
     public function setActivite(string $activite): void { $this->activite = $activite; }
 
     public function getHeureDebut(): \DateTimeInterface { return $this->heureDebut; }
-    public function setHeureDebut(\DateTimeInterface $heureDebut): void { $this->heureDebut = $heureDebut; }
+    protected function setHeureDebut(\DateTimeInterface $heureDebut): void { $this->heureDebut = $heureDebut; }
 
     public function getHeureFin(): \DateTimeInterface { return $this->heureFin; }
-    public function setHeureFin(\DateTimeInterface $heureFin): void { $this->heureFin = $heureFin; }
+    protected function setHeureFin(\DateTimeInterface $heureFin): void { $this->heureFin = $heureFin; }
 
     public function getAmbiance(): string { return $this->ambiance; }
     public function setAmbiance(string $ambiance): void { $this->ambiance = $ambiance; }

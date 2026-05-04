@@ -14,6 +14,9 @@ class CodePromoRepository
         $this->em = $em;
     }
 
+    /**
+     * @return array<CodePromo>
+     */
     public function findAll(): array
     {
         return $this->em->getRepository($this->entityClass)->findAll();
@@ -48,11 +51,18 @@ class CodePromoRepository
     /**
      * Méthodes de base que tu peux ajouter facilement
      */
+    /**
+     * @param array<string, mixed> $criteria
+     * @return array<CodePromo>
+     */
     public function findBy(array $criteria): array
     {
         return $this->em->getRepository($this->entityClass)->findBy($criteria);
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     */
     public function findOneBy(array $criteria): ?CodePromo
     {
         return $this->em->getRepository($this->entityClass)->findOneBy($criteria);

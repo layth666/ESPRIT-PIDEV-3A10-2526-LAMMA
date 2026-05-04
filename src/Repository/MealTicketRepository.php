@@ -17,7 +17,7 @@ class MealTicketRepository
     /**
      * Retourne tous les tickets
      *
-     * @return MealTicket[]
+     * @return array<MealTicket>
      */
     public function findAll(): array
     {
@@ -35,7 +35,7 @@ class MealTicketRepository
     /**
      * Retourne tous les tickets actifs (statut VALIDE)
      *
-     * @return MealTicket[]
+     * @return array<MealTicket>
      */
     public function findActifs(): array
     {
@@ -58,6 +58,8 @@ class MealTicketRepository
 
     /**
      * Finds a single entity by a set of criteria.
+     * @param array<string, mixed> $criteria
+     * @param array<string, string>|null $orderBy
      */
     public function findOneBy(array $criteria, array $orderBy = null): ?MealTicket
     {

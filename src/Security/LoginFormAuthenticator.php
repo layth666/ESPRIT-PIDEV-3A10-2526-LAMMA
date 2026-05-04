@@ -5,6 +5,7 @@ namespace App\Security;
 
 use App\Entity\Users;
 use App\Entity\LoginAttempts;
+use App\Entity\Email;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,7 +61,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
                 // Load user manually so we can check ban status HERE
                 // before the password is even checked
                 $user = $this->em->getRepository(Users::class)
-                    ->findOneBy(['email' => $identifier]);
+                    ->findOneBy(['email.value' => $identifier]);
 
                 if (!$user) {
                     throw new CustomUserMessageAuthenticationException(
@@ -91,7 +92,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $user = $token->getUser();
 
         // Reset failed login attempts on success
-        $loginAttempt = $this->em->getRepository(LoginAttempts::class)->find($user->getEmail());
+        $loginAttempt = $this->em->getRepository(LoginAttempts::class)->find($user->getEmail()->getValue());
         if ($loginAttempt) {
             $loginAttempt->setAttemptCount(0);
             $loginAttempt->setCooldownUntil(null);
@@ -106,11 +107,11 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
         // Admin → dashboard
         if ($user->getRole() === 'ADMIN') {
-            return new RedirectResponse($this->urlGenerator->generate('app_users_index'));
+            return new RedirectResponse($this->urlGenerator->generate('app_admin_dashboard'));
         }
 
-        // Regular USER → their profile page
-        return new RedirectResponse($this->urlGenerator->generate('app_profile'));
+        // Regular USER → front office (events)
+        return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
     public function onAuthenticationFailure(Request $request, \Symfony\Component\Security\Core\Exception\AuthenticationException $exception): Response
@@ -135,19 +136,19 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
                 }
 
                 $loginAttempt->setAttemptCount($loginAttempt->getAttemptCount() + 1);
-                $loginAttempt->setLastAttemptTime(new \DateTime());
+                $loginAttempt->setLastAttemptTime(new \DateTimeImmutable());
                 $count = $loginAttempt->getAttemptCount();
 
                 if ($count >= 8) {
-                    $loginAttempt->setBannedUntil(new \DateTime()); // Permanent ban
+                    $loginAttempt->setBannedUntil(new \DateTimeImmutable()); // Permanent ban
                 } elseif ($count === 7) {
-                    $loginAttempt->setCooldownUntil(new \DateTime('+15 minutes'));
+                    $loginAttempt->setCooldownUntil(new \DateTimeImmutable('+15 minutes'));
                     $request->getSession()->set('cooldown_until_timestamp', $loginAttempt->getCooldownUntil()->getTimestamp());
                 } elseif ($count === 5) {
-                    $loginAttempt->setCooldownUntil(new \DateTime('+2 minutes'));
+                    $loginAttempt->setCooldownUntil(new \DateTimeImmutable('+2 minutes'));
                     $request->getSession()->set('cooldown_until_timestamp', $loginAttempt->getCooldownUntil()->getTimestamp());
                 } elseif ($count === 3) {
-                    $loginAttempt->setCooldownUntil(new \DateTime('+30 seconds'));
+                    $loginAttempt->setCooldownUntil(new \DateTimeImmutable('+30 seconds'));
                     $request->getSession()->set('cooldown_until_timestamp', $loginAttempt->getCooldownUntil()->getTimestamp());
                 }
 

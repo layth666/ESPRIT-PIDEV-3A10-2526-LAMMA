@@ -16,16 +16,18 @@ class LoginAttempts
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private int $attempt_count = 0;
 
-   #[ORM\Column(type: "datetime", nullable: true)]
-private ?\DateTimeInterface $last_attempt_time = null;
+    #[ORM\Column(type: "datetime_immutable", nullable: true)]
+    private ?\DateTimeImmutable $last_attempt_time = null;
 
-#[ORM\Column(type: "datetime", nullable: true)]
-private ?\DateTimeInterface $cooldown_until = null;
+    #[ORM\Column(type: "datetime_immutable", nullable: true)]
+    private ?\DateTimeImmutable $cooldown_until = null;
 
-#[ORM\Column(type: "datetime", nullable: true)]
-private ?\DateTimeInterface $banned_until = null;
+    #[ORM\Column(type: "datetime_immutable", nullable: true)]
+    private ?\DateTimeImmutable $banned_until = null;
 
-    // Getters and setters...
+    public function __construct()
+    {
+    }
 
     public function getEmail(): string
     {
@@ -49,36 +51,12 @@ private ?\DateTimeInterface $banned_until = null;
         return $this;
     }
 
-    public function getLastAttemptTime(): ?\DateTime
-    {
-        return $this->last_attempt_time;
-    }
+    public function getLastAttemptTime(): ?\DateTimeImmutable { return $this->last_attempt_time; }
+    public function setLastAttemptTime(?\DateTimeImmutable $last_attempt_time): static { $this->last_attempt_time = $last_attempt_time; return $this; }
 
-    public function setLastAttemptTime(?\DateTime $last_attempt_time): static
-    {
-        $this->last_attempt_time = $last_attempt_time;
-        return $this;
-    }
+    public function getCooldownUntil(): ?\DateTimeImmutable { return $this->cooldown_until; }
+    public function setCooldownUntil(?\DateTimeImmutable $cooldown_until): static { $this->cooldown_until = $cooldown_until; return $this; }
 
-    public function getCooldownUntil(): ?\DateTime
-    {
-        return $this->cooldown_until;
-    }
-
-    public function setCooldownUntil(?\DateTime $cooldown_until): static
-    {
-        $this->cooldown_until = $cooldown_until;
-        return $this;
-    }
-
-    public function getBannedUntil(): ?\DateTime
-    {
-        return $this->banned_until;
-    }
-
-    public function setBannedUntil(?\DateTime $banned_until): static
-    {
-        $this->banned_until = $banned_until;
-        return $this;
-    }
+    public function getBannedUntil(): ?\DateTimeImmutable { return $this->banned_until; }
+    public function setBannedUntil(?\DateTimeImmutable $banned_until): static { $this->banned_until = $banned_until; return $this; }
 }

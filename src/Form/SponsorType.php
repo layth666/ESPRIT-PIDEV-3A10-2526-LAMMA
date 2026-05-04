@@ -12,6 +12,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
+/**
+ * @extends AbstractType<Sponsor>
+ */
 class SponsorType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

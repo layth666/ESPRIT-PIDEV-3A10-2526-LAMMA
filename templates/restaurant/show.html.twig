@@ -1,7 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}Détails Restaurant - LAMMA{% endblock %}
 {% block page_title %}{{ item.nom }}{% endblock %}
+{% block admin_title %}{{ item.nom }}{% endblock %}
 
 {% block stylesheets %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />

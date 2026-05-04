@@ -1,6 +1,6 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Planificateur Hebdomadaire - LAMMA{% endblock %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
+{% block admin_title %}Menu Hebdomadaire{% endblock %}
+{% block page_title %}Menu Hebdomadaire{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}

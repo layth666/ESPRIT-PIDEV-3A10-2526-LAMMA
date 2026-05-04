@@ -10,7 +10,7 @@ class Ingredient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 255)]
     private string $nom;
@@ -97,7 +97,7 @@ class Ingredient
 
     // ================= GETTERS / SETTERS
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -107,9 +107,10 @@ class Ingredient
         return $this->nom;
     }
 
-    public function setNom(string $nom)
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
+        return $this;
     }
 
     public function getCategorie(): string
@@ -117,9 +118,10 @@ class Ingredient
         return $this->categorie;
     }
 
-    public function setCategorie(string $categorie)
+    public function setCategorie(string $categorie): static
     {
         $this->categorie = $categorie;
+        return $this;
     }
 
     public function getPrixSupplement(): string
@@ -127,9 +129,10 @@ class Ingredient
         return $this->prixSupplement;
     }
 
-    public function setPrixSupplement(string $prixSupplement)
+    public function setPrixSupplement(string $prixSupplement): static
     {
         $this->prixSupplement = $prixSupplement;
+        return $this;
     }
 
     public function getCalories(): ?int
@@ -137,9 +140,10 @@ class Ingredient
         return $this->calories;
     }
 
-    public function setCalories(?int $calories)
+    public function setCalories(?int $calories): static
     {
         $this->calories = $calories;
+        return $this;
     }
 
     public function getProteines(): ?int
@@ -147,9 +151,10 @@ class Ingredient
         return $this->proteines;
     }
 
-    public function setProteines(?int $proteines)
+    public function setProteines(?int $proteines): static
     {
         $this->proteines = $proteines;
+        return $this;
     }
 
     public function getIconUrl(): ?string
@@ -157,9 +162,10 @@ class Ingredient
         return $this->iconUrl;
     }
 
-    public function setIconUrl(?string $iconUrl)
+    public function setIconUrl(?string $iconUrl): static
     {
         $this->iconUrl = $iconUrl;
+        return $this;
     }
 
     public function getStockQuantite(): int
@@ -167,9 +173,10 @@ class Ingredient
         return $this->stockQuantite;
     }
 
-    public function setStockQuantite(int $stockQuantite)
+    public function setStockQuantite(int $stockQuantite): static
     {
         $this->stockQuantite = $stockQuantite;
+        return $this;
     }
 
     public function getStockSeuilAlerte(): int
@@ -177,9 +184,10 @@ class Ingredient
         return $this->stockSeuilAlerte;
     }
 
-    public function setStockSeuilAlerte(int $stockSeuilAlerte)
+    public function setStockSeuilAlerte(int $stockSeuilAlerte): static
     {
         $this->stockSeuilAlerte = $stockSeuilAlerte;
+        return $this;
     }
 
     public function isActif(): bool
@@ -187,9 +195,10 @@ class Ingredient
         return $this->actif;
     }
 
-    public function setActif(bool $actif)
+    public function setActif(bool $actif): static
     {
         $this->actif = $actif;
+        return $this;
     }
 
     public function getRepas(): ?RepasDetaille
@@ -197,7 +206,7 @@ class Ingredient
         return $this->repas;
     }
 
-    public function setRepas(?RepasDetaille $repas): self
+    public function setRepas(?RepasDetaille $repas): static
     {
         $this->repas = $repas;
         return $this;
@@ -207,7 +216,9 @@ class Ingredient
 
     public function equals(?Ingredient $other): bool
     {
-        if ($other === null) return false;
+        if ($other === null) {
+            return false;
+        }
 
         if ($this->id !== null && $other->getId() !== null) {
             return $this->id === $other->getId();

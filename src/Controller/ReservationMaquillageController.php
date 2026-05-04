@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Evenement;
-use App\Entity\Reservation_maquillage;
+use App\Entity\ReservationMaquillage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,10 +33,10 @@ class ReservationMaquillageController extends AbstractController
             return $this->redirectToRoute('app_evenement_show', ['id' => $evenement->getId_event()]);
         }
 
-        $reservation = new Reservation_maquillage();
-        $reservation->setEvent_id($evenement);
+        $reservation = new ReservationMaquillage();
+        $reservation->setEvent($evenement);
         $reservation->setEmail($emailAddress);
-        $reservation->setCreated_at(new \DateTime());
+        $reservation->setCreatedAt(new \DateTime());
 
         $entityManager->persist($reservation);
         $entityManager->flush();

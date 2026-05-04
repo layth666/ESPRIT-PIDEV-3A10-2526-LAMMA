@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/ai')]
 class AIController extends AbstractController
 {
-    private $geminiService;
+    private GeminiService $geminiService;
 
     public function __construct(GeminiService $geminiService)
     {
@@ -21,7 +21,7 @@ class AIController extends AbstractController
     #[Route('/generate-poster', name: 'app_admin_ai_generate_poster', methods: ['POST'])]
     public function generatePoster(Request $request): JsonResponse
     {
-        if ($request->getSession()->get('role') !== 'admin') {
+        if (!$this->isGranted('ROLE_ADMIN')) {
             return new JsonResponse(['error' => 'Accès refusé'], 403);
         }
 
@@ -59,7 +59,7 @@ class AIController extends AbstractController
     #[Route('/suggest-equipments', name: 'app_admin_ai_suggest_equipments', methods: ['POST'])]
     public function suggestEquipments(Request $request): JsonResponse
     {
-        if ($request->getSession()->get('role') !== 'admin') {
+        if (!$this->isGranted('ROLE_ADMIN')) {
             return new JsonResponse(['error' => 'Accès refusé'], 403);
         }
 

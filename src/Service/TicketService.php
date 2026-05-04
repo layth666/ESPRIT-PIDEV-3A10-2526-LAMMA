@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Ticket;
 
 class TicketService extends GenericService {
     private TicketRepository $repo;
@@ -12,11 +13,12 @@ class TicketService extends GenericService {
         $this->repo = $repo;
     }
 
+    /** @return Ticket[] */
     public function findAll(): array {
         return $this->repo->findAll();
     }
 
-    public function find(int $id) {
+    public function find(int $id): ?Ticket {
         return $this->repo->find($id);
     }
 
@@ -24,7 +26,7 @@ class TicketService extends GenericService {
      * Récupère les tickets d'un utilisateur par son ID
      *
      * @param int $userId
-     * @return array
+     * @return Ticket[]
      */
     public function findByUserId(int $userId): array
     {

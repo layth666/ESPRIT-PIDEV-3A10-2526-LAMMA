@@ -43,7 +43,7 @@ class QrcodeController extends AbstractController
             'equipement' => $equipement,
             'transaction' => $transaction,
             'delivery' => $equipement->getDelivery(),
-            'is_pdf' => true, // un flag pour d'éventuelles adaptations CSS
+            'is_pdf' => true,
         ]);
 
         $pdfOptions = new Options();

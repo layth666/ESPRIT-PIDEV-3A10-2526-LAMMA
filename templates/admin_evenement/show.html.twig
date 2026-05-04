@@ -1,4 +1,4 @@
-{% extends 'base_admin.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
 {% block title %}Détail de l'événement{% endblock %}
 
@@ -45,24 +45,28 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>Description / Détail</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for prog in evenement.programmes %}
                                     <tr>
                                         <td><strong>{{ prog.titre }}</strong><br><small class="text-muted">{{ prog.date_debut|date('d/m/Y H:i') }} {{ prog.date_fin ? 'au ' ~ prog.date_fin|date('d/m/Y H:i') : '' }}</small></td>
+                                        <td>
+                                            <a href="{{ path('app_programme_edit', {'id_prog': prog.id_prog}) }}" class="btn btn-sm btn-outline-warning">Modifier</a>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     {% else %}
-                        <p class="text-muted mt-2">Aucun programme n'est assigné Ã  cet événement.</p>
+                        <p class="text-muted mt-2">Aucun programme n'est assigné à cet événement.</p>
                     {% endif %}
 
                     <div class="d-flex justify-content-between mt-4 border-top pt-3">
-                        <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Retour Ã  la table</a>
+                        <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Retour à la table</a>
                         <div class="d-flex gap-2">
-                            <a href="{{ path('app_programme_new') }}" class="btn btn-success"><i class="fas fa-plus"></i> Ajouter Prog</a>
+                            <a href="{{ path('app_programme_new', {'event_id': evenement.id_event}) }}" class="btn btn-success"><i class="fas fa-plus"></i> Ajouter Prog</a>
                             <a href="{{ path('app_evenement_edit', {'id': evenement.id_event}) }}" class="btn btn-warning text-white"><i class="fas fa-edit"></i> Modifier</a>
                             {{ include('evenement/_delete_form.html.twig') }}
                         </div>

@@ -63,6 +63,7 @@ class MealTicketService
 
     /**
      * Consommation via scan QR, déduction automatique du stock d'ingrédients, alertes seuils bas
+     * @return array<string, mixed>
      */
     public function consumeTicket(string $qrCode): array
     {
@@ -97,7 +98,7 @@ class MealTicketService
                     if ($dish && !empty($dish->getIngredients())) {
                         foreach ($dish->getIngredients() as $ingredientId) {
                             // --- 4. Déduction du stock d'ingrédients ---
-                            $ingredient = $this->ingredientRepository->find($ingredientId);
+                            $ingredient = $this->ingredientRepository->find((int) $ingredientId);
                             
                             if ($ingredient) {
                                 $newStock = $ingredient->getStockQuantite() - 1;

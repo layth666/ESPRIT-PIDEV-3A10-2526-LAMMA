@@ -25,7 +25,7 @@ class ProgrammeRecommandeRepository
     /**
      * Retourne tous les programmes recommandés
      *
-     * @return ProgrammeRecommande[]
+     * @return array<ProgrammeRecommande>
      */
     public function findAll(): array
     {
@@ -56,17 +56,26 @@ class ProgrammeRecommandeRepository
 
     /**
      * Retourne des programmes recommandés selon des critères
+     * @param array<string, mixed> $criteria
+     * @param array<string, string>|null $orderBy
+     * @return array<ProgrammeRecommande>
      */
-    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null): array
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
         return $this->em->getRepository($this->entityClass)->findBy($criteria, $orderBy, $limit, $offset);
     }
 
+    /**
+     * @return array<ProgrammeRecommande>
+     */
     public function findByParticipationId(int $participationId): array
     {
         return $this->findBy(['participationId' => $participationId]);
     }
 
+    /**
+     * @return array<ProgrammeRecommande>
+     */
     public function findProgrammesEnCours(): array
     {
         $now = new \DateTime();
@@ -75,6 +84,9 @@ class ProgrammeRecommandeRepository
             ->getResult();
     }
 
+    /**
+     * @return array<ProgrammeRecommande>
+     */
     public function findProgrammesAVenir(): array
     {
         $now = new \DateTime();
@@ -83,6 +95,9 @@ class ProgrammeRecommandeRepository
             ->getResult();
     }
 
+    /**
+     * @return array<ProgrammeRecommande>
+     */
     public function findProgrammesTermines(): array
     {
         $now = new \DateTime();
@@ -91,6 +106,9 @@ class ProgrammeRecommandeRepository
             ->getResult();
     }
 
+    /**
+     * @return array<ProgrammeRecommande>
+     */
     public function searchByTitreOrEvent(?string $titre, ?int $eventId): array
     {
         $qb = $this->em->createQueryBuilder()
@@ -107,6 +125,9 @@ class ProgrammeRecommandeRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @return array<ProgrammeRecommande>
+     */
     public function findByDateBetween(\DateTime $debut, \DateTime $fin): array
     {
         return $this->em->createQuery('SELECT p FROM App\Entity\ProgrammeRecommande p WHERE p.heureDebut >= :debut AND p.heureFin <= :fin')

@@ -1,9 +1,9 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}{{ title }} - Plans Abonnement{% endblock %}
-{% block admin_title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
 
-{% block admin_content %}
+{% block body %}
 <section class="crud-section">
     <div class="row justify-content-center">
         <div class="col-lg-8">

@@ -4,20 +4,21 @@ namespace App\Service;
 
 class CensorshipService
 {
+    /** @var array<string> */
     private array $badWords = [
         'merde', 'putain', 'connard', 'salaud', 'idiot',
         'imbecile', 'con', 'cul', 'fuck', 'shit', 'bitch',
         'bastard', 'asshole', 'damn', 'crap', 'nique',
-        'enculer', 'pute', 'salope', 'bordel', 'chiant'
+        'enculer', 'pute', 'salope', 'bordel', 'chiant', 'mouheb'
     ];
 
     public function censorText(?string $text): string
     {
         if (!$text) return '';
-        
+
         $words = explode(' ', $text);
         $result = [];
-        
+
         foreach ($words as $word) {
             $clean = preg_replace('/[^a-zA-ZÀ-ÿ]/u', '', $word);
             if (in_array(strtolower($clean), $this->badWords)) {
@@ -30,7 +31,7 @@ class CensorshipService
                 $result[] = $word;
             }
         }
-        
+
         return implode(' ', $result);
     }
 }

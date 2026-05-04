@@ -1,32 +1,5 @@
 {% extends 'base.html.twig' %}
 
-<<<<<<< HEAD
-{% block title %}Modifier Événement - LAMMA{% endblock %}
-{% block page_title %}Modifier Événement{% endblock %}
-
-{% block body %}
-<section class="crud-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="fiche-card">
-                    <div class="fiche-header text-uppercase">
-                        <i class="fa fa-calendar mr-2"></i> MODIFICATION D'ÉVÉNEMENT
-                    </div>
-                    <div class="fiche-body">
-                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                        <div class="row">
-                            <div class="col-12">
-                                {{ form_widget(form) }}
-                            </div>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <button class="btn btn-add">Appliquer les modifications</button>
-                            <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary" style="border-radius:25px;padding:10px 30px;">Annuler</a>
-                        </div>
-                        {{ form_end(form) }}
-                    </div>
-=======
 {% block title %}Modification événement{% endblock %}
 {% block hero %}{% endblock %}
 
@@ -40,20 +13,13 @@
 
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                {{ include('evenement/_form.html.twig', {'button_label': 'METTRE À JOUR'}) }}
+                {{ include('evenement/_form.html.twig', {'button_label': 'METTRE Ã€ JOUR'}) }}
 
                 <div class="mt-4 pt-4 border-top border-secondary text-end">
                     {{ include('evenement/_delete_form.html.twig') }}
->>>>>>> feryelPI
                 </div>
             </div>
         </div>
     </div>
-<<<<<<< HEAD
-</section>
-{% endblock %}
-=======
 </div>
 {% endblock %}
-
->>>>>>> feryelPI

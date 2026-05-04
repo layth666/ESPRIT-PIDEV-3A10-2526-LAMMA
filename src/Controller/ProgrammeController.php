@@ -16,8 +16,8 @@ class ProgrammeController extends AbstractController
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if ($request->getSession()->get('role') !== 'admin') {
-            throw $this->createAccessDeniedException('AccÃ¨s refusÃ© - RÃ©servÃ© aux administrateurs.');
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Accès refusé - Réservé aux administrateurs.');
         }
 
         $eventId = $request->query->get('event_id');
@@ -42,7 +42,7 @@ class ProgrammeController extends AbstractController
             $entityManager->persist($programme);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_evenement_show', ['id' => $programme->getEvent_id()?->getId_event()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_evenement_show', ['id' => $programme->getEvent_id()->getId_event()], Response::HTTP_SEE_OTHER);
 
         }
 
@@ -73,7 +73,7 @@ class ProgrammeController extends AbstractController
     #[Route('/{id_prog}/edit', name: 'app_programme_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
-        if ($request->getSession()->get('role') !== 'admin') {
+        if (!$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Accès refusé - Réservé aux administrateurs.');
         }
 
@@ -83,7 +83,7 @@ class ProgrammeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_evenement_show', ['id' => $programme->getEvent_id()?->getId_event()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_evenement_show', ['id' => $programme->getEvent_id()->getId_event()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('programme/edit.html.twig', [
@@ -95,12 +95,12 @@ class ProgrammeController extends AbstractController
     #[Route('/{id_prog}', name: 'app_programme_delete', methods: ['POST'])]
     public function delete(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
-        if ($request->getSession()->get('role') !== 'admin') {
+        if (!$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Accès refusé - Réservé aux administrateurs.');
         }
 
         if ($this->isCsrfTokenValid('delete'.$programme->getId_prog(), $request->request->get('_token'))) {
-            $eventId = $programme->getEvent_id()?->getId_event();
+            $eventId = $programme->getEvent_id()->getId_event();
             $entityManager->remove($programme);
             $entityManager->flush();
 

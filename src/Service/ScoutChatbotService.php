@@ -12,19 +12,16 @@ use Exception;
 class ScoutChatbotService
 {
     private string $apiKey;
-    private IngredientRepository $ingredientRepository;
     private RepasDetailleRepository $repasRepository;
     private ParticipationRepository $participationRepository;
     private RestaurantRepository $restaurantRepository;
 
     public function __construct(
-        IngredientRepository $ingredientRepository,
         RepasDetailleRepository $repasRepository,
         ParticipationRepository $participationRepository,
         RestaurantRepository $restaurantRepository
     ) {
-        $this->apiKey = $_ENV['OPENAI_API_KEY'] ?? '';
-        $this->ingredientRepository = $ingredientRepository;
+        $this->apiKey = (string)($_ENV['OPENAI_API_KEY'] ?? getenv('OPENAI_API_KEY'));
         $this->repasRepository = $repasRepository;
         $this->participationRepository = $participationRepository;
         $this->restaurantRepository = $restaurantRepository;
@@ -69,22 +66,23 @@ INSTRUCTIONS :
 
             return $result->choices[0]->message->content ?? $this->generateFallbackResponse($userMessage, $data);
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // Log for debug (if possible) or just smarter fallback
             return $this->generateFallbackResponse($userMessage, $data, strpos($e->getMessage(), '429') !== false);
         }
     }
 
+    /** @return array<string, mixed> */
     private function collectFullMarketData(): array
     {
-        $restaurants = $this->restaurantRepository->findAll();
-        $repas = $this->repasRepository->findAll();
-        $participations = $this->participationRepository->findAll();
+        $restaurants = array_slice($this->restaurantRepository->findAll(), 0, 30);
+        $repas = array_slice($this->repasRepository->findAll(), 0, 50);
+        $participations = array_slice($this->participationRepository->findAll(), 0, 100);
 
         $totalRevenue = 0;
         foreach ($participations as $p) {
             if ($p->getStatut() === 'CONFIRME') {
-                $totalRevenue += (float)$p->getMontantCalcule();
+                $totalRevenue += (float)($p->getMontantCalcule() ?? 0);
             }
         }
 
@@ -109,8 +107,8 @@ INSTRUCTIONS :
                 'restaurant' => $this->getRestaurantName($m->getRestaurantId(), $restaurants),
                 'calories' => $m->getCalories(),
                 'proteines' => $m->getProteines(),
-                'allergenes' => is_array($m->getAllergenes()) ? $m->getAllergenes() : [],
-                'ingredients' => is_array($m->getIngredients()) ? $m->getIngredients() : [],
+                'allergenes' => $m->getAllergenes(),
+                'ingredients' => $m->getIngredients(),
                 'flags' => [
                     'vege' => $m->isVegetarien(),
                     'vegan' => $m->isVegan(),
@@ -128,6 +126,7 @@ INSTRUCTIONS :
         ];
     }
 
+    /** @param \App\Entity\Restaurant[] $restaurants */
     private function getRestaurantName(?int $id, array $restaurants): string
     {
         if (!$id) return "Inconnu";
@@ -140,6 +139,7 @@ INSTRUCTIONS :
     /**
      * INTELLIGENT FALLBACK: Actually searches local data when AI is down
      */
+    /** @param array<string, mixed> $data */
     private function generateFallbackResponse(string $message, array $data, bool $isRateLimited = false): string
     {
         $m = strtolower($message);

@@ -18,7 +18,7 @@
     <div class="glass-panel mb-5" style="padding: 15px 30px; border-radius: 50px; display: flex; align-items: center; justify-content: space-between; gap: 20px;">
         <div style="flex-grow: 1; display: flex; align-items: center; gap: 15px;">
             <i class="fa fa-search" style="color: #94a3b8;"></i>
-            <input type="text" placeholder="Rechercher dans mes favoris..." style="background: transparent; border: none; color: white; width: 100%; outline: none;">
+            <input type="text" id="favoriSearch" placeholder="Rechercher dans mes favoris..." style="background: transparent; border: none; color: white; width: 100%; outline: none;" onkeyup="filterFavoris()">
         </div>
         <div class="d-flex gap-3">
             <a href="{{ path('app_user_dashboard') }}" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: #fff; border-radius: 20px; padding: 8px 20px; border: 1px solid rgba(255,255,255,0.1);">
@@ -137,5 +137,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+</script>
+<script>
+function filterFavoris() {
+    const search = document.getElementById('favoriSearch').value.toLowerCase();
+    const cards = document.querySelectorAll('.card-favori');
+    cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(search) ? '' : 'none';
+    });
+}
 </script>
 {% endblock %}

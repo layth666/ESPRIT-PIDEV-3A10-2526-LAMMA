@@ -7,6 +7,7 @@
 {% extends 'base_auth.html.twig' %}
 
 {% block title %}Create Account{% endblock %}
+{# Manual form theme removal to avoid @EWZ errors #}
 
 {% block hero_eyebrow %}Nature &amp; Adventure{% endblock %}
 
@@ -42,6 +43,31 @@
   /* ── Inline field errors ── */
   .field-error { font-size:.72rem; color:#ff8a80; margin-top:4px; }
   input.is-invalid, select.is-invalid { border-color:#e8392c !important; }
+
+  /* ── CAPTCHA Styling ── */
+  .captcha-container {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+  }
+  .captcha-container:hover {
+    border-color: var(--teal);
+  }
+  @media (max-width: 480px) {
+    .g-recaptcha {
+      transform: scale(0.85);
+      transform-origin: 0 0;
+    }
+    .captcha-container {
+        justify-content: flex-start;
+        padding: 10px;
+    }
+  }
 {% endblock %}
 
 {% block form_content %}
@@ -206,6 +232,14 @@
           </button>
         </div>
       </div>
+
+      {# Manual reCAPTCHA v2 checkbox #}
+      <div class="captcha-container">
+        <div class="g-recaptcha" 
+             data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+             data-theme="dark"></div>
+      </div>
+      <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     </div>{# /fields #}
 

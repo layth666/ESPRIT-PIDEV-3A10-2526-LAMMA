@@ -29,9 +29,9 @@ class CodePromoGenerator
 
         $code = new CodePromo();
         $code->setCode($codeStr);
-        $code->setRemise(15);
+        $code->setDiscountPercentage(15);
         $code->setUsageLimit(50);
-        $code->setDateExpiration((new \DateTime())->modify('+1 week'));
+        $code->setExpirationDate((new \DateTime())->modify('+1 week'));
         
         $this->em->persist($code);
         $this->em->flush();
@@ -45,7 +45,7 @@ class CodePromoGenerator
     public function validateCode(string $codeStr): ?CodePromo
     {
         $code = $this->repo->findOneByCodeUppercase($codeStr);
-        if ($code && $code->isValid()) {
+        if ($code && $code->canBeUsed()) {
             return $code;
         }
         return null;
@@ -58,7 +58,7 @@ class CodePromoGenerator
     {
         $code = $this->validateCode($codeStr);
         if ($code) {
-            $code->incrementUsage();
+            $code->use();
             $this->em->flush();
             return true;
         }

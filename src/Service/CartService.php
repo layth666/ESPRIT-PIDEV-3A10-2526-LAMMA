@@ -29,6 +29,9 @@ class CartService
         $this->addCustom($id, []);
     }
 
+    /**
+     * @param array<int, int> $supplements
+     */
     public function addCustom(int $repasId, array $supplements = []): void
     {
         $session = $this->requestStack->getSession();
@@ -71,6 +74,9 @@ class CartService
         $session->set('cart', $cart);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getFullCart(): array
     {
         $session = $this->requestStack->getSession();
@@ -135,6 +141,17 @@ class CartService
         }
 
         return $total;
+    }
+
+    public function countItems(): int
+    {
+        $session = $this->requestStack->getSession();
+        $cart = $session->get('cart', []);
+        $count = 0;
+        foreach ($cart as $data) {
+            $count += is_array($data) ? $data['qty'] : $data;
+        }
+        return $count;
     }
 
     public function clear(): void

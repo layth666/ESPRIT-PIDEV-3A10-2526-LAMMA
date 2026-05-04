@@ -17,7 +17,7 @@ class IngredientRepository
     /**
      * Retourne tous les ingrédients
      *
-     * @return Ingredient[]
+     * @return array<Ingredient>
      */
     public function findAll(): array
     {
@@ -34,6 +34,8 @@ class IngredientRepository
 
     /**
      * Proxies findOneBy to the actual repository
+     * @param array<string, mixed> $criteria
+     * @param array<string, string>|null $orderBy
      */
     public function findOneBy(array $criteria, array $orderBy = null): ?Ingredient
     {
@@ -43,7 +45,7 @@ class IngredientRepository
     /**
      * Retourne les ingrédients actifs
      *
-     * @return Ingredient[]
+     * @return array<Ingredient>
      */
     public function findActifs(): array
     {

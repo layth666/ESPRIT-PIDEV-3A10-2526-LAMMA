@@ -25,7 +25,7 @@ class RestaurantRepository
     /**
      * Retourne tous les restaurants
      *
-     * @return Restaurant[]
+     * @return array<Restaurant>
      */
     public function findAll(): array
     {
@@ -34,10 +34,11 @@ class RestaurantRepository
 
     /**
      * Retourne des restaurants selon des critères
-     *
-     * @return Restaurant[]
+     * @param array<string, mixed> $criteria
+     * @param array<string, string>|null $orderBy
+     * @return array<Restaurant>
      */
-    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null): array
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
     {
         return $this->em->getRepository($this->entityClass)->findBy($criteria, $orderBy, $limit, $offset);
     }
@@ -45,7 +46,7 @@ class RestaurantRepository
     /**
      * Retourne tous les restaurants actifs
      *
-     * @return Restaurant[]
+     * @return array<Restaurant>
      */
     public function findActifs(): array
     {
@@ -72,5 +73,12 @@ class RestaurantRepository
         if ($flush) {
             $this->em->flush();
         }
+    }
+    /**
+     * @param array<string, mixed> $criteria
+     */
+    public function count(array $criteria): int
+    {
+        return $this->em->getRepository($this->entityClass)->count($criteria);
     }
 }

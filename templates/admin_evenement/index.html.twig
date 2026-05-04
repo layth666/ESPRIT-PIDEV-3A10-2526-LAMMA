@@ -1,4 +1,4 @@
-{% extends 'base_admin.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
 {% block title %}Liste des événements{% endblock %}
 
@@ -16,8 +16,8 @@
             </div>
             <a href="{{ path('app_evenement_new') }}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Créer un événement</a>
         </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped" style="width:100%">
+        <div class="card-body bg-transparent">
+            <table class="table table-dark table-bordered table-striped table-hover" style="width:100%">
                 <thead>
                     <tr>
                         <th style="width: 5%">ID</th>
@@ -58,4 +58,29 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% for message in app.flashes('ask_add_prog') %}
+                Swal.fire({
+                    title: 'Événement Créé!',
+                    text: 'Voulez-vous ajouter un programme pour cet événement maintenant ?',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Oui, ajouter!',
+                    cancelButtonText: 'Non, plus tard'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ path('app_programme_new') }}?event_id={{ message|escape('js') }}";
+                    }
+                });
+            {% endfor %}
+        });
+    </script>
 {% endblock %}

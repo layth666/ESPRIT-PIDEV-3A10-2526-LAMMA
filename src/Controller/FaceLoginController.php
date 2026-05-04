@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\FaceData;
 use App\Entity\Users;
+use App\Entity\Email;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,18 +33,18 @@ class FaceLoginController extends AbstractController
         $email = $data['email'];
         $descriptor = $data['descriptor'];
 
-        $user = $em->getRepository(Users::class)->findOneBy(['email' => $email]);
+        $user = $em->getRepository(Users::class)->findOneBy(['email.value' => $email]);
         if (!$user) {
             return $this->json(['error' => 'No account found with this email. Please register first.'], 400);
         }
 
-        $faceData = $em->getRepository(FaceData::class)->findOneBy(['email' => $email]);
+        $faceData = $em->getRepository(FaceData::class)->findOneBy(['email.value' => $email]);
         if ($faceData) {
             return $this->json(['error' => 'A face is already enrolled for this email.'], 400);
         }
 
         $faceData = new FaceData();
-        $faceData->setEmail($email);
+        $faceData->setEmail(new Email($email));
         $faceData->setFaceDescriptor($descriptor);
 
         $em->persist($faceData);
@@ -85,7 +86,7 @@ class FaceLoginController extends AbstractController
         }
 
         $email = $bestMatch->getEmail();
-        $user = $em->getRepository(Users::class)->findOneBy(['email' => $email]);
+        $user = $em->getRepository(Users::class)->findOneBy(['email.value' => (string)$email]);
 
         if (!$user) {
             return $this->json(['error' => 'User account not found.']);
@@ -107,6 +108,10 @@ class FaceLoginController extends AbstractController
         return $this->json(['success' => true, 'redirect' => $target]);
     }
 
+    /**
+     * @param float[] $desc1
+     * @param float[] $desc2
+     */
     private function euclideanDistance(array $desc1, array $desc2): float
     {
         if (count($desc1) !== count($desc2)) return 999.0;
